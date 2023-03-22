@@ -1,18 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/login_bg"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="26dp"
     tools:context=".MainActivity">
 
     <TextView
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:text="BadgerConnect"
+        android:textColor="@color/colorAccent"
+        android:textSize="38sp" />
+
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="14dp"
+        android:hint="Sign In With Wisc Email"
+        android:imeOptions="actionNext"
+        android:inputType="textEmailAddress"
+        android:textColorHint="@color/colorAccent"
+        android:textSize="20sp"
+        android:backgroundTint="@color/colorAccent" />
+
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="28dp"
+        android:hint="Enter Password"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:textColorHint="@color/colorAccent"
+        android:textSize="20sp"
+        android:backgroundTint="@color/colorAccent" />
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="128dp"
+        android:layout_height="wrap_content"
+        android:text="SIGN IN"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimaryDark"
+        android:backgroundTint="@color/colorAccent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="26dp"
+            android:text="Don't have an account?"
+            android:textColor="@color/colorAccent" />
+
+        <Button
+            android:id="@+id/btnSignUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="attr/borderlessButtonStyle"
+            android:text="Sign Up!"
+            android:textAllCaps="false" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnForgotPwd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="Forgot Password?"
+        android:textAllCaps="false"
+        android:background="attr/borderlessButtonStyle"
+        android:textColor="@color/colorAccent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
