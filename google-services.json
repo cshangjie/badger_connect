@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "467370661807",
+    "firebase_url": "https://bagderconnect-default-rtdb.firebaseio.com",
+    "project_id": "bagderconnect",
+    "storage_bucket": "bagderconnect.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:467370661807:android:74937189f45a3b6d35c15a",
+        "android_client_info": {
+          "package_name": "com.example.badgerconnect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "467370661807-2moej10et5d2ct8q8deo2um1h410q3f3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJQM87Uz-ICe3pNAkX-_GwO6frwtHDTGo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "467370661807-2moej10et5d2ct8q8deo2um1h410q3f3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
