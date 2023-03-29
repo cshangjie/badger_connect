@@ -2,7 +2,11 @@ package com.example.badgerconnect;
 
 import androidx.annotation.NonNull;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -11,7 +15,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +27,8 @@ import java.util.Map;
 
 public class DatabaseFunctions{
 
-    private DatabaseReference mDatabase;
+    private static DatabaseReference mDatabase;
+    private static StorageReference mStorage;
 
 //    //Class for testing other methods
 //    public void sendMessage(View view) {
@@ -44,7 +53,17 @@ public class DatabaseFunctions{
 //        deleteUser(userId);
 //    }
 
-    public void writeNewUser(String userId, String name, String email, Major major, List<Courses> courses, MeetingType meetingType) {
+    /**
+     * Writes a new user into the database and takes the necessary details
+     *
+     * @param userId is the UID of the user from the auth
+     * @param name is the name of the user
+     * @param email is the email of the user
+     * @param major is the user's major
+     * @param courses is a list of courses of the user
+     * @param meetingType is the users preferred meeting type
+     */
+    public static void writeNewUser(String userId, String name, String email, Major major, List<Courses> courses, MeetingType meetingType) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
         UserInfo user = new UserInfo(name, email, major, courses, meetingType);
@@ -69,7 +88,17 @@ public class DatabaseFunctions{
 
     }
 
-    public void updateUser(String userId, String name, String email, Major major, List<Courses> courses, MeetingType meetingType) {
+    /**
+     * Updates the user information in the database. ALl the fields are optional and only specified fields will be updated
+     *
+     * @param userId is the UID of the user from the auth
+     * @param name is the name of the user
+     * @param email is the email of the user
+     * @param major is the user's major
+     * @param courses is a list of courses of the user
+     * @param meetingType is the users preferred meeting type
+     */
+    public static void updateUser(String userId, String name, String email, Major major, List<Courses> courses, MeetingType meetingType) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
         Map<String, Object> childUpdates = new HashMap<>();
@@ -108,7 +137,12 @@ public class DatabaseFunctions{
 
     }
 
-    public void readUserData(String userId) {
+    /**
+     * Reads the user data and can perform a function within the onComplete method
+     *
+     * @param userId the userId of the user we are searching for
+     */
+    public static void readUserData(String userId) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         mDatabase.child("user_info").child(userId).get()
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -124,7 +158,12 @@ public class DatabaseFunctions{
                 });
     }
 
-    public void afterRead(Task<DataSnapshot> task) {
+    /**
+     * A skeleton method for whatever function is called after the read
+     *
+     * @param task the user information
+     */
+    private static void afterRead(Task<DataSnapshot> task) {
         String name = String.valueOf(task.getResult().child("username").getValue());
         String email = String.valueOf(task.getResult().child("email").getValue());
         Major major = Major.valueOf(String.valueOf(task.getResult().child("major").getValue()));
@@ -137,9 +176,71 @@ public class DatabaseFunctions{
         UserInfo user = new UserInfo(name, email, major, courses, meetingType);
     }
 
-    public void deleteUser(String userId) {
+    /**
+     * Deletes the user from the database
+     *
+     * @param userId the userId of the user being deleted
+     */
+    public static void deleteUser(String userId) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         mDatabase.child("user_info").child(userId).removeValue();
+    }
+
+    /**
+     * Uploads a picture to the database as a profile picture
+     *
+     * @param bitmap the bitmap of the image being uploaded
+     */
+    public static void uploadPFP(String userId, Bitmap bitmap) {
+        // create refs
+        mStorage = FirebaseStorage.getInstance().getReference();
+        StorageReference pfpRef = mStorage.child("images").child(userId+"/pfp.jpg");
+        // bitmaps
+        //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.monke);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] pfpByteStream = baos.toByteArray();
+        // upload
+        UploadTask uploadTask = pfpRef.putBytes(pfpByteStream);
+        uploadTask.addOnFailureListener((exception) -> {
+            // Handle unsuccessful uploads
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Log.i("ImageUpload", "Image successfully uploaded to Firebase.");
+            }
+        });
+    }
+
+    /**
+     * Downloads the profile picture of the user from firebase
+     *
+     * @param imageView area to display the image downloaded
+     */
+    public static void downloadPFP(String userId, ImageView imageView) {
+        mStorage = FirebaseStorage.getInstance().getReference();
+        StorageReference pfpRef = mStorage.child("images").child(userId+"/pfp.jpg");
+
+        // get image view obj
+        //final ImageView imageView = findViewById(R.id.monke);
+        final long ONE_MEGABYTE = 1024 * 1024;
+        final long FIVE_MEGABYTE = 5 * ONE_MEGABYTE;
+
+        // download img into a byte stream
+        pfpRef.getBytes(FIVE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                imageView.setImageBitmap(bitmap);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                e.printStackTrace();
+                Log.i("Error", "Image Download Failed.");
+            }
+        });
     }
 }
 
