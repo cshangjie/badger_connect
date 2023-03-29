@@ -73,6 +73,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:text="Sign Up!"
+            android:textColor="@color/colorAccent"
             android:textAllCaps="false" />
     </LinearLayout>
 
