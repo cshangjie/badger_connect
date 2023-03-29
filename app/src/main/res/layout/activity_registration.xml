@@ -1,39 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical"
+    android:background="@drawable/login_bg"
+    android:gravity="center"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="26dp"
     tools:context=".RegistrationActivity">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Register new account" />
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:text="Register New Account"
+        android:textColor="@color/colorAccent"
+        android:textSize="28sp" />
 
     <EditText
         android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email" />
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"
+        android:textColor="@color/colorAccent"
+        android:hint="Email"
+        android:imeOptions="actionNext"
+        android:inputType="textEmailAddress"
+        android:textColorHint="@color/colorAccent"
+        android:textSize="20sp"
+        android:backgroundTint="@color/colorAccent" />
 
     <EditText
         android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:textColor="@color/colorAccent"
         android:hint="Password"
-        android:inputType="textPassword" />
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"
+        android:textColorHint="@color/colorAccent"
+        android:textSize="20sp"
+        android:backgroundTint="@color/colorAccent" />
 
     <Button
         android:id="@+id/register"
-        android:background="@color/colorPrimary"
-        android:layout_width="match_parent"
+        android:layout_width="128dp"
         android:layout_height="wrap_content"
-        android:text="Register"
-        />
+        android:text="REGISTER"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimaryDark"
+        android:backgroundTint="@color/colorAccent" />
 
     <ProgressBar
         android:id="@+id/progressBar"
