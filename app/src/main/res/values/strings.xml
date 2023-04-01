@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">BadgerConnect</string>
+
+    <string-array name="CourseList">
+        <item>COMP SCI 537</item>
+        <item>COMP SCI 564</item>
+        <item>ECE 454</item>
+        <item>MATH 221</item>
+        <item>MATH 222</item>
+        <item>CHEM 103</item>
+        <item>PHYSICS 201</item>
+        <item>ECE 354</item>
+        <item>ECE 551</item>
+    </string-array>
 </resources>
