@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ProfileCreationActivity extends AppCompatActivity {
 
-    private static final int MAX_COURSES = 4;
+    private static final int MAX_COURSES = 6;
     private EditText nameTV, majorTV, coursesTV, meeting_typeTV;
     private Button addCourseFieldButton, removeCourseFieldButton;
     private LinearLayout autocompleteContainer;
@@ -40,7 +40,11 @@ public class ProfileCreationActivity extends AppCompatActivity {
                     if (autocompleteContainer.getChildCount() == MAX_COURSES) {
                         addCourseFieldButton.setEnabled(false);
                     }
-                    removeCourseFieldButton.setEnabled(true);
+                    if (autocompleteContainer.getChildCount() == 1) {
+                        removeCourseFieldButton.setEnabled(false);
+                    } else {
+                        removeCourseFieldButton.setEnabled(true);
+                    }
                 }
             }
         });
