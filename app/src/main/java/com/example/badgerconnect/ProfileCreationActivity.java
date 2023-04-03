@@ -72,5 +72,21 @@ public class ProfileCreationActivity extends AppCompatActivity {
         removeCourseFieldButton = findViewById(R.id.removeButton);
         removeCourseFieldButton.setEnabled(false);
         autocompleteContainer = findViewById(R.id.autocomplete_container);
+
+        // make the starting course entry box
+        AutoCompleteTextView autoCompleteTextView = new AutoCompleteTextView(ProfileCreationActivity.this);
+        autoCompleteTextView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        String[] options = getResources().getStringArray(R.array.CourseList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(ProfileCreationActivity.this, android.R.layout.simple_dropdown_item_1line, options);
+        autoCompleteTextView.setAdapter(adapter);
+        autocompleteContainer.addView(autoCompleteTextView);
+        if (autocompleteContainer.getChildCount() == MAX_COURSES) {
+            addCourseFieldButton.setEnabled(false);
+        }
+        if (autocompleteContainer.getChildCount() == 1) {
+            removeCourseFieldButton.setEnabled(false);
+        } else {
+            removeCourseFieldButton.setEnabled(true);
+        }
     }
 }

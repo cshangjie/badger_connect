@@ -19,11 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <AutoCompleteTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"></AutoCompleteTextView>
-
     </LinearLayout>
 
     <!-- Horizontal layout for buttons -->
@@ -49,4 +44,9 @@
             android:text="Remove"/>
 
     </LinearLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Continue"/>
 </LinearLayout>
