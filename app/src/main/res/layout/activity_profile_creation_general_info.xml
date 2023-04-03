@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_bg"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="26dp"
+    tools:context=".GeneralInfoActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:text="Badger Profile Picture"
+        android:textColor="@color/colorAccent"
+        android:textSize="28sp" />
+
+    <!-- Profile image placeholder -->
+    <ImageView
+        android:id="@+id/profileImage"
+        android:layout_width="250dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/monke"
+        android:scaleType="centerCrop"
+        android:onClick="updatePic"/>
+
+    <!-- Container for AutoCompleteTextViews -->
+    <LinearLayout
+        android:id="@+id/autocomplete_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="15dp"
+            android:textColor="@color/colorAccent"
+            android:hint="Name"
+            android:imeOptions="actionNext"
+            android:inputType="textEmailAddress"
+            android:textColorHint="@color/colorAccent"
+            android:textSize="20sp"
+            android:backgroundTint="@color/colorAccent" />
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/colorAccent"
+            android:hint="Major"
+            android:imeOptions="actionDone"
+            android:inputType="textPassword"
+            android:textColorHint="@color/colorAccent"
+            android:textSize="20sp"
+            android:backgroundTint="@color/colorAccent"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pick Birth Date"
+            android:onClick="showDatePickerDialog"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="128dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center_horizontal"
+        android:text="Continue"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimaryDark"
+        android:backgroundTint="@color/colorAccent" />
+
+</LinearLayout>
