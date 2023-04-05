@@ -24,6 +24,7 @@
         android:layout_width="250dp"
         android:layout_height="300dp"
         android:layout_gravity="center_horizontal"
+        android:contentDescription="Profile Picture"
         android:src="@drawable/monke"
         android:scaleType="centerCrop"
         android:onClick="updatePic"/>
@@ -38,7 +39,7 @@
         <EditText
             android:id="@+id/name"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:background="@drawable/custom_edit_cut_text"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
@@ -54,7 +55,7 @@
         <AutoCompleteTextView
             android:id="@+id/major"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:background="@drawable/custom_edit_cut_text"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
