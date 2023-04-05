@@ -36,39 +36,43 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/etEmail"
+            android:id="@+id/name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/custom_edit_cut_text"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="15dp"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorPrimaryDark"
             android:hint="Name"
             android:imeOptions="actionNext"
             android:inputType="textEmailAddress"
-            android:textColorHint="@color/colorAccent"
-            android:textSize="20sp"
-            android:backgroundTint="@color/colorAccent" />
+            android:textColorHint="@color/colorPrimaryDark"
+            android:textSize="20sp" />
 
         <EditText
-            android:id="@+id/etPassword"
+            android:id="@+id/major"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:textColor="@color/colorAccent"
+            android:layout_height="40dp"
+            android:background="@drawable/custom_edit_cut_text"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="15dp"
+            android:textColor="@color/colorPrimaryDark"
             android:hint="Major"
             android:imeOptions="actionDone"
             android:inputType="textPassword"
-            android:textColorHint="@color/colorAccent"
-            android:textSize="20sp"
-            android:backgroundTint="@color/colorAccent"/>
+            android:textColorHint="@color/colorPrimaryDark"
+            android:textSize="20sp" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Pick Birth Date"
             android:onClick="showDatePickerDialog"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:background=""
             android:textColor="@color/colorAccent"
             android:textSize="20sp"
             android:textAllCaps="false" />
