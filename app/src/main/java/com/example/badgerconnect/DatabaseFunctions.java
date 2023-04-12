@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -30,28 +31,28 @@ public class DatabaseFunctions{
     private static DatabaseReference mDatabase;
     private static StorageReference mStorage;
 
-//    //Class for testing other methods
-//    public void sendMessage(View view) {
-//        String name = "Sahas Gelli";
-//        String email = "sahasgelli@gmail.com";
-//        String userId = "000001";
-//        MeetingType meetingType1 = MeetingType.IN_PERSON;
-//        Major major1 = Major.COMPUTER_ENGINEERING;
-//        MeetingType meetingType2 = MeetingType.VIRTUAL;
-//        Major major2 = Major.ELECTRICAL_ENGINERING;
-//        List<Courses> courses = new ArrayList<>();
-//        courses.add(Courses.ECE_454);
-//        courses.add(Courses.ECE_755);
-//        //writeNewUser(userId, name, email, major1, courses, meetingType1);
-//        //updateUser(userId, "", "", major2, courses, meetingType2);
-//        readUserData(userId);
-//        //deleteUser(userId);
-//    }
-//
-//    public void deleteMessage(View view) {
-//        String userId = "000001";
-//        deleteUser(userId);
-//    }
+    //Class for testing other methods
+    public static void sendMessage() {
+        String name = "Sahas Gelli";
+        String email = "sahasgelli@gmail.com";
+        String userId = "000001";
+        MeetingType meetingType1 = MeetingType.IN_PERSON;
+        Major major1 = Major.COMPUTER_ENGINEERING;
+        MeetingType meetingType2 = MeetingType.VIRTUAL;
+        Major major2 = Major.ELECTRICAL_ENGINERING;
+        List<Courses> courses = new ArrayList<>();
+        courses.add(Courses.ECE_454);
+        courses.add(Courses.ECE_755);
+        writeNewUser(userId, name, email, major1, courses, meetingType1);
+        //updateUser(userId, "", "", major2, courses, meetingType2);
+        //readUserData(userId);
+        //deleteUser(userId);
+    }
+
+    public void deleteMessage(View view) {
+        String userId = "000001";
+        deleteUser(userId);
+    }
 
     /**
      * Writes a new user into the database and takes the necessary details
@@ -241,6 +242,32 @@ public class DatabaseFunctions{
                 Log.i("Error", "Image Download Failed.");
             }
         });
+    }
+
+    public List<UserInfo> algorithm() {
+
+        mDatabase = FirebaseDatabase.getInstance().getReference("Data");
+
+        Query findMajor = mDatabase.orderByChild("major").equalTo("COMPUTER_ENGINEERING");
+
+        findMajor.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("firebase", "Error getting data", task.getException());
+                }
+                else {
+                    Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                    postAlgorithm(task);
+                }
+            }
+        });
+
+        return null;
+
+    }
+
+    private void postAlgorithm(Task<DataSnapshot> task) {
+        Log.d("Result", String.valueOf(task.getResult()));
     }
 }
 
