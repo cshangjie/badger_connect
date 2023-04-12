@@ -1,26 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/login_bg"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="26dp"
+    tools:context=".CoursesActivity">
 
-    <Button
-        android:id="@+id/addButton"
-        android:layout_width="128dp"
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add"
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimaryDark"
-        android:backgroundTint="@color/colorAccent"
-        android:layout_marginRight="20dp" />
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:text="Connection Type"
+        android:textColor="@color/colorAccent"
+        android:textSize="28sp" />
 
-    <Button
-        android:id="@+id/removeButton"
-        android:layout_width="128dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Remove"
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimaryDark"
-        android:backgroundTint="@color/colorAccent"
-        android:layout_marginLeft="20dp" />
+        android:orientation="horizontal">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <CheckBox
+            android:id="@+id/checkbox_connectionType1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:buttonTint="@color/colorAccent"
+            android:text="Type 1"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp" />
+
+        <CheckBox
+            android:id="@+id/checkbox_connectionType2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="80dp"
+            android:layout_marginBottom="16dp"
+            android:buttonTint="@color/colorAccent"
+            android:text="Type 2"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:text="Meeting Preference"
+        android:textColor="@color/colorAccent"
+        android:textSize="28sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/checkbox_meetingPreferences1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:buttonTint="@color/colorAccent"
+            android:text="In-Person"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp" />
+
+        <CheckBox
+            android:id="@+id/checkbox_meetingPreferences2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="60dp"
+            android:layout_marginBottom="16dp"
+            android:buttonTint="@color/colorAccent"
+            android:text="Virtual"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="128dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/colorAccent"
+            android:text="Add"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/removeButton"
+            android:layout_width="128dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/colorAccent"
+            android:text="Remove"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</LinearLayout>

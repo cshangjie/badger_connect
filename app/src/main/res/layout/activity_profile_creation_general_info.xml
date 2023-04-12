@@ -19,15 +19,25 @@
         android:textSize="28sp" />
 
     <!-- Profile image placeholder -->
-    <ImageView
-        android:id="@+id/profileImage"
+    <FrameLayout
         android:layout_width="250dp"
         android:layout_height="300dp"
         android:layout_gravity="center_horizontal"
-        android:contentDescription="Profile Picture"
-        android:src="@drawable/monke"
-        android:scaleType="centerCrop"
-        android:onClick="updatePic"/>
+        android:layout_marginBottom="30dp"
+        android:background="@color/white"
+        android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="Profile Image"
+            android:onClick="updatePic"
+            android:scaleType="centerCrop"
+            android:src="@drawable/monkey" />
+
+    </FrameLayout>
 
     <!-- Container for AutoCompleteTextViews -->
     <LinearLayout
@@ -40,15 +50,15 @@
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@drawable/custom_edit_cut_text"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="15dp"
-            android:textColor="@color/colorPrimaryDark"
+            android:background="@drawable/custom_edit_cut_text"
             android:hint="Name"
             android:imeOptions="actionNext"
             android:inputType="textEmailAddress"
+            android:textColor="@color/colorPrimaryDark"
             android:textColorHint="@color/colorPrimaryDark"
             android:textSize="20sp" />
 
@@ -56,38 +66,38 @@
             android:id="@+id/major"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@drawable/custom_edit_cut_text"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="15dp"
-            android:textColor="@color/colorPrimaryDark"
+            android:background="@drawable/custom_edit_cut_text"
             android:hint="Major"
             android:imeOptions="actionDone"
             android:inputType="textPassword"
+            android:textColor="@color/colorPrimaryDark"
             android:textColorHint="@color/colorPrimaryDark"
             android:textSize="20sp" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pick Birth Date"
-            android:onClick="showDatePickerDialog"
             android:background=""
+            android:onClick="showDatePickerDialog"
+            android:text="Pick Birth Date"
+            android:textAllCaps="false"
             android:textColor="@color/colorAccent"
-            android:textSize="20sp"
-            android:textAllCaps="false" />
+            android:textSize="20sp" />
 
     </LinearLayout>
 
     <Button
         android:layout_width="128dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="@color/colorAccent"
         android:text="Continue"
-        android:textStyle="bold"
         android:textColor="@color/colorPrimaryDark"
-        android:backgroundTint="@color/colorAccent" />
+        android:textStyle="bold" />
 
 </LinearLayout>
