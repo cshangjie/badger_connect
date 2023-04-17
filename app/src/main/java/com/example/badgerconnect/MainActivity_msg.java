@@ -3,15 +3,22 @@ package com.example.badgerconnect;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableContainer;
 import android.os.Bundle;
 import android.widget.Button;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.badgerconnect.Fragments.UsersFragment;
 import com.example.badgerconnect.Model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,6 +37,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -42,7 +50,8 @@ public class MainActivity_msg extends AppCompatActivity {
     public static int Mid=0;
 
    // CircleImageView profile_image;
-    ImageView profile_image, profile_image_menu; //USE FOR NOW
+    ImageView profile_image;
+    ActionMenuItemView profile_image_menu; //USE FOR NOW
     DatabaseReference reference;
     FirebaseUser firebaseUser;
 
@@ -79,69 +88,76 @@ public class MainActivity_msg extends AppCompatActivity {
 
         //System.out.println("Past sign in");
 
-        profile_image= findViewById(R.id.profile_image_main);
-        username = findViewById(R.id.username);
+
         firebaseUser=FirebaseAuth.getInstance().getCurrentUser();
         //reference= FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
 
         reference= FirebaseDatabase.getInstance().getReference("Data").child("Users");
-        //System.out.println("reference is:" + reference);
-
-       // Query query= reference.orderByChild("Uid").equalTo(firebaseUser.getUid());
-        Query query= reference;
 
 
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
-               //collects main users data from firebase realtime database table users
-                //uses that data to populate user's profile
-
-                //Revision, changes based on any changes to user data on firebase
-                User user=new User();
-                for (DataSnapshot userinfo: datasnapshot.getChildren()){
-                    //System.out.println("data is:" + userinfo.getValue());
-                    user=userinfo.getValue(User.class);
-                    //System.out.println("username is:" + user.getName());
-                    //System.out.println("user info is:" + user.getName());  //FINALLY
-                }
-
-                assert user != null;
-                assert firebaseUser != null;
-
-                //I.T. set profile pic for current user
-                username.setTag(user.getName());
-                if(user.getProfile_pic().equals("default")){
-                    profile_image.setImageResource(R.mipmap.ic_launcher);
-                }else{
-                    Glide.with(MainActivity_msg.this).load(user.getProfile_pic()).into(profile_image);
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
+        //Set up tab layout feature to display list of users
         TabLayout tabLayout= findViewById(R.id.tab_layout);
         ViewPager viewPager= findViewById(R.id.view_pager);
 
         ViewPagerAdapter viewPagerAdapter= new ViewPagerAdapter(getSupportFragmentManager());
         //viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
         viewPagerAdapter.addFragment(new UsersFragment(), "Users");
-
         viewPager.setAdapter(viewPagerAdapter);
-
         tabLayout.setupWithViewPager(viewPager);
 
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-       // profile_image_menu=findViewById(R.id.profile_image_menu);
-        //Glide.with(MainActivity.this).load("https://imgs.search.brave.com/LgQgImFe3svKlAS-BpyTjJeChTRvYkT37zxe_EIvuOA/rs:fit:711:225:1/g:ce/aHR0cHM6Ly90c2Uz/Lm1tLmJpbmcubmV0/L3RoP2lkPU9JUC5l/ZUxkNFQxSXI5OEVR/dE03RW1sYTdnSGFF/OCZwaWQ9QXBp").into(profile_image_menu);
+        firebaseUser=FirebaseAuth.getInstance().getCurrentUser();
+        reference= FirebaseDatabase.getInstance().getReference("Data").child("Users");
+        Query query= reference;
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                profile_image_menu= findViewById(R.id.profile_image_menu);
+                username = findViewById(R.id.username);
+
+                User user = new User();
+                for (DataSnapshot userinfo : datasnapshot.getChildren()) {
+                    user = userinfo.getValue(User.class);
+                    if (user.getUid().equals(firebaseUser.getUid())) {
+                        if (user.getProfile_pic().equals("default")) {
+                            profile_image.setImageResource(R.mipmap.ic_launcher);
+                        } else {
+
+                            MenuItem profileMenuItem = menu.findItem(R.id.profile_image_menu);
+                            MenuItem username_menu=menu.findItem(R.id.username);
+                            username_menu.setTitle(user.getName());
+
+                            // Load the image from the URL using Glide
+                            Glide.with(MainActivity_msg.this)
+                                    .asBitmap()
+                                    .load(user.getProfile_pic())
+                                    .into(new CustomTarget<Bitmap>() {
+                                        @Override
+                                        public void onResourceReady(@NonNull Bitmap bitmap, @Nullable Transition<? super Bitmap> transition) {
+                                            // Set the loaded image as the icon of the menu item
+                                            profileMenuItem.setIcon(new BitmapDrawable(getResources(), bitmap));
+                                        }
+                                        @Override
+                                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                                            // Called when the resource is freed
+                                        }
+                                    });
+
+                        }
+                    }
+                }
+            }
+
+
+        @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         return true;
     }
 
@@ -184,7 +200,6 @@ public class MainActivity_msg extends AppCompatActivity {
             fragments.add(fragment);
             titles.add(title);
         }
-
         @Nullable
         @Override
         public CharSequence getPageTitle(int position) {
