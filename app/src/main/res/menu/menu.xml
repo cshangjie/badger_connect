@@ -19,7 +19,8 @@
             app:showAsAction="always"
             android:actionLayout="@layout/profile_icon_layout"
             android:layout_height="30dp"
-            android:layout_width="30dp"/>
+            android:layout_width="30dp"
+            />
 
 
 
