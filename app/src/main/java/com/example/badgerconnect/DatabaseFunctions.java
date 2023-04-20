@@ -36,17 +36,34 @@ public class DatabaseFunctions{
         String name = "Sahas Gelli";
         String email = "sahasgelli@gmail.com";
         String userId = "000001";
+        String userId2 = "000002";
+        String userId3 = "000003";
+        String bio = "Hi I am Sahas";
+        Year year = Year.Freshman;
+        Year year2 = Year.Junior;
         MeetingType meetingType1 = MeetingType.IN_PERSON;
-        Major major1 = Major.COMPUTER_ENGINEERING;
+        String major1 = "COMPUTER_ENGINEERING";
         MeetingType meetingType2 = MeetingType.VIRTUAL;
         Major major2 = Major.ELECTRICAL_ENGINERING;
-        List<Courses> courses = new ArrayList<>();
-        courses.add(Courses.ECE_454);
-        courses.add(Courses.ECE_755);
-        writeNewUser(userId, name, email, major1, courses, meetingType1);
+        List<String> courses = new ArrayList<>();
+        courses.add("ECE 755");
+        courses.add("ECE 454");
+        List<String> courses2 = new ArrayList<>();
+        courses2.add("ECE 353");
+        courses2.add("ECE 454");
+        List<String> courses3 = new ArrayList<>();
+        courses3.add("ECE 353");
+        courses3.add("ECE 553");
+        List<String> connectionTypes = new ArrayList<>();
+        connectionTypes.add("Mentee");
+        connectionTypes.add("Study Buddy");
+        //writeNewUser(userId, name, email, major1, 2, courses, connectionTypes, bio, year);
+        //writeNewUser(userId2, name, email, major1, 2, courses2, connectionTypes, bio, year);
+        //writeNewUser(userId3, name, email, major1, 2, courses3, connectionTypes, bio, year2);
         //updateUser(userId, "", "", major2, courses, meetingType2);
         //readUserData(userId);
         //deleteUser(userId);
+        algorithmStudyBuddy(userId3);
     }
 
     public void deleteMessage(View view) {
@@ -58,20 +75,25 @@ public class DatabaseFunctions{
      * Writes a new user into the database and takes the necessary details
      *
      * @param userId is the UID of the user from the auth
-     * @param name is the name of the user
+     * @param username is the name of the user
      * @param email is the email of the user
      * @param major is the user's major
-     * @param courses is a list of courses of the user
-     * @param meetingType is the users preferred meeting type
+     * @param numCourses is the number of courses the user wants a study buddy in
+     * @param studyBuddyCourses is a list of courses the user wants a study buddy in
+     * @param connectionTypes is a list of types of connections the user is looking for
+     * @param bio is a description that the user inputs to talk about themselves
+     * @param year the school year of the user
      */
-    public static void writeNewUser(String userId, String name, String email, Major major, List<Courses> courses, MeetingType meetingType) {
+    public static void writeNewUser(String userId, String username, String email,
+                                    String major, int numCourses, List<String> studyBuddyCourses,
+                                    List<String> connectionTypes, String bio, Year year) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
-        UserInfo user = new UserInfo(name, email, major, courses, meetingType);
+        UserInfo user = new UserInfo(username, email, major, numCourses, studyBuddyCourses, connectionTypes, bio, year);
         Map<String, Object> userValues = user.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/user_info/" + key, userValues);
+        childUpdates.put("/UserData/" + key, userValues);
 
         mDatabase.updateChildren(childUpdates)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -93,33 +115,44 @@ public class DatabaseFunctions{
      * Updates the user information in the database. ALl the fields are optional and only specified fields will be updated
      *
      * @param userId is the UID of the user from the auth
-     * @param name is the name of the user
+     * @param username is the name of the user
      * @param email is the email of the user
      * @param major is the user's major
-     * @param courses is a list of courses of the user
-     * @param meetingType is the users preferred meeting type
+     * @param numCourses is the number of courses the user wants a study buddy in
+     * @param studyBuddyCourses is a list of courses the user wants a study buddy in
+     * @param connectionTypes is a list of types of connections the user is looking for
+     * @param bio is a description that the user inputs to talk about themselves
+     * @param year the school year of the user
      */
-    public static void updateUser(String userId, String name, String email, Major major, List<Courses> courses, MeetingType meetingType) {
+    public static void updateUser(String userId, String username, String email,
+                                  String major, int numCourses, List<String> studyBuddyCourses,
+                                  List<String> connectionTypes, String bio, Year year) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
         Map<String, Object> childUpdates = new HashMap<>();
 
-        UserInfo user = new UserInfo(name, email, major, courses, meetingType);
+        UserInfo user = new UserInfo(username, email, major, numCourses, studyBuddyCourses, connectionTypes, bio, year);
 
         if(!user.getUsername().isEmpty()) {
-            childUpdates.put("/user_info/" + key + "/username/", user.getUsername());
+            childUpdates.put("/UserData/" + key + "/Username/", user.getUsername());
         }
         if(!user.getEmail().isEmpty()) {
-            childUpdates.put("/user_info/" + key + "/email/", user.getEmail());
+            childUpdates.put("/UserData/" + key + "/Email/", user.getEmail());
         }
         if(!user.getMajor().isEmpty()) {
-            childUpdates.put("/user_info/" + key + "/major/", user.getMajor());
+            childUpdates.put("/UserData/" + key + "/Major/", user.getMajor());
         }
-        if(!user.getCourses().isEmpty()) {
-            childUpdates.put("/user_info/" + key + "/courses/", user.getCourses());
+        if(!user.getStudyBuddyCourses().isEmpty()) {
+            childUpdates.put("/UserData/" + key + "/Study Buddy courses/", user.getStudyBuddyCourses());
         }
-        if(!user.getMeetingType().isEmpty()) {
-            childUpdates.put("/user_info/" + key + "/meeting type/", user.getMeetingType());
+        if(!user.getConnectionType().isEmpty()) {
+            childUpdates.put("/UserData/" + key + "/Connection Types/", user.getConnectionType());
+        }
+        if(!user.getBio().isEmpty()) {
+            childUpdates.put("/UserData/" + key + "/Bio/", user.getBio());
+        }
+        if(!user.getYear().toString().isEmpty()) {
+            childUpdates.put("/UserData/" + key + "/Year/", user.getYear());
         }
 
         mDatabase.updateChildren(childUpdates)
@@ -145,7 +178,7 @@ public class DatabaseFunctions{
      */
     public static void readUserData(String userId) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
-        mDatabase.child("user_info").child(userId).get()
+        mDatabase.child("UserData").child(userId).get()
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
                         if (!task.isSuccessful()) {
@@ -165,16 +198,9 @@ public class DatabaseFunctions{
      * @param task the user information
      */
     private static void afterRead(Task<DataSnapshot> task) {
-        String name = String.valueOf(task.getResult().child("username").getValue());
-        String email = String.valueOf(task.getResult().child("email").getValue());
-        Major major = Major.valueOf(String.valueOf(task.getResult().child("major").getValue()));
-        MeetingType meetingType = MeetingType.valueOf(String.valueOf(task.getResult().child("meeting type").getValue()));
-        String[] list_courses = String.valueOf(task.getResult().child("courses").getValue()).split(",");
-        List<Courses> courses = new ArrayList<>();
-        for(String course : list_courses) {
-            courses.add(Courses.valueOf(course));
-        }
-        UserInfo user = new UserInfo(name, email, major, courses, meetingType);
+        String name = String.valueOf(task.getResult().child("Username").getValue());
+        String email = String.valueOf(task.getResult().child("Email").getValue());
+        String major = String.valueOf(task.getResult().child("Major").getValue());
     }
 
     /**
@@ -184,7 +210,7 @@ public class DatabaseFunctions{
      */
     public static void deleteUser(String userId) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
-        mDatabase.child("user_info").child(userId).removeValue();
+        mDatabase.child("UserData").child(userId).removeValue();
     }
 
     /**
@@ -244,30 +270,197 @@ public class DatabaseFunctions{
         });
     }
 
-    public List<UserInfo> algorithm() {
+    /**
+     * Algorithm to find a Mentor
+     *
+     * @param userId the userId of the current user conducting the search
+     */
+    public static void algorithmMentor(String userId) {
 
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
+        mDatabase.child("UserData").child(userId).get()
+                .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        }
+                        else {
+                            Log.d("firebase", "Found current user");
+                            findMentor(task);
+                        }
+                    }
+                });
 
-        Query findMajor = mDatabase.orderByChild("major").equalTo("COMPUTER_ENGINEERING");
+    }
 
-        findMajor.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    Log.e("firebase", "Error getting data", task.getException());
+    /**
+     * Query to find other users who want to be a mentor with the same major in a higher year.
+     *
+     * @param task the data snapshot of the user info of the current user.
+     */
+    private static void findMentor(Task<DataSnapshot> task) {
+        mDatabase = FirebaseDatabase.getInstance().getReference("Data/UserData");
+
+        Integer currentSchoolYear = task.getResult().child("Year").getValue(Integer.class);
+
+        String major = String.valueOf(task.getResult().child("Major").getValue());
+
+        Query findMentor = mDatabase.orderByChild("Major").equalTo(major);
+
+        Log.d("pre", "got here");
+
+        findMentor.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            public void onComplete(@NonNull Task<DataSnapshot> innerTask) {
+                if (!innerTask.isSuccessful()) {
+                    Log.e("firebase", "Error getting data", innerTask.getException());
                 }
                 else {
-                    Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                    postAlgorithm(task);
+                    Log.d("firebase", "Looking for mentors");
+                    DataSnapshot dataSnapshot = innerTask.getResult();
+                    if (dataSnapshot.exists()) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            // Retrieve the user data for each user
+                            String userId = snapshot.getKey();
+                            int schoolYear = snapshot.child("Year").getValue(Integer.class);
+                            HashMap<String, Boolean> connectionType = snapshot.child("Connection Types").getValue(HashMap.class);
+                            // Perform additional filtering on the client side
+                            if ((schoolYear > currentSchoolYear) && connectionType.get("Mentor")) {
+                                // User has the same major and is in a higher school year
+                                // Handle the userId as needed (e.g. add to a list, display in UI, etc.)
+                                Log.d("Users", userId);
+                            }
+                        }
+                    }
                 }
             }
         });
+    }
 
-        return null;
+    /**
+     * Algorithm to find a Mentee
+     *
+     * @param userId the userId of the current user conducting the search
+     */
+    public static void algorithmMentee(String userId) {
+
+        mDatabase = FirebaseDatabase.getInstance().getReference("Data");
+        mDatabase.child("UserData").child(userId).get()
+                .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        }
+                        else {
+                            Log.d("firebase", "Found current user");
+                            findMentee(task);
+                        }
+                    }
+                });
 
     }
 
-    private void postAlgorithm(Task<DataSnapshot> task) {
-        Log.d("Result", String.valueOf(task.getResult()));
+    /**
+     * Query to find other users who want to be a mentee with the same major in a lower year.
+     *
+     * @param task the data snapshot of the user info of the current user.
+     */
+    private static void findMentee(Task<DataSnapshot> task) {
+        mDatabase = FirebaseDatabase.getInstance().getReference("Data/UserData");
+
+        Integer currentSchoolYear = task.getResult().child("Year").getValue(Integer.class);
+
+        String major = String.valueOf(task.getResult().child("Major").getValue());
+
+        Query findMentor = mDatabase.orderByChild("Major").equalTo(major);
+
+        Log.d("pre", "got here");
+
+        findMentor.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            public void onComplete(@NonNull Task<DataSnapshot> innerTask) {
+                if (!innerTask.isSuccessful()) {
+                    Log.e("firebase", "Error getting data", innerTask.getException());
+                }
+                else {
+                    Log.d("firebase", "Looking for mentees");
+                    DataSnapshot dataSnapshot = innerTask.getResult();
+                    if (dataSnapshot.exists()) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            // Retrieve the user data for each user
+                            String userId = snapshot.getKey();
+                            int schoolYear = snapshot.child("Year").getValue(Integer.class);
+                            HashMap<String, Boolean> connectionType = (HashMap<String, Boolean>) snapshot.child("Connection Types").getValue(Object.class);
+                            // Perform additional filtering on the client side
+                            if ((schoolYear < currentSchoolYear) && connectionType.get("Mentee")) {
+                                // User has the same major and is in a higher school year
+                                // Handle the userId as needed (e.g. add to a list, display in UI, etc.)
+                                Log.d("Users", userId);
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
+
+    /**
+     * Algorithm to find a Study Buddy
+     *
+     * @param userId the userId of the current user conducting the search
+     */
+    public static void algorithmStudyBuddy(String userId) {
+
+        mDatabase = FirebaseDatabase.getInstance().getReference("Data");
+        mDatabase.child("UserData").child(userId).get()
+                .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        }
+                        else {
+                            Log.d("firebase", "Found current user");
+                            findStudyBuddy(task);
+                        }
+                    }
+                });
+
+    }
+
+    /**
+     * Query to find other users who want to be a study buddy with the same courses.
+     *
+     * @param task the data snapshot of the user info of the current user.
+     */
+    private static void findStudyBuddy(Task<DataSnapshot> task) {
+        mDatabase = FirebaseDatabase.getInstance().getReference("Data/UserData");
+
+        HashMap<String, String> courses = (HashMap<String, String>) task.getResult().child("Study Buddy Courses").getValue(Object.class);
+
+        Query findStudyBuddy = mDatabase.child("Study Buddy Courses").orderByValue().equalTo(courses.get("Course1"));
+
+        Log.d("pre", courses.get("Course1"));
+
+        findStudyBuddy.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            public void onComplete(@NonNull Task<DataSnapshot> innerTask) {
+                if (!innerTask.isSuccessful()) {
+                    Log.e("firebase", "Error getting data", innerTask.getException());
+                }
+                else {
+                    Log.d("firebase", "Looking for study buddies");
+                    Log.d("firebase", String.valueOf(innerTask.getResult().getValue()));
+                    DataSnapshot dataSnapshot = innerTask.getResult();
+                    if (dataSnapshot.exists()) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            // Retrieve the user data for each user
+                            String userId = snapshot.getKey();
+                            HashMap<String, Boolean> connectionType = (HashMap<String, Boolean>) snapshot.child("Connection Types").getValue(Object.class);
+                            // Perform additional filtering on the client side
+                            Log.d("Users", userId);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
 }
 
