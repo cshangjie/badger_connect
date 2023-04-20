@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.badgerconnect.Adapter.MessageAdapter;
 import com.example.badgerconnect.Model.Chat;
+import com.example.badgerconnect.Model.Conversation;
 import com.example.badgerconnect.Model.Message;
 import com.example.badgerconnect.Model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -123,6 +124,8 @@ public class MessageActivity extends AppCompatActivity {
                 }
                 //System.out.println("called readmessage " );
                 readMessages(fuser.getUid(), receiverId, userReceiver.getProfile_pic());
+
+
             }
 
             @Override
@@ -193,6 +196,13 @@ public class MessageActivity extends AppCompatActivity {
         msg.setText(messageToSend);
         msg.setSender(senderId);
 
+//        TESTING CREATE conversation
+        ArrayList<String> participant_ids=new ArrayList<String>();
+        participant_ids.add("AAAA");
+        participant_ids.add("BBBBB");
+        Conversation conversation=new Conversation(msg, participant_ids);
+        //conversation.CreateNewConversation();
+        conversation.DeleteConversation("1");
 
         //push a message to that conversation
         queryx.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -223,6 +233,7 @@ public class MessageActivity extends AppCompatActivity {
 
                     GenericTypeIndicator<HashMap<String, Object>> p3 = new GenericTypeIndicator<HashMap<String, Object>>() {};
                     HashMap<String, Object> pMap= convSnapshot.child("Participants").getValue(p3);
+
                     ArrayList<Object> participants= new ArrayList<>(pMap.values());
                    // ArrayList<Object> participants= new ArrayList<>();
                     //System.out.println(" in datachange " + participants.get(1)); //show me the participants
