@@ -74,9 +74,7 @@ public class MessageActivity extends AppCompatActivity {
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-
         ///////////////////////
-
         profile_image = findViewById(R.id.profile_image_message);
         username= findViewById(R.id.username_msg);
         btn_send= findViewById(R.id.btn_send);
@@ -111,7 +109,6 @@ public class MessageActivity extends AppCompatActivity {
 
                 User userReceiver=null;
 
-
                 for (DataSnapshot snapshot: datasnapshot.getChildren()){
                     userReceiver=snapshot.getValue(p);
                     //System.out.println("username to display in chat is: "+ snapshot.getValue(p).getName());
@@ -124,7 +121,6 @@ public class MessageActivity extends AppCompatActivity {
                 }else{
                     Glide.with(MessageActivity.this).load(userReceiver.getProfile_pic()).into(profile_image);
                 }
-
                 //System.out.println("called readmessage " );
                 readMessages(fuser.getUid(), receiverId, userReceiver.getProfile_pic());
             }
@@ -157,7 +153,6 @@ public class MessageActivity extends AppCompatActivity {
     //@todo create new conversation instances
     //clean code
     private void sendMessage(String messageToSend, String senderId, String receiverId){
-
         DatabaseReference convRef= FirebaseDatabase.getInstance().getReference("Data").child("Conversations");//give me desired conversation
         //find desired conversation using participant list
         String curr_user=fuser.getUid();
@@ -231,8 +226,6 @@ public class MessageActivity extends AppCompatActivity {
                     ArrayList<Object> participants= new ArrayList<>(pMap.values());
                    // ArrayList<Object> participants= new ArrayList<>();
                     //System.out.println(" in datachange " + participants.get(1)); //show me the participants
-
-
 
                     // check if both users are in the conversation
                      System.out.println("p is:" + curr_user + " and " + receiverId);
