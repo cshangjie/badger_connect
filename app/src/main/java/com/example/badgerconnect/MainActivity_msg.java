@@ -69,6 +69,8 @@ public class MainActivity_msg extends AppCompatActivity {
 
         //auth.signOut();
         //System.out.println("About to sign in");
+
+        //TODO remove upon integration
         auth.signInWithEmailAndPassword(email2, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -93,7 +95,6 @@ public class MainActivity_msg extends AppCompatActivity {
         //reference= FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
 
         reference= FirebaseDatabase.getInstance().getReference("Data").child("Users");
-
 
         //Set up tab layout feature to display list of users
         TabLayout tabLayout= findViewById(R.id.tab_layout);
@@ -154,13 +155,10 @@ public class MainActivity_msg extends AppCompatActivity {
 
         @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
-
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         //return super.onOptionsItemSelected(item);
@@ -176,7 +174,6 @@ public class MainActivity_msg extends AppCompatActivity {
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter{
-
         private ArrayList<Fragment> fragments;
         private ArrayList<String> titles;
 
