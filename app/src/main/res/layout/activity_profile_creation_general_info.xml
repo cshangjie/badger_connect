@@ -7,16 +7,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:padding="26dp"
-    tools:context=".GeneralInfoActivity">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:gravity="center"
-        android:text="Badger Profile Picture"
-        android:textColor="@color/colorAccent"
-        android:textSize="28sp" />
+    tools:context=".ProfileCreationGeneralInfoActivity">
 
     <!-- Profile image placeholder -->
     <FrameLayout
@@ -39,58 +30,57 @@
 
     </FrameLayout>
 
-    <!-- Container for AutoCompleteTextViews -->
-    <LinearLayout
-        android:id="@+id/autocomplete_container"
+    <EditText
+        android:id="@+id/name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="40dp"
+        android:background="@drawable/custom_edit_cut_text"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:hint="Name"
+        android:imeOptions="actionDone"
+        android:inputType="textPersonName"
+        android:textColorHint="@color/colorPrimaryDark"
+        android:textSize="20sp" />
 
-        <EditText
-            android:id="@+id/name"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/custom_edit_cut_text"
-            android:hint="Name"
-            android:imeOptions="actionNext"
-            android:inputType="textEmailAddress"
-            android:textColor="@color/colorPrimaryDark"
-            android:textColorHint="@color/colorPrimaryDark"
-            android:textSize="20sp" />
+    <AutoCompleteTextView
+        android:id="@+id/major"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/custom_edit_cut_text"
+        android:hint="Major"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:textColor="@color/colorPrimaryDark"
+        android:textColorHint="@color/colorPrimaryDark"
+        android:textSize="20sp" />
 
-        <AutoCompleteTextView
-            android:id="@+id/major"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/custom_edit_cut_text"
-            android:hint="Major"
-            android:imeOptions="actionDone"
-            android:inputType="textPassword"
-            android:textColor="@color/colorPrimaryDark"
-            android:textColorHint="@color/colorPrimaryDark"
-            android:textSize="20sp" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background=""
-            android:onClick="showDatePickerDialog"
-            android:text="Pick Birth Date"
-            android:textAllCaps="false"
-            android:textColor="@color/colorAccent"
-            android:textSize="20sp" />
-
-    </LinearLayout>
+    <EditText
+        android:id="@+id/datePickerEditText"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/custom_edit_cut_text"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:hint="Birthdate (mm/dd/year)"
+        android:inputType="date"
+        android:textColorHint="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        android:focusable="true"
+        />
 
     <Button
+        android:id="@+id/continueButton"
         android:layout_width="128dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

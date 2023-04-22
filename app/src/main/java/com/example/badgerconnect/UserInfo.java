@@ -16,7 +16,7 @@ enum Major {
 }
 
 enum MeetingType {
-    IN_PERSON, VIRTUAL
+    IN_PERSON, VIRTUAL, BOTH
 }
 
 enum Courses {
@@ -35,20 +35,23 @@ public class UserInfo {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public UserInfo(String username, String email, Major major, List<Courses> courses, MeetingType meetingType) {
+    public UserInfo(String username, String email, String major, List<Courses> courses, MeetingType meetingType) {
         this.email = email;
         this.username = username;
-        this.major = major.toString();
-        for (int i = 0; i < courses.size(); i++) {
-            if(i == (courses.size() - 1)) {
-                this.courses += courses.get(i).toString();
-            }
-            else {
-                this.courses += courses.get(i).toString();
-                this.courses += ",";
+        this.major = major;
+        if (courses != null) {
+            for (int i = 0; i < courses.size(); i++) {
+                if (i == (courses.size() - 1)) {
+                    this.courses += courses.get(i).toString();
+                } else {
+                    this.courses += courses.get(i).toString();
+                    this.courses += ",";
+                }
             }
         }
-        this.meetingType = meetingType.toString();
+        if(meetingType != null) {
+            this.meetingType = meetingType.toString();
+        }
     }
 
     public void setEmail(String email) {

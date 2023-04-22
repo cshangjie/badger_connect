@@ -23,7 +23,7 @@
             android:layout_height="match_parent"
             android:contentDescription="Mascot"
             android:scaleType="centerCrop"
-            android:src="@drawable/Badger" />
+            android:src="@drawable/badger" />
 
     </FrameLayout>
 

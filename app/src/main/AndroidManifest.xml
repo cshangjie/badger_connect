@@ -24,8 +24,10 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegistrationActivity" />
-        <activity android:name=".DashboardActivity"></activity>
-        <activity android:name=".ProfileCreationActivity"></activity>
+        <activity android:name=".DashboardActivity" />
+        <activity android:name=".ProfileCreationActivity" />
+        <activity android:name=".ProfileCreationGeneralInfoActivity" />
+        <activity android:name=".ProfileCreationCourseInfoActivity" />
     </application>
 
 </manifest>

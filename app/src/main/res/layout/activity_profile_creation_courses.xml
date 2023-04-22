@@ -4,85 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login_bg"
-    android:gravity="center"
+    android:gravity="top"
     android:orientation="vertical"
     android:padding="26dp"
-    tools:context=".CoursesActivity">
+    tools:context=".ProfileCreationCourseInfoActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:gravity="center"
-        android:text="Connection Type"
-        android:textColor="@color/colorAccent"
-        android:textSize="28sp" />
-
+    <!-- Container for AutoCompleteTextViews -->
     <LinearLayout
+        android:id="@+id/autocomplete_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <CheckBox
-            android:id="@+id/checkbox_connectionType1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
-            android:buttonTint="@color/colorAccent"
-            android:text="Type 1"
-            android:textColor="@color/colorAccent"
-            android:textSize="18sp" />
-
-        <CheckBox
-            android:id="@+id/checkbox_connectionType2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="80dp"
-            android:layout_marginBottom="16dp"
-            android:buttonTint="@color/colorAccent"
-            android:text="Type 2"
-            android:textColor="@color/colorAccent"
-            android:textSize="18sp" />
-
+        android:orientation="vertical">
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:gravity="center"
-        android:text="Meeting Preference"
-        android:textColor="@color/colorAccent"
-        android:textSize="28sp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <CheckBox
-            android:id="@+id/checkbox_meetingPreferences1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
-            android:buttonTint="@color/colorAccent"
-            android:text="In-Person"
-            android:textColor="@color/colorAccent"
-            android:textSize="18sp" />
-
-        <CheckBox
-            android:id="@+id/checkbox_meetingPreferences2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="60dp"
-            android:layout_marginBottom="16dp"
-            android:buttonTint="@color/colorAccent"
-            android:text="Virtual"
-            android:textColor="@color/colorAccent"
-            android:textSize="18sp" />
-
-    </LinearLayout>
-
+    <!-- Horizontal layout for buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -109,7 +45,13 @@
             android:text="Remove"
             android:textColor="@color/colorPrimaryDark"
             android:textStyle="bold" />
-
     </LinearLayout>
+
+    <Button
+        android:id="@+id/continueButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Continue"/>
 
 </LinearLayout>
