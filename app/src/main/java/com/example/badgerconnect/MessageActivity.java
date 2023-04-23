@@ -47,7 +47,7 @@ public class MessageActivity extends AppCompatActivity {
     //TextView username;s
     ImageButton btn_send;
     EditText text_send;
-    MaterialEditText username;
+    //MaterialEditText username;
     MessageAdapter messageAdapter;
     List<Chat> mChat;
 
@@ -67,8 +67,6 @@ public class MessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -80,8 +78,6 @@ public class MessageActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         ///////////////////////
-        profile_image = findViewById(R.id.profile_image_message);
-        username= findViewById(R.id.username_msg);
         btn_send= findViewById(R.id.btn_send);
         text_send= findViewById(R.id.text_send);
 
@@ -122,7 +118,6 @@ public class MessageActivity extends AppCompatActivity {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
-                // profile_image_menu= menu.findItem(R.id.profile_image_menu);
 
 
                 User user = new User();
@@ -130,10 +125,7 @@ public class MessageActivity extends AppCompatActivity {
 
                     user = userinfo.getValue(User.class);
                     if (user.getUid().equals(fuser.getUid())) {
-                        if (user.getProfile_pic().equals("default")) {
-                            profile_image.setImageResource(R.mipmap.ic_launcher);
-                        } else {
-
+                        if (!user.getProfile_pic().equals("default")) {
                             profileImageForMenu = findViewById(R.id.profile_image_icon);
                             profile_username = findViewById(R.id.profile_username);
                             MenuItem profileImageMenuItem=menu.findItem(R.id.profile_image_menu);
