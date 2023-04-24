@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,22 +47,24 @@ public class UserInfo {
     public int numCourses;
     public HashMap<String, String> studyBuddyCourses = new HashMap<String, String>();
     public MeetingType meetingType;
+    public String dateOfBirth;
     public UserInfo() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
     public UserInfo(String username, String email, String major,
-                    String bio, Year year, MeetingType meetingType) {
+                    String bio, Year year, MeetingType meetingType, String dateOfBirth) {
         this.username = username;
         this.email = email;
         this.major = major;
         this.bio = bio;
         this.year = year;
         this.meetingType = meetingType;
+        this.dateOfBirth = dateOfBirth;
     }
     public UserInfo(String username, String email, String major,
                     List<String> connectionTypes, String bio, Year year,
-                    MeetingType meetingType) {
+                    MeetingType meetingType, String dateOfBirth) {
         this.username = username;
         this.email = email;
         this.major = major;
@@ -71,11 +74,12 @@ public class UserInfo {
         this.bio = bio;
         this.year = year;
         this.meetingType = meetingType;
+        this.dateOfBirth = dateOfBirth;
     }
 
     public UserInfo(String username, String email, String major, int numCourses,
                     List<String> studyBuddyCourses, List<String> connectionTypes,
-                    String bio, Year year, MeetingType meetingType) {
+                    String bio, Year year, MeetingType meetingType, String dateOfBirth) {
         this.email = email;
         this.username = username;
         this.major = major;
@@ -89,6 +93,7 @@ public class UserInfo {
         this.bio = bio;
         this.year = year;
         this.meetingType = meetingType;
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getUsername() {
@@ -123,6 +128,10 @@ public class UserInfo {
         return studyBuddyCourses;
     }
 
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
     public MeetingType getMeetingType() {
         return meetingType;
     }
@@ -145,6 +154,10 @@ public class UserInfo {
 
     public void setConnectionType(HashMap<String, Boolean> connectionTypes) {
         this.connectionTypes = connectionTypes;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public void setBio(String bio) {
@@ -174,6 +187,7 @@ public class UserInfo {
         result.put("StudyBuddyCourses", studyBuddyCourses);
         result.put("ConnectionTypes", connectionTypes);
         result.put("MeetingType", meetingType);
+        result.put("DateOfBirth", dateOfBirth);
         return result;
     }
 

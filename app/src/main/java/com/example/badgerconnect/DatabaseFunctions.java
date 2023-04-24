@@ -91,14 +91,15 @@ public class DatabaseFunctions{
      * @param bio is a description that the user inputs to talk about themselves
      * @param year the school year of the user
      * @param meetingType is the form of meeting they prefer
+     * @param dateOfBirth is the date of birth of the user
      */
     public static void writeNewUser(String userId, String username, String email,
                                     String major, int numCourses, List<String> studyBuddyCourses,
                                     List<String> connectionTypes, String bio, Year year,
-                                    MeetingType meetingType) {
+                                    MeetingType meetingType, String dateOfBirth) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
-        UserInfo user = new UserInfo(username, email, major, numCourses, studyBuddyCourses, connectionTypes, bio, year, meetingType);
+        UserInfo user = new UserInfo(username, email, major, numCourses, studyBuddyCourses, connectionTypes, bio, year, meetingType, dateOfBirth);
         Map<String, Object> userValues = user.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
@@ -131,13 +132,15 @@ public class DatabaseFunctions{
      * @param bio is a description that the user inputs to talk about themselves
      * @param year the school year of the user
      * @param meetingType is the form of meeting they prefer
+     * @param dateOfBirth is the date of birth of the user
      */
     public static void writeNewUser(String userId, String username, String email,
                                     String major, List<String> connectionTypes,
-                                    String bio, Year year, MeetingType meetingType) {
+                                    String bio, Year year, MeetingType meetingType,
+                                    String dateOfBirth) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
-        UserInfo user = new UserInfo(username, email, major, connectionTypes, bio, year, meetingType);
+        UserInfo user = new UserInfo(username, email, major, connectionTypes, bio, year, meetingType, dateOfBirth);
         Map<String, Object> userValues = user.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
@@ -172,16 +175,17 @@ public class DatabaseFunctions{
      * @param bio is a description that the user inputs to talk about themselves
      * @param year the school year of the user
      * @param meetingType is the form of meeting they prefer
+     * @param dateOfBirth is the date of birth of the user
      */
     public static void updateUserData(String userId, String username, String email,
                                   String major, String bio, Year year,
                                   MeetingType meetingType, List<String> connectionTypes,
-                                      List<String> studyBuddyCourses, int numCourses) {
+                                      List<String> studyBuddyCourses, int numCourses, String dateOfBirth) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
         Map<String, Object> childUpdates = new HashMap<>();
 
-        UserInfo user = new UserInfo(username, email, major, numCourses, studyBuddyCourses, connectionTypes, bio, year, meetingType);
+        UserInfo user = new UserInfo(username, email, major, numCourses, studyBuddyCourses, connectionTypes, bio, year, meetingType, dateOfBirth);
 
         if(!user.getUsername().isEmpty()) {
             childUpdates.put("/UserData/" + key + "/Username/", user.getUsername());
@@ -200,6 +204,9 @@ public class DatabaseFunctions{
         }
         if(!user.getMeetingType().toString().isEmpty()) {
             childUpdates.put("/UserData/" + key + "/MeetingType/", user.getMeetingType());
+        }
+        if(!user.getDateOfBirth().toString().isEmpty()) {
+            childUpdates.put("/UserData/" + key + "/DateOfBirth/", user.getDateOfBirth());
         }
 
         childUpdates.put("/UserData/" + key + "/StudyBuddyCourses/", user.getStudyBuddyCourses());
