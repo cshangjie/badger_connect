@@ -166,18 +166,22 @@ public class DatabaseFunctions{
      * @param username is the name of the user
      * @param email is the email of the user
      * @param major is the user's major
+     * @param numCourses is the number of courses the user wants a study buddy in
+     * @param studyBuddyCourses is a list of courses the user wants a study buddy in
+     * @param connectionTypes is a list of types of connections the user is looking for
      * @param bio is a description that the user inputs to talk about themselves
      * @param year the school year of the user
      * @param meetingType is the form of meeting they prefer
      */
-    public static void updateUser(String userId, String username, String email,
+    public static void updateUserData(String userId, String username, String email,
                                   String major, String bio, Year year,
-                                  MeetingType meetingType) {
+                                  MeetingType meetingType, List<String> connectionTypes,
+                                      List<String> studyBuddyCourses, int numCourses) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
         Map<String, Object> childUpdates = new HashMap<>();
 
-        UserInfo user = new UserInfo(username, email, major, bio, year, meetingType);
+        UserInfo user = new UserInfo(username, email, major, numCourses, studyBuddyCourses, connectionTypes, bio, year, meetingType);
 
         if(!user.getUsername().isEmpty()) {
             childUpdates.put("/UserData/" + key + "/Username/", user.getUsername());
@@ -195,8 +199,13 @@ public class DatabaseFunctions{
             childUpdates.put("/UserData/" + key + "/Year/", user.getYear());
         }
         if(!user.getMeetingType().toString().isEmpty()) {
-            childUpdates.put("/UserData/" + key + "/MeetingType/", user.getYear());
+            childUpdates.put("/UserData/" + key + "/MeetingType/", user.getMeetingType());
         }
+
+        childUpdates.put("/UserData/" + key + "/StudyBuddyCourses/", user.getStudyBuddyCourses());
+
+        childUpdates.put("/UserData/" + key + "/ConnectionTypes/", user.getConnectionType());
+
         mDatabase.updateChildren(childUpdates)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
