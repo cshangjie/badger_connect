@@ -1,6 +1,7 @@
 package com.example.badgerconnect;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +13,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Date;
 
 
 public class ProfileCreationActivity extends AppCompatActivity {
@@ -25,6 +28,12 @@ public class ProfileCreationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("name");
+        String major = intent.getStringExtra("major");
+        Date dob = (Date) intent.getSerializableExtra("dob");
+        Bitmap imagePfp = (Bitmap) intent.getParcelableExtra("image_pfp");
+
         setContentView(R.layout.activity_profile_creation);
 
         // calling the action bar
@@ -99,14 +108,16 @@ public class ProfileCreationActivity extends AppCompatActivity {
                 }else if(((mentor == 0) && (mentee == 0) && (studybuddy == 0))){
                     Toast.makeText(getApplicationContext(), "Please select yes to at least one category", Toast.LENGTH_SHORT).show();
                 }
-                // if the studybudy == 0 then just send them to the dashboard
+                // if the studybudy == 0 create user and then just send them to the dashboard
                 else if(studybuddy == 0){
                     Intent myIntent = new Intent(ProfileCreationActivity.this, DashboardActivity.class);
+                    // TODO create user
                     startActivity(myIntent);
                 }
                 // otherwise send them to a course selection page
                 else{
                     Intent myIntent = new Intent(ProfileCreationActivity.this, ProfileCreationCourseInfoActivity.class);
+                    // todo Create user
                     startActivity(myIntent);
                 }
             }
