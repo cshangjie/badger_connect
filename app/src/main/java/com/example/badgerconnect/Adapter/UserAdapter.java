@@ -70,6 +70,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 intent.putExtra("userid", user.getUid());
                 intent.putExtra("image_URL", user.getProfile_pic());
                 mContext.startActivity(intent);
+
             }
         });
     }
