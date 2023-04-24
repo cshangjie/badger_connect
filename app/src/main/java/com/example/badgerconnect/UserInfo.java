@@ -39,7 +39,7 @@ public class UserInfo {
     public HashMap<String, Boolean> connectionTypes = new HashMap<String, Boolean>() {{
         put("Mentor", false);
         put("Mentee", false);
-        put("Study Buddy", false);
+        put("StudyBuddy", false);
     }};;
     public String bio;
     public Year year;
@@ -151,8 +151,8 @@ public class UserInfo {
         result.put("Major", major);
         result.put("Year", year.getNumVal());
         result.put("Bio", bio);
-        result.put("Study Buddy Courses", studyBuddyCourses);
-        result.put("Connection Types", connectionTypes);
+        result.put("StudyBuddyCourses", studyBuddyCourses);
+        result.put("ConnectionTypes", connectionTypes);
         return result;
     }
 

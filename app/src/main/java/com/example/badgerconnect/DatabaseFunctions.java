@@ -23,13 +23,17 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class DatabaseFunctions{
 
     private static DatabaseReference mDatabase;
     private static StorageReference mStorage;
+    private static int batchCount = 0; // Counter to keep track of the batch number
+    private static int batchSize = 50; // Batch size for retrieving data
 
     //Class for testing other methods
     public static void sendMessage() {
@@ -56,14 +60,17 @@ public class DatabaseFunctions{
         courses3.add("ECE 553");
         List<String> connectionTypes = new ArrayList<>();
         connectionTypes.add("Mentee");
-        connectionTypes.add("Study Buddy");
+        connectionTypes.add("StudyBuddy");
+        List<String> connectionTypes2 = new ArrayList<>();
+        connectionTypes2.add("Mentee");
+        connectionTypes2.add("Mentor");
         //writeNewUser(userId, name, email, major1, 2, courses, connectionTypes, bio, year);
         //writeNewUser(userId2, name, email, major1, 2, courses2, connectionTypes, bio, year);
-        //writeNewUser(userId3, name, email, major1, 2, courses3, connectionTypes, bio, year2);
+        //writeNewUser(userId3, name, email, major1, 2, courses3, connectionTypes2, bio, year2);
         //updateUser(userId, "", "", major2, courses, meetingType2);
         //readUserData(userId);
         //deleteUser(userId);
-        algorithmStudyBuddy(userId3);
+        algorithmStudyBuddy(userId2);
     }
 
     public void deleteMessage(View view) {
@@ -322,7 +329,7 @@ public class DatabaseFunctions{
                             // Retrieve the user data for each user
                             String userId = snapshot.getKey();
                             int schoolYear = snapshot.child("Year").getValue(Integer.class);
-                            HashMap<String, Boolean> connectionType = snapshot.child("Connection Types").getValue(HashMap.class);
+                            HashMap<String, Boolean> connectionType = snapshot.child("ConnectionTypes").getValue(HashMap.class);
                             // Perform additional filtering on the client side
                             if ((schoolYear > currentSchoolYear) && connectionType.get("Mentor")) {
                                 // User has the same major and is in a higher school year
@@ -388,7 +395,7 @@ public class DatabaseFunctions{
                             // Retrieve the user data for each user
                             String userId = snapshot.getKey();
                             int schoolYear = snapshot.child("Year").getValue(Integer.class);
-                            HashMap<String, Boolean> connectionType = (HashMap<String, Boolean>) snapshot.child("Connection Types").getValue(Object.class);
+                            HashMap<String, Boolean> connectionType = (HashMap<String, Boolean>) snapshot.child("ConnectionTypes").getValue(Object.class);
                             // Perform additional filtering on the client side
                             if ((schoolYear < currentSchoolYear) && connectionType.get("Mentee")) {
                                 // User has the same major and is in a higher school year
@@ -433,11 +440,20 @@ public class DatabaseFunctions{
     private static void findStudyBuddy(Task<DataSnapshot> task) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data/UserData");
 
-        HashMap<String, String> courses = (HashMap<String, String>) task.getResult().child("Study Buddy Courses").getValue(Object.class);
+        HashMap<String, String> currCourses = (HashMap<String, String>) task.getResult().child("StudyBuddyCourses").getValue(Object.class);
 
-        Query findStudyBuddy = mDatabase.child("Study Buddy Courses").orderByValue().equalTo(courses.get("Course1"));
+        //Query findStudyBuddy = mDatabase.orderByValue().equalTo("ECE 353");
 
-        Log.d("pre", courses.get("Course1"));
+        //Query findStudyBuddy = mDatabase.orderByChild("ConnectionTypes/StudyBuddy").equalTo(true).limitToFirst(50);
+        //Query findStudyBuddy = mDatabase.orderByChild("StudyBuddyCourses")
+        //        .startAt("ECE 353").endAt("ECE 353\uf8ff");
+
+        // Query to retrieve data in batches
+        Query findStudyBuddy = mDatabase.orderByChild("ConnectionTypes/StudyBuddy")
+                .equalTo(true);
+                //.startAt(batchCount * batchSize); // Calculate starting point for the batch
+
+        Log.d("pre", currCourses.get("Course1"));
 
         findStudyBuddy.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             public void onComplete(@NonNull Task<DataSnapshot> innerTask) {
@@ -449,17 +465,47 @@ public class DatabaseFunctions{
                     Log.d("firebase", String.valueOf(innerTask.getResult().getValue()));
                     DataSnapshot dataSnapshot = innerTask.getResult();
                     if (dataSnapshot.exists()) {
+                        HashMap<String, Integer> usersBySimilarity = new HashMap<>();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             // Retrieve the user data for each user
                             String userId = snapshot.getKey();
-                            HashMap<String, Boolean> connectionType = (HashMap<String, Boolean>) snapshot.child("Connection Types").getValue(Object.class);
-                            // Perform additional filtering on the client side
-                            Log.d("Users", userId);
+                            if(!userId.equals(task.getResult().getKey())) {
+                                HashMap<String, String> courses = (HashMap<String, String>) snapshot.child("StudyBuddyCourses").getValue(Object.class);
+                                // Perform additional filtering on the client side
+                                int similarityRating = findSimilarityRating(currCourses, courses);
+                                usersBySimilarity.put(userId, similarityRating);
+                            }
+                        }
+                        // Convert the HashMap to a List of Map.Entry objects
+                        List<Map.Entry<String, Integer>> entryList = new ArrayList<>(usersBySimilarity.entrySet());
+
+                        // Sort the List in descending order based on similarity rating using a lambda expression
+                        entryList.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+
+                        // Retrieve the sorted user IDs
+                        List<String> sortedUserIds = new ArrayList<>();
+                        for (Map.Entry<String, Integer> entry : entryList) {
+                            sortedUserIds.add(entry.getKey());
+                            Log.d("Users", entry.getKey());
                         }
                     }
                 }
             }
         });
+    }
+
+    private static int findSimilarityRating(HashMap<String, String> currCourses, HashMap<String, String> courses) {
+        int similarityRating = 0;
+        Set<String> currCoursesSet = new HashSet<>(currCourses.values());
+        Set<String> coursesSet = new HashSet<>(courses.values());
+
+        for (String currCourse : currCoursesSet) {
+            if (coursesSet.contains(currCourse)) {
+                similarityRating++;
+            }
+        }
+
+        return similarityRating;
     }
 
 }
