@@ -18,6 +18,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.BadgerConnect"
+
         tools:targetApi="31">
         <activity
             android:name=".EditProfileActivity"
@@ -33,13 +34,11 @@
         <activity
             android:name=".MainActivity_msg"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegistrationActivity" />
@@ -66,6 +65,7 @@
             android:name=".MapsActivity"
             android:exported="true"
             android:label="@string/title_activity_maps" />
+
     </application>
 
 </manifest>

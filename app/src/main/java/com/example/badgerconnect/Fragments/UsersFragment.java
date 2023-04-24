@@ -145,6 +145,8 @@ public class UsersFragment extends Fragment {
                     }
                     userAdapter = new UserAdapter(getContext(), mUsers);
                     recyclerView.setAdapter(userAdapter);
+
+                    mUsers=null; //empty the list for next reload!
                 }
             }
 
