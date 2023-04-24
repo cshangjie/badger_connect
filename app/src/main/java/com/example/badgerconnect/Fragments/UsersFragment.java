@@ -137,7 +137,7 @@ public class UsersFragment extends Fragment {
                         //check to see if the users we're parsing are in the list
                         assert user != null;
                         assert firebaseUser != null;
-                        System.out.println("ppp  " + participants);
+                       // System.out.println("ppp  " + participants);
                         if (!user.getUid().equals(firebaseUser.getUid()) && participants.contains(user.getUid()) && !mUsers.contains(user.getUid())) {
                             mUsers.add(user);
                         }

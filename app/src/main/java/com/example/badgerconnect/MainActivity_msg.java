@@ -14,6 +14,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.DrawableContainer;
 import android.os.Bundle;
+import android.view.*;
 import android.widget.Button;
 
 import com.bumptech.glide.Glide;
@@ -39,19 +40,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MainActivity_msg extends AppCompatActivity {
-    MaterialEditText username, email, password;
-    Button btn_login;
+
     FirebaseAuth auth;
     public static int Mid=0;
 
    // CircleImageView profile_image;
     ImageView profile_image;
-    ActionMenuItemView profile_image_menu; //USE FOR NOW
+    CircleImageView profileImageForMenu;
+    TextView profile_username;
+   // MenuItem profile_image_menu; //USE FOR NOW
     DatabaseReference reference;
     FirebaseUser firebaseUser;
 
@@ -76,12 +81,12 @@ public class MainActivity_msg extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     // Sign in success, update UI with the signed-in user's information
-                    System.out.println("Sign in success");
+                    //System.out.println("Sign in success");
                     FirebaseUser user = auth.getCurrentUser();
                     // Do something with the user object
                 } else {
                     // If sign in fails, display a message to the user.
-                    System.out.println("Sign in failed");
+                   // System.out.println("Sign in failed");
                     Toast.makeText(MainActivity_msg.this, "Authentication failed.",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -97,14 +102,14 @@ public class MainActivity_msg extends AppCompatActivity {
         reference= FirebaseDatabase.getInstance().getReference("Data").child("Users");
 
         //Set up tab layout feature to display list of users
-        TabLayout tabLayout= findViewById(R.id.tab_layout);
+       // TabLayout tabLayout= findViewById(R.id.tab_layout);
         ViewPager viewPager= findViewById(R.id.view_pager);
 
         ViewPagerAdapter viewPagerAdapter= new ViewPagerAdapter(getSupportFragmentManager());
         //viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
         viewPagerAdapter.addFragment(new UsersFragment(), "Users");
         viewPager.setAdapter(viewPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
+        //tabLayout.setupWithViewPager(viewPager);
 
     }
     @Override
@@ -113,46 +118,40 @@ public class MainActivity_msg extends AppCompatActivity {
         firebaseUser=FirebaseAuth.getInstance().getCurrentUser();
         reference= FirebaseDatabase.getInstance().getReference("Data").child("Users");
         Query query= reference;
-        query.addValueEventListener(new ValueEventListener() {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
-                profile_image_menu= findViewById(R.id.profile_image_menu);
-                username = findViewById(R.id.username);
+               // profile_image_menu= menu.findItem(R.id.profile_image_menu);
+
 
                 User user = new User();
                 for (DataSnapshot userinfo : datasnapshot.getChildren()) {
+
                     user = userinfo.getValue(User.class);
                     if (user.getUid().equals(firebaseUser.getUid())) {
                         if (user.getProfile_pic().equals("default")) {
                             profile_image.setImageResource(R.mipmap.ic_launcher);
                         } else {
 
-                            MenuItem profileMenuItem = menu.findItem(R.id.profile_image_menu);
-                            MenuItem username_menu=menu.findItem(R.id.username);
-                            username_menu.setTitle(user.getName());
+                            profileImageForMenu = findViewById(R.id.profile_image_icon);
+                            profile_username=findViewById(R.id.profile_username);
+                            MenuItem profileImageMenuItem=menu.findItem(R.id.profile_image_menu);
+                            MenuItem username_menu=menu.findItem(R.id.username_menu);
+//                            username_menu.setTitle(user.getName());
+                            profile_username.setText(user.getName());
 
-                            // Load the image from the URL using Glide
-                            Glide.with(MainActivity_msg.this)
-                                    .asBitmap()
-                                    .load(user.getProfile_pic())
-                                    .into(new CustomTarget<Bitmap>() {
-                                        @Override
-                                        public void onResourceReady(@NonNull Bitmap bitmap, @Nullable Transition<? super Bitmap> transition) {
-                                            // Set the loaded image as the icon of the menu item
-                                            profileMenuItem.setIcon(new BitmapDrawable(getResources(), bitmap));
-                                        }
-                                        @Override
-                                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                                            // Called when the resource is freed
-                                        }
-                                    });
+                            // Inflate the layout and set it as the action view for the menu item
+                            View profileImageView = profileImageMenuItem.getActionView();
+                            if (profileImageView != null) {
+                                profileImageMenuItem.setActionView(profileImageView);
+                            }
+
+                            Glide.with(MainActivity_msg.this).load(user.getProfile_pic()).into(profileImageForMenu);
 
                         }
                     }
                 }
             }
-
-
         @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -166,7 +165,6 @@ public class MainActivity_msg extends AppCompatActivity {
 
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();
-
                 finish();
                 return true;
         }

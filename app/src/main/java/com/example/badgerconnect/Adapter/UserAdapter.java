@@ -68,6 +68,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, MessageActivity.class);
                 intent.putExtra("userid", user.getUid());
+                intent.putExtra("image_URL", user.getProfile_pic());
                 mContext.startActivity(intent);
             }
         });
