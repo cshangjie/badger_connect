@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         // check if user is logged in
 
         //  TODO flow should be if not logged in -> send to a page with a login field + a sign-up button
-        Intent i = new Intent(getApplicationContext(),ApplicationWrapperActivity.class);
+        Intent i = new Intent(getApplicationContext(), ApplicationWrapperActivity.class);
         startActivity(i);
     }
 }
