@@ -41,8 +41,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             //TODO: Change back to original version
             public void onClick(View v) {
-                //loginUserAccount();
-                DatabaseFunctions.sendMessage();
+                loginUserAccount();
             }
         });
 
