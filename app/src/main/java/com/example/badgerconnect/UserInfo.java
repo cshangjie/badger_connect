@@ -96,6 +96,25 @@ public class UserInfo {
         this.dateOfBirth = dateOfBirth;
     }
 
+    public void setUserInformation(String username, String email, String major, int numCourses,
+                                   List<String> studyBuddyCourses, List<String> connectionTypes,
+                                   String bio, Year year, MeetingType meetingType, String dateOfBirth) {
+        this.email = email;
+        this.username = username;
+        this.major = major;
+        this.numCourses = numCourses;
+        for (int i = 1; i <= numCourses; i++) {
+            this.studyBuddyCourses.put("Course"+i, studyBuddyCourses.get(i-1));
+        }
+        for (String connectionType : connectionTypes) {
+            this.connectionTypes.put(connectionType, true);
+        }
+        this.bio = bio;
+        this.year = year;
+        this.meetingType = meetingType;
+        this.dateOfBirth = dateOfBirth;
+    }
+
     public String getUsername() {
         return username;
     }

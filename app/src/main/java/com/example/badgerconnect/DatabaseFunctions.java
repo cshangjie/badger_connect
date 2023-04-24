@@ -233,8 +233,9 @@ public class DatabaseFunctions{
      * Reads the user data and can perform a function within the onComplete method
      *
      * @param userId the userId of the user we are searching for
+     * @param user the user information returned
      */
-    public static void readUserData(String userId) {
+    public static void readUserData(String userId, UserInfo user) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         mDatabase.child("UserData").child(userId).get()
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -244,7 +245,7 @@ public class DatabaseFunctions{
                         }
                         else {
                             Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                            afterRead(task);
+                            afterRead(task, user);
                         }
                     }
                 });
@@ -255,10 +256,24 @@ public class DatabaseFunctions{
      *
      * @param task the user information
      */
-    private static void afterRead(Task<DataSnapshot> task) {
+    private static void afterRead(Task<DataSnapshot> task, UserInfo user) {
         String name = String.valueOf(task.getResult().child("Username").getValue());
         String email = String.valueOf(task.getResult().child("Email").getValue());
         String major = String.valueOf(task.getResult().child("Major").getValue());
+        HashMap<String, String> studyBuddyCoursesHash = (HashMap<String, String>) task.getResult().child("StudyBuddyCourses").getValue(Object.class);
+        List<String> studyBuddyCourses = (List<String>) studyBuddyCoursesHash.values();
+        HashMap<String, Boolean> connectionTypes = (HashMap<String, Boolean>) task.getResult().child("ConnectionTypes").getValue(Object.class);
+        List<String> connectTypes = new ArrayList<>();
+        for(String connectionType : connectionTypes.keySet()) {
+            if(connectionTypes.get(connectionType)) {
+                connectTypes.add(connectionType);
+            }
+        }
+        String bio = String.valueOf(task.getResult().child("Bio").getValue());
+        Year year = task.getResult().child("Year").getValue(Year.class);
+        MeetingType meetingType = task.getResult().child("MeetingType").getValue(MeetingType.class);
+        String dateOfBirth = String.valueOf(task.getResult().child("DateOfBirth").getValue());
+        user.setUserInformation(name, email, major, studyBuddyCourses.size(), studyBuddyCourses, connectTypes, bio, year, meetingType, dateOfBirth);
     }
 
     /**
