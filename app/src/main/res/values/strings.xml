@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">BadgerConnect</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    
+        <string name="title_activity_maps">MapsActivity</string>
+        <string name="longitude">LONGITUDE</string>
+        <string name="latitude">LATITUDE</string>
+        <string name="title_activity_sign_in">app</string>
+        <string name="event_description">event</string>
+        <string name="save_description">save</string>
+    <string name="off">Off</string>
+    <string name="on">On</string>
+    <string name="share_location">Share Location</string>
+
+
+>>>>>>> 9d6f0514fafc2f7c9b38344e3fadc03986aec9fe
 </resources>
