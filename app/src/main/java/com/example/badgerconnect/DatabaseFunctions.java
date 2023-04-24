@@ -119,6 +119,44 @@ public class DatabaseFunctions{
     }
 
     /**
+     * Writes a new user into the database and takes the necessary details
+     *
+     * @param userId is the UID of the user from the auth
+     * @param username is the name of the user
+     * @param email is the email of the user
+     * @param major is the user's major
+     * @param connectionTypes is a list of types of connections the user is looking for
+     * @param bio is a description that the user inputs to talk about themselves
+     * @param year the school year of the user
+     */
+    public static void writeNewUser(String userId, String username, String email,
+                                    String major, List<String> connectionTypes,
+                                    String bio, Year year) {
+        mDatabase = FirebaseDatabase.getInstance().getReference("Data");
+        String key = userId;
+        UserInfo user = new UserInfo(username, email, major, connectionTypes, bio, year);
+        Map<String, Object> userValues = user.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/UserData/" + key, userValues);
+
+        mDatabase.updateChildren(childUpdates)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("firebase", "Data updated");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("firebase", "Error getting data");
+                    }
+                });
+
+    }
+
+    /**
      * Updates the user information in the database. ALl the fields are optional and only specified fields will be updated
      *
      * @param userId is the UID of the user from the auth
@@ -507,6 +545,8 @@ public class DatabaseFunctions{
 
         return similarityRating;
     }
+
+
 
 }
 
