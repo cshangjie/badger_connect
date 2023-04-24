@@ -76,7 +76,7 @@ public class MainActivity_msg extends AppCompatActivity {
         //System.out.println("About to sign in");
 
         //TODO remove upon integration
-        auth.signInWithEmailAndPassword(email2, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        auth.signInWithEmailAndPassword(email1, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
@@ -98,7 +98,7 @@ public class MainActivity_msg extends AppCompatActivity {
 
         firebaseUser=FirebaseAuth.getInstance().getCurrentUser();
         //reference= FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
-
+        System.out.println("Asign in  " + firebaseUser.getUid());
         reference= FirebaseDatabase.getInstance().getReference("Data").child("Users");
 
         //Set up tab layout feature to display list of users

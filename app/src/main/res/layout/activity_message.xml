@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MessageActivity"
     android:theme="@style/AppTheme"
+
     >
 
 
@@ -14,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/input_block"
+        android:background="@drawable/bucky"
         />
 
     <RelativeLayout
