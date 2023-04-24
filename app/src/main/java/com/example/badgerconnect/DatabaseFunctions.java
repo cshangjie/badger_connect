@@ -90,13 +90,16 @@ public class DatabaseFunctions{
      * @param connectionTypes is a list of types of connections the user is looking for
      * @param bio is a description that the user inputs to talk about themselves
      * @param year the school year of the user
+     * @param meetingType is the form of meeting they prefer
+     * @param dateOfBirth is the date of birth of the user
      */
     public static void writeNewUser(String userId, String username, String email,
                                     String major, int numCourses, List<String> studyBuddyCourses,
-                                    List<String> connectionTypes, String bio, Year year) {
+                                    List<String> connectionTypes, String bio, Year year,
+                                    MeetingType meetingType, String dateOfBirth) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
-        UserInfo user = new UserInfo(username, email, major, numCourses, studyBuddyCourses, connectionTypes, bio, year);
+        UserInfo user = new UserInfo(username, email, major, numCourses, studyBuddyCourses, connectionTypes, bio, year, meetingType, dateOfBirth);
         Map<String, Object> userValues = user.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
@@ -128,13 +131,16 @@ public class DatabaseFunctions{
      * @param connectionTypes is a list of types of connections the user is looking for
      * @param bio is a description that the user inputs to talk about themselves
      * @param year the school year of the user
+     * @param meetingType is the form of meeting they prefer
+     * @param dateOfBirth is the date of birth of the user
      */
     public static void writeNewUser(String userId, String username, String email,
                                     String major, List<String> connectionTypes,
-                                    String bio, Year year) {
+                                    String bio, Year year, MeetingType meetingType,
+                                    String dateOfBirth) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
-        UserInfo user = new UserInfo(username, email, major, connectionTypes, bio, year);
+        UserInfo user = new UserInfo(username, email, major, connectionTypes, bio, year, meetingType, dateOfBirth);
         Map<String, Object> userValues = user.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
@@ -168,15 +174,18 @@ public class DatabaseFunctions{
      * @param connectionTypes is a list of types of connections the user is looking for
      * @param bio is a description that the user inputs to talk about themselves
      * @param year the school year of the user
+     * @param meetingType is the form of meeting they prefer
+     * @param dateOfBirth is the date of birth of the user
      */
-    public static void updateUser(String userId, String username, String email,
-                                  String major, int numCourses, List<String> studyBuddyCourses,
-                                  List<String> connectionTypes, String bio, Year year) {
+    public static void updateUserData(String userId, String username, String email,
+                                  String major, String bio, Year year,
+                                  MeetingType meetingType, List<String> connectionTypes,
+                                      List<String> studyBuddyCourses, int numCourses, String dateOfBirth) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
         Map<String, Object> childUpdates = new HashMap<>();
 
-        UserInfo user = new UserInfo(username, email, major, numCourses, studyBuddyCourses, connectionTypes, bio, year);
+        UserInfo user = new UserInfo(username, email, major, numCourses, studyBuddyCourses, connectionTypes, bio, year, meetingType, dateOfBirth);
 
         if(!user.getUsername().isEmpty()) {
             childUpdates.put("/UserData/" + key + "/Username/", user.getUsername());
@@ -187,18 +196,22 @@ public class DatabaseFunctions{
         if(!user.getMajor().isEmpty()) {
             childUpdates.put("/UserData/" + key + "/Major/", user.getMajor());
         }
-        if(!user.getStudyBuddyCourses().isEmpty()) {
-            childUpdates.put("/UserData/" + key + "/Study Buddy courses/", user.getStudyBuddyCourses());
-        }
-        if(!user.getConnectionType().isEmpty()) {
-            childUpdates.put("/UserData/" + key + "/Connection Types/", user.getConnectionType());
-        }
         if(!user.getBio().isEmpty()) {
             childUpdates.put("/UserData/" + key + "/Bio/", user.getBio());
         }
         if(!user.getYear().toString().isEmpty()) {
             childUpdates.put("/UserData/" + key + "/Year/", user.getYear());
         }
+        if(!user.getMeetingType().toString().isEmpty()) {
+            childUpdates.put("/UserData/" + key + "/MeetingType/", user.getMeetingType());
+        }
+        if(!user.getDateOfBirth().toString().isEmpty()) {
+            childUpdates.put("/UserData/" + key + "/DateOfBirth/", user.getDateOfBirth());
+        }
+
+        childUpdates.put("/UserData/" + key + "/StudyBuddyCourses/", user.getStudyBuddyCourses());
+
+        childUpdates.put("/UserData/" + key + "/ConnectionTypes/", user.getConnectionType());
 
         mDatabase.updateChildren(childUpdates)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
