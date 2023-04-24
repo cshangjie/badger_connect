@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,47 +36,47 @@ public class DatabaseFunctions{
     private static int batchSize = 50; // Batch size for retrieving data
 
     //Class for testing other methods
-    public static void sendMessage() {
-        String name = "Sahas Gelli";
-        String email = "sahasgelli@gmail.com";
-        String userId = "000001";
-        String userId2 = "000002";
-        String userId3 = "000003";
-        String bio = "Hi I am Sahas";
-        Year year = Year.Freshman;
-        Year year2 = Year.Junior;
-        MeetingType meetingType1 = MeetingType.IN_PERSON;
-        String major1 = "COMPUTER_ENGINEERING";
-        MeetingType meetingType2 = MeetingType.VIRTUAL;
-        Major major2 = Major.ELECTRICAL_ENGINERING;
-        List<String> courses = new ArrayList<>();
-        courses.add("ECE 755");
-        courses.add("ECE 454");
-        List<String> courses2 = new ArrayList<>();
-        courses2.add("ECE 353");
-        courses2.add("ECE 454");
-        List<String> courses3 = new ArrayList<>();
-        courses3.add("ECE 353");
-        courses3.add("ECE 553");
-        List<String> connectionTypes = new ArrayList<>();
-        connectionTypes.add("Mentee");
-        connectionTypes.add("StudyBuddy");
-        List<String> connectionTypes2 = new ArrayList<>();
-        connectionTypes2.add("Mentee");
-        connectionTypes2.add("Mentor");
-        //writeNewUser(userId, name, email, major1, 2, courses, connectionTypes, bio, year);
-        //writeNewUser(userId2, name, email, major1, 2, courses2, connectionTypes, bio, year);
-        //writeNewUser(userId3, name, email, major1, 2, courses3, connectionTypes2, bio, year2);
-        //updateUser(userId, "", "", major2, courses, meetingType2);
-        //readUserData(userId);
-        //deleteUser(userId);
-        algorithmStudyBuddy(userId2);
-    }
-
-    public void deleteMessage(View view) {
-        String userId = "000001";
-        deleteUser(userId);
-    }
+//    public static void sendMessage() {
+//        String name = "Sahas Gelli";
+//        String email = "sahasgelli@gmail.com";
+//        String userId = "000001";
+//        String userId2 = "000002";
+//        String userId3 = "000003";
+//        String bio = "Hi I am Sahas";
+//        Year year = Year.Freshman;
+//        Year year2 = Year.Junior;
+//        MeetingType meetingType1 = MeetingType.IN_PERSON;
+//        String major1 = "COMPUTER_ENGINEERING";
+//        MeetingType meetingType2 = MeetingType.VIRTUAL;
+//        Major major2 = Major.ELECTRICAL_ENGINERING;
+//        List<String> courses = new ArrayList<>();
+//        courses.add("ECE 755");
+//        courses.add("ECE 454");
+//        List<String> courses2 = new ArrayList<>();
+//        courses2.add("ECE 353");
+//        courses2.add("ECE 454");
+//        List<String> courses3 = new ArrayList<>();
+//        courses3.add("ECE 353");
+//        courses3.add("ECE 553");
+//        List<String> connectionTypes = new ArrayList<>();
+//        connectionTypes.add("Mentee");
+//        connectionTypes.add("StudyBuddy");
+//        List<String> connectionTypes2 = new ArrayList<>();
+//        connectionTypes2.add("Mentee");
+//        connectionTypes2.add("Mentor");
+//        //writeNewUser(userId, name, email, major1, 2, courses, connectionTypes, bio, year);
+//        //writeNewUser(userId2, name, email, major1, 2, courses2, connectionTypes, bio, year);
+//        //writeNewUser(userId3, name, email, major1, 2, courses3, connectionTypes2, bio, year2);
+//        //updateUser(userId, "", "", major2, courses, meetingType2);
+//        //readUserData(userId);
+//        //deleteUser(userId);
+//        algorithmStudyBuddy(userId2);
+//    }
+//
+//    public void deleteMessage(View view) {
+//        String userId = "000001";
+//        deleteUser(userId);
+//    }
 
     /**
      * Writes a new user into the database and takes the necessary details
@@ -90,13 +91,9 @@ public class DatabaseFunctions{
      * @param bio is a description that the user inputs to talk about themselves
      * @param year the school year of the user
      */
-<<<<<<< HEAD
-    public static void writeNewUser(String userId, String name, String email, String major, List<Courses> courses, MeetingType meetingType) {
-=======
     public static void writeNewUser(String userId, String username, String email,
                                     String major, int numCourses, List<String> studyBuddyCourses,
                                     List<String> connectionTypes, String bio, Year year) {
->>>>>>> origin/main
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
         UserInfo user = new UserInfo(username, email, major, numCourses, studyBuddyCourses, connectionTypes, bio, year);
@@ -134,13 +131,9 @@ public class DatabaseFunctions{
      * @param bio is a description that the user inputs to talk about themselves
      * @param year the school year of the user
      */
-<<<<<<< HEAD
-    public static void updateUser(String userId, String name, String email, String major, List<Courses> courses, MeetingType meetingType) {
-=======
     public static void updateUser(String userId, String username, String email,
                                   String major, int numCourses, List<String> studyBuddyCourses,
                                   List<String> connectionTypes, String bio, Year year) {
->>>>>>> origin/main
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
         Map<String, Object> childUpdates = new HashMap<>();
@@ -212,22 +205,9 @@ public class DatabaseFunctions{
      * @param task the user information
      */
     private static void afterRead(Task<DataSnapshot> task) {
-<<<<<<< HEAD
-        String name = String.valueOf(task.getResult().child("username").getValue());
-        String email = String.valueOf(task.getResult().child("email").getValue());
-        String major = String.valueOf(task.getResult().child("major").getValue());
-        MeetingType meetingType = MeetingType.valueOf(String.valueOf(task.getResult().child("meeting type").getValue()));
-        String[] list_courses = String.valueOf(task.getResult().child("courses").getValue()).split(",");
-        List<Courses> courses = new ArrayList<>();
-        for(String course : list_courses) {
-            courses.add(Courses.valueOf(course));
-        }
-        UserInfo user = new UserInfo(name, email, major, courses, meetingType);
-=======
         String name = String.valueOf(task.getResult().child("Username").getValue());
         String email = String.valueOf(task.getResult().child("Email").getValue());
         String major = String.valueOf(task.getResult().child("Major").getValue());
->>>>>>> origin/main
     }
 
     /**
