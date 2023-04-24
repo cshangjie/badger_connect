@@ -45,13 +45,23 @@ public class UserInfo {
     public Year year;
     public int numCourses;
     public HashMap<String, String> studyBuddyCourses = new HashMap<String, String>();
-
+    public MeetingType meetingType;
     public UserInfo() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
     public UserInfo(String username, String email, String major,
-                    List<String> connectionTypes, String bio, Year year) {
+                    String bio, Year year, MeetingType meetingType) {
+        this.username = username;
+        this.email = email;
+        this.major = major;
+        this.bio = bio;
+        this.year = year;
+        this.meetingType = meetingType;
+    }
+    public UserInfo(String username, String email, String major,
+                    List<String> connectionTypes, String bio, Year year,
+                    MeetingType meetingType) {
         this.username = username;
         this.email = email;
         this.major = major;
@@ -60,11 +70,12 @@ public class UserInfo {
         }
         this.bio = bio;
         this.year = year;
+        this.meetingType = meetingType;
     }
 
     public UserInfo(String username, String email, String major, int numCourses,
                     List<String> studyBuddyCourses, List<String> connectionTypes,
-                    String bio, Year year) {
+                    String bio, Year year, MeetingType meetingType) {
         this.email = email;
         this.username = username;
         this.major = major;
@@ -77,6 +88,7 @@ public class UserInfo {
         }
         this.bio = bio;
         this.year = year;
+        this.meetingType = meetingType;
     }
 
     public String getUsername() {
@@ -109,6 +121,14 @@ public class UserInfo {
 
     public HashMap<String, String> getStudyBuddyCourses() {
         return studyBuddyCourses;
+    }
+
+    public MeetingType getMeetingType() {
+        return meetingType;
+    }
+
+    public void setMeetingType(MeetingType meetingType) {
+        this.meetingType = meetingType;
     }
 
     public void setUsername(String username) {
@@ -153,6 +173,7 @@ public class UserInfo {
         result.put("Bio", bio);
         result.put("StudyBuddyCourses", studyBuddyCourses);
         result.put("ConnectionTypes", connectionTypes);
+        result.put("MeetingType", meetingType);
         return result;
     }
 
