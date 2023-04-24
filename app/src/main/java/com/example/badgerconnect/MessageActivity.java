@@ -8,10 +8,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -45,10 +47,12 @@ public class MessageActivity extends AppCompatActivity {
     //TextView username;s
     ImageButton btn_send;
     EditText text_send;
-    MaterialEditText username;
+    //MaterialEditText username;
     MessageAdapter messageAdapter;
     List<Chat> mChat;
 
+    CircleImageView profileImageForMenu;
+    TextView profile_username;
     RecyclerView recyclerView;
 
     FirebaseUser fuser;
@@ -63,8 +67,6 @@ public class MessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -76,16 +78,18 @@ public class MessageActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         ///////////////////////
-        profile_image = findViewById(R.id.profile_image_message);
-        username= findViewById(R.id.username_msg);
         btn_send= findViewById(R.id.btn_send);
         text_send= findViewById(R.id.text_send);
 
         intent= getIntent();
         final String receiverId= intent.getStringExtra("userid"); //user who got passed from UserAdapter
+        final String image_URL= intent.getStringExtra("image_URL");
+
+
         fuser= FirebaseAuth.getInstance().getCurrentUser(); //current user!
         curr_user=fuser.getUid();
         reference= FirebaseDatabase.getInstance().getReference("Data").child("Users");
+        readMessages(fuser.getUid(), receiverId, image_URL);
 
         //send message when button is pressed
         btn_send.setOnClickListener(new View.OnClickListener() {
@@ -100,51 +104,67 @@ public class MessageActivity extends AppCompatActivity {
                 text_send.setText("");
             }
         });
-        //LOOOK HERE if not working
+
+    }
+
+
+//////////////////
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        fuser=FirebaseAuth.getInstance().getCurrentUser();
+        reference= FirebaseDatabase.getInstance().getReference("Data").child("Users");
         Query query= reference;
-        query.addValueEventListener(new ValueEventListener() {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
-                //System.out.println("data is:" + datasnapshot.getValue());
-                GenericTypeIndicator<User> p = new GenericTypeIndicator<User>() {};
 
-                User userReceiver=null;
 
-                for (DataSnapshot snapshot: datasnapshot.getChildren()){
-                    userReceiver=snapshot.getValue(p);
-                    //System.out.println("username to display in chat is: "+ snapshot.getValue(p).getName());
+                User user = new User();
+                for (DataSnapshot userinfo : datasnapshot.getChildren()) {
+
+                    user = userinfo.getValue(User.class);
+                    if (user.getUid().equals(fuser.getUid())) {
+                        if (!user.getProfile_pic().equals("default")) {
+                            profileImageForMenu = findViewById(R.id.profile_image_icon);
+                            profile_username = findViewById(R.id.profile_username);
+                            MenuItem profileImageMenuItem=menu.findItem(R.id.profile_image_menu);
+                            MenuItem username_menu=menu.findItem(R.id.username_menu);
+//                            username_menu.setTitle(user.getName());
+                            profile_username.setText(user.getName());
+
+                            // Inflate the layout and set it as the action view for the menu item
+                            View profileImageView = profileImageMenuItem.getActionView();
+                            if (profileImageView != null) {
+                                profileImageMenuItem.setActionView(profileImageView);
+                            }
+
+                            Glide.with(MessageActivity.this).load(user.getProfile_pic()).into(profileImageForMenu);
+
+                        }
+                    }
                 }
-                assert userReceiver != null;
-                username.setText(userReceiver.getName());
-
-                if(userReceiver.getProfile_pic().equals("default")){
-                    profile_image.setImageResource(R.mipmap.ic_launcher);
-                }else{
-                    Glide.with(MessageActivity.this).load(userReceiver.getProfile_pic()).into(profile_image);
-                }
-                //System.out.println("called readmessage " );
-                readMessages(fuser.getUid(), receiverId, userReceiver.getProfile_pic());
-
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
+        return true;
     }
 
     // this event will enable the back
     // function to the button on press
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
+        //return super.onOptionsItemSelected(item);
+        switch (item.getItemId()){
+
+            case R.id.logout:
+                FirebaseAuth.getInstance().signOut();
+                finish();
                 return true;
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     ///handles sending message to the firebase cloud

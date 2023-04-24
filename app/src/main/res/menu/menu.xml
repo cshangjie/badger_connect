@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/Messaging_menuItemStyle"
     >
 
 
@@ -9,17 +10,18 @@
             android:title="Logout"
             app:showAsAction="never" />
         <item
-            android:id="@+id/username"
+            android:id="@+id/username_menu"
             android:title="Username"
-            app:showAsAction="always" />
+            app:showAsAction="always"
+            app:actionLayout="@layout/profile_username"
+
+          />
         <item
             android:id="@+id/profile_image_menu"
             android:icon="@mipmap/ic_launcher_round"
-            android:title="Profile"
+            android:title="Profile_image"
             app:showAsAction="always"
-            android:actionLayout="@layout/profile_icon_layout"
-            android:layout_height="30dp"
-            android:layout_width="30dp"
+            app:actionLayout="@layout/profile_icon_layout"
             />
 
 
