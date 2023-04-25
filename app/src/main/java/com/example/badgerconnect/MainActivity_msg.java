@@ -47,7 +47,7 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity_msg extends AppCompatActivity {
+public class MainActivity_msg extends AppCompatActivity{
 
     FirebaseAuth auth;
     public static int Mid=0;
@@ -92,10 +92,10 @@ public class MainActivity_msg extends AppCompatActivity {
         });
 
 
-        firebaseUser=FirebaseAuth.getInstance().getCurrentUser();
+//        firebaseUser=FirebaseAuth.getInstance().getCurrentUser();
         //reference= FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
-        System.out.println("Asign in  " + firebaseUser.getUid());
-        reference= FirebaseDatabase.getInstance().getReference("Data").child("Users");
+
+//        reference= FirebaseDatabase.getInstance().getReference("Data").child("Users");
 
         //Set up tab layout feature to display list of users
        // TabLayout tabLayout= findViewById(R.id.tab_layout);
