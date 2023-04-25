@@ -84,7 +84,7 @@ public class UsersFragment extends Fragment {
     private void readUsers() {
         DatabaseReference DataRef = FirebaseDatabase.getInstance().getReference("Data");
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        DataRef.addValueEventListener(new ValueEventListener() {
+        DataRef.addListenerForSingleValueEvent(new ValueEventListener() {
             DataSnapshot convData = null;
             DataSnapshot userData = null;
 
@@ -146,7 +146,7 @@ public class UsersFragment extends Fragment {
                     userAdapter = new UserAdapter(getContext(), mUsers);
                     recyclerView.setAdapter(userAdapter);
 
-                    mUsers=null; //empty the list for next reload!
+                    mUsers=new ArrayList<User>(); //empty the list for next reload!
                 }
             }
             @Override
