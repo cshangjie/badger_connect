@@ -36,47 +36,47 @@ public class DatabaseFunctions{
     private static int batchSize = 50; // Batch size for retrieving data
 
     //Class for testing other methods
-    public static void sendMessage() {
-        String name = "Sahas Gelli";
-        String email = "sahasgelli@gmail.com";
-        String userId = "000001";
-        String userId2 = "000002";
-        String userId3 = "000003";
-        String bio = "Hi I am Sahas";
-        Year year = Year.Freshman;
-        Year year2 = Year.Junior;
-        MeetingType meetingType1 = MeetingType.IN_PERSON;
-        String major1 = "COMPUTER_ENGINEERING";
-        MeetingType meetingType2 = MeetingType.VIRTUAL;
-        Major major2 = Major.ELECTRICAL_ENGINERING;
-        List<String> courses = new ArrayList<>();
-        courses.add("ECE 755");
-        courses.add("ECE 454");
-        List<String> courses2 = new ArrayList<>();
-        courses2.add("ECE 353");
-        courses2.add("ECE 454");
-        List<String> courses3 = new ArrayList<>();
-        courses3.add("ECE 353");
-        courses3.add("ECE 553");
-        List<String> connectionTypes = new ArrayList<>();
-        connectionTypes.add("Mentee");
-        connectionTypes.add("StudyBuddy");
-        List<String> connectionTypes2 = new ArrayList<>();
-        connectionTypes2.add("Mentee");
-        connectionTypes2.add("Mentor");
-        //writeNewUser(userId, name, email, major1, 2, courses, connectionTypes, bio, year);
-        //writeNewUser(userId2, name, email, major1, 2, courses2, connectionTypes, bio, year);
-        //writeNewUser(userId3, name, email, major1, 2, courses3, connectionTypes2, bio, year2);
-        //updateUser(userId, "", "", major2, courses, meetingType2);
-        //readUserData(userId);
-        //deleteUser(userId);
-        algorithmStudyBuddy(userId2);
-    }
-
-    public void deleteMessage(View view) {
-        String userId = "000001";
-        deleteUser(userId);
-    }
+//    public static void sendMessage() {
+//        String name = "Sahas Gelli";
+//        String email = "sahasgelli@gmail.com";
+//        String userId = "000001";
+//        String userId2 = "000002";
+//        String userId3 = "000003";
+//        String bio = "Hi I am Sahas";
+//        Year year = Year.Freshman;
+//        Year year2 = Year.Junior;
+//        MeetingType meetingType1 = MeetingType.IN_PERSON;
+//        String major1 = "COMPUTER_ENGINEERING";
+//        MeetingType meetingType2 = MeetingType.VIRTUAL;
+//        Major major2 = Major.ELECTRICAL_ENGINERING;
+//        List<String> courses = new ArrayList<>();
+//        courses.add("ECE 755");
+//        courses.add("ECE 454");
+//        List<String> courses2 = new ArrayList<>();
+//        courses2.add("ECE 353");
+//        courses2.add("ECE 454");
+//        List<String> courses3 = new ArrayList<>();
+//        courses3.add("ECE 353");
+//        courses3.add("ECE 553");
+//        List<String> connectionTypes = new ArrayList<>();
+//        connectionTypes.add("Mentee");
+//        connectionTypes.add("StudyBuddy");
+//        List<String> connectionTypes2 = new ArrayList<>();
+//        connectionTypes2.add("Mentee");
+//        connectionTypes2.add("Mentor");
+//        //writeNewUser(userId, name, email, major1, 2, courses, connectionTypes, bio, year);
+//        //writeNewUser(userId2, name, email, major1, 2, courses2, connectionTypes, bio, year);
+//        //writeNewUser(userId3, name, email, major1, 2, courses3, connectionTypes2, bio, year2);
+//        //updateUser(userId, "", "", major2, courses, meetingType2);
+//        //readUserData(userId);
+//        //deleteUser(userId);
+//        algorithmStudyBuddy(userId2);
+//    }
+//
+//    public void deleteMessage(View view) {
+//        String userId = "000001";
+//        deleteUser(userId);
+//    }
 
     /**
      * Writes a new user into the database and takes the necessary details
@@ -90,13 +90,57 @@ public class DatabaseFunctions{
      * @param connectionTypes is a list of types of connections the user is looking for
      * @param bio is a description that the user inputs to talk about themselves
      * @param year the school year of the user
+     * @param meetingType is the form of meeting they prefer
+     * @param dateOfBirth is the date of birth of the user
      */
     public static void writeNewUser(String userId, String username, String email,
                                     String major, int numCourses, List<String> studyBuddyCourses,
-                                    List<String> connectionTypes, String bio, Year year) {
+                                    List<String> connectionTypes, String bio, Year year,
+                                    MeetingType meetingType, String dateOfBirth) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
-        UserInfo user = new UserInfo(username, email, major, numCourses, studyBuddyCourses, connectionTypes, bio, year);
+        UserInfo user = new UserInfo(username, email, major, numCourses, studyBuddyCourses, connectionTypes, bio, year, meetingType, dateOfBirth);
+        Map<String, Object> userValues = user.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/UserData/" + key, userValues);
+
+        mDatabase.updateChildren(childUpdates)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("firebase", "Data updated");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("firebase", "Error getting data");
+                    }
+                });
+
+    }
+
+    /**
+     * Writes a new user into the database and takes the necessary details
+     *
+     * @param userId is the UID of the user from the auth
+     * @param username is the name of the user
+     * @param email is the email of the user
+     * @param major is the user's major
+     * @param connectionTypes is a list of types of connections the user is looking for
+     * @param bio is a description that the user inputs to talk about themselves
+     * @param year the school year of the user
+     * @param meetingType is the form of meeting they prefer
+     * @param dateOfBirth is the date of birth of the user
+     */
+    public static void writeNewUser(String userId, String username, String email,
+                                    String major, List<String> connectionTypes,
+                                    String bio, Year year, MeetingType meetingType,
+                                    String dateOfBirth) {
+        mDatabase = FirebaseDatabase.getInstance().getReference("Data");
+        String key = userId;
+        UserInfo user = new UserInfo(username, email, major, connectionTypes, bio, year, meetingType, dateOfBirth);
         Map<String, Object> userValues = user.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
@@ -130,15 +174,18 @@ public class DatabaseFunctions{
      * @param connectionTypes is a list of types of connections the user is looking for
      * @param bio is a description that the user inputs to talk about themselves
      * @param year the school year of the user
+     * @param meetingType is the form of meeting they prefer
+     * @param dateOfBirth is the date of birth of the user
      */
-    public static void updateUser(String userId, String username, String email,
-                                  String major, int numCourses, List<String> studyBuddyCourses,
-                                  List<String> connectionTypes, String bio, Year year) {
+    public static void updateUserData(String userId, String username, String email,
+                                  String major, String bio, Year year,
+                                  MeetingType meetingType, List<String> connectionTypes,
+                                      List<String> studyBuddyCourses, int numCourses, String dateOfBirth) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
         Map<String, Object> childUpdates = new HashMap<>();
 
-        UserInfo user = new UserInfo(username, email, major, numCourses, studyBuddyCourses, connectionTypes, bio, year);
+        UserInfo user = new UserInfo(username, email, major, numCourses, studyBuddyCourses, connectionTypes, bio, year, meetingType, dateOfBirth);
 
         if(!user.getUsername().isEmpty()) {
             childUpdates.put("/UserData/" + key + "/Username/", user.getUsername());
@@ -149,18 +196,22 @@ public class DatabaseFunctions{
         if(!user.getMajor().isEmpty()) {
             childUpdates.put("/UserData/" + key + "/Major/", user.getMajor());
         }
-        if(!user.getStudyBuddyCourses().isEmpty()) {
-            childUpdates.put("/UserData/" + key + "/Study Buddy courses/", user.getStudyBuddyCourses());
-        }
-        if(!user.getConnectionType().isEmpty()) {
-            childUpdates.put("/UserData/" + key + "/Connection Types/", user.getConnectionType());
-        }
         if(!user.getBio().isEmpty()) {
             childUpdates.put("/UserData/" + key + "/Bio/", user.getBio());
         }
         if(!user.getYear().toString().isEmpty()) {
             childUpdates.put("/UserData/" + key + "/Year/", user.getYear());
         }
+        if(!user.getMeetingType().toString().isEmpty()) {
+            childUpdates.put("/UserData/" + key + "/MeetingType/", user.getMeetingType());
+        }
+        if(!user.getDateOfBirth().toString().isEmpty()) {
+            childUpdates.put("/UserData/" + key + "/DateOfBirth/", user.getDateOfBirth());
+        }
+
+        childUpdates.put("/UserData/" + key + "/StudyBuddyCourses/", user.getStudyBuddyCourses());
+
+        childUpdates.put("/UserData/" + key + "/ConnectionTypes/", user.getConnectionType());
 
         mDatabase.updateChildren(childUpdates)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -182,8 +233,9 @@ public class DatabaseFunctions{
      * Reads the user data and can perform a function within the onComplete method
      *
      * @param userId the userId of the user we are searching for
+     * @param user the user information returned
      */
-    public static void readUserData(String userId) {
+    public static void readUserData(String userId, UserInfo user) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         mDatabase.child("UserData").child(userId).get()
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -193,7 +245,7 @@ public class DatabaseFunctions{
                         }
                         else {
                             Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                            afterRead(task);
+                            afterRead(task, user);
                         }
                     }
                 });
@@ -204,10 +256,24 @@ public class DatabaseFunctions{
      *
      * @param task the user information
      */
-    private static void afterRead(Task<DataSnapshot> task) {
+    private static void afterRead(Task<DataSnapshot> task, UserInfo user) {
         String name = String.valueOf(task.getResult().child("Username").getValue());
         String email = String.valueOf(task.getResult().child("Email").getValue());
         String major = String.valueOf(task.getResult().child("Major").getValue());
+        HashMap<String, String> studyBuddyCoursesHash = (HashMap<String, String>) task.getResult().child("StudyBuddyCourses").getValue(Object.class);
+        List<String> studyBuddyCourses = (List<String>) studyBuddyCoursesHash.values();
+        HashMap<String, Boolean> connectionTypes = (HashMap<String, Boolean>) task.getResult().child("ConnectionTypes").getValue(Object.class);
+        List<String> connectTypes = new ArrayList<>();
+        for(String connectionType : connectionTypes.keySet()) {
+            if(connectionTypes.get(connectionType)) {
+                connectTypes.add(connectionType);
+            }
+        }
+        String bio = String.valueOf(task.getResult().child("Bio").getValue());
+        Year year = task.getResult().child("Year").getValue(Year.class);
+        MeetingType meetingType = task.getResult().child("MeetingType").getValue(MeetingType.class);
+        String dateOfBirth = String.valueOf(task.getResult().child("DateOfBirth").getValue());
+        user.setUserInformation(name, email, major, studyBuddyCourses.size(), studyBuddyCourses, connectTypes, bio, year, meetingType, dateOfBirth);
     }
 
     /**
@@ -507,6 +573,8 @@ public class DatabaseFunctions{
 
         return similarityRating;
     }
+
+
 
 }
 

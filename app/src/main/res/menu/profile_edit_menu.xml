@@ -1,0 +1,5 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/menu_profile_edit" android:icon="@drawable/edit_foreground" app:showAsAction="always" android:title="Profile"/>
+    <item android:id="@+id/menu_save" android:icon="@drawable/checkmark_foreground" app:showAsAction="always" android:title="Profile Save"/>
+    <item android:id="@+id/menu_cancel" android:icon="@drawable/cancel_foreground" app:showAsAction="always" android:title="Profile Discard"/>
+</menu>

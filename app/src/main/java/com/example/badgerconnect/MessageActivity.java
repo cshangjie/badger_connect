@@ -152,20 +152,26 @@ public class MessageActivity extends AppCompatActivity {
         return true;
     }
 
-    // this event will enable the back
-    // function to the button on press
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         //return super.onOptionsItemSelected(item);
         switch (item.getItemId()){
-
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();
-                finish();
-                return true;
+            case android.R.id.home: {
+                this.finish();
+            }
+
+            return true;
+
         }
+
         return false;
     }
+
+    // this event will enable the back
+    // function to the button on press
+
 
     ///handles sending message to the firebase cloud
     //message should have conversation id, message, senderId,
@@ -217,12 +223,12 @@ public class MessageActivity extends AppCompatActivity {
         msg.setSender(senderId);
 
 //        TESTING CREATE conversation
-        ArrayList<String> participant_ids=new ArrayList<String>();
-        participant_ids.add("AAAA");
-        participant_ids.add("BBBBB");
-        Conversation conversation=new Conversation(msg, participant_ids);
-        //conversation.CreateNewConversation();
-        conversation.DeleteConversation("1");
+//        ArrayList<String> participant_ids=new ArrayList<String>();
+//        participant_ids.add("AAAA");
+//        participant_ids.add("BBBBB");
+//        Conversation conversation=new Conversation(msg, participant_ids);
+//        //conversation.CreateNewConversation();
+//        conversation.DeleteConversation("1");
 
         //push a message to that conversation
         queryx.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -242,7 +248,7 @@ public class MessageActivity extends AppCompatActivity {
 
         DatabaseReference convRefer= FirebaseDatabase.getInstance().getReference("Data").child("Conversations");
 //        Query query=convRefer.orderByKey().equalTo()
-        System.out.println(" in ccc " + convRefer);
+       // System.out.println(" in ccc " + convRefer);
         convRefer.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {

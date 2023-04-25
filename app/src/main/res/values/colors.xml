@@ -12,4 +12,11 @@
     <color name="colorPrimary">#C5050C</color>
     <color name="colorPrimaryDark">#9B0000</color>
     <color name="colorAccent">#F7F7F7</color>
+    <color name="colorPrimaryLight">#C9ABA9</color>
+    <color name="colorPrimaryLight2">#E01A0E</color>
+
+    <color name="yellow">#FFC107</color>
+    <color name="orange">#FF5722</color>
+    <color name="dirty_green">#4CAF50</color>
+
 </resources>
