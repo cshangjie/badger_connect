@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipeRefreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
     <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -60,10 +66,12 @@
                     android:orientation="vertical">
                     
                     <ImageView
+                        android:id="@+id/profile_picture1"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:src=""/>
                     <TextView
+                        android:id="@+id/name1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Name"
@@ -93,10 +101,12 @@
                     android:orientation="vertical">
 
                     <ImageView
+                        android:id="@+id/profile_picture2"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:src=""/>
                     <TextView
+                        android:id="@+id/name2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Name"
@@ -126,10 +136,12 @@
                     android:orientation="vertical">
 
                     <ImageView
+                        android:id="@+id/profile_picture3"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:src=""/>
                     <TextView
+                        android:id="@+id/name3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Name"
@@ -159,10 +171,12 @@
                     android:orientation="vertical">
 
                     <ImageView
+                        android:id="@+id/profile_picture4"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:src=""/>
                     <TextView
+                        android:id="@+id/name4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Name"
@@ -192,10 +206,12 @@
                     android:orientation="vertical">
 
                     <ImageView
+                        android:id="@+id/profile_picture5"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:src=""/>
                     <TextView
+                        android:id="@+id/name5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Name"
@@ -225,10 +241,12 @@
                     android:orientation="vertical">
 
                     <ImageView
+                        android:id="@+id/profile_picture6"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:src=""/>
                     <TextView
+                        android:id="@+id/name6"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Name"
@@ -241,4 +259,5 @@
         </GridLayout>
     </LinearLayout>
 </ScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

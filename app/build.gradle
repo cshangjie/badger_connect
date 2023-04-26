@@ -81,4 +81,8 @@ dependencies {
     implementation "com.google.android.gms:play-services-analytics:18.0.2"
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
 
+    ///////added for pull down refresh
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
+
 }

@@ -205,7 +205,7 @@ public class DatabaseFunctions{
         if(!user.getMeetingType().toString().isEmpty()) {
             childUpdates.put("/UserData/" + key + "/MeetingType/", user.getMeetingType());
         }
-        if(!user.getDateOfBirth().toString().isEmpty()) {
+        if(!user.getDateOfBirth().isEmpty()) {
             childUpdates.put("/UserData/" + key + "/DateOfBirth/", user.getDateOfBirth());
         }
 
