@@ -48,6 +48,7 @@ public class UserInfo {
     public HashMap<String, String> studyBuddyCourses = new HashMap<String, String>();
     public MeetingType meetingType;
     public String dateOfBirth;
+    public HashMap<String, Boolean> rejectList;
     public UserInfo() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
@@ -155,6 +156,14 @@ public class UserInfo {
         return meetingType;
     }
 
+    public HashMap<String, Boolean> getRejectList() {
+        return rejectList;
+    }
+
+    public void setRejectList(HashMap<String, Boolean> rejectList) {
+        this.rejectList = rejectList;
+    }
+
     public void setMeetingType(MeetingType meetingType) {
         this.meetingType = meetingType;
     }
@@ -207,6 +216,7 @@ public class UserInfo {
         result.put("ConnectionTypes", connectionTypes);
         result.put("MeetingType", meetingType);
         result.put("DateOfBirth", dateOfBirth);
+        result.put("RejectionList", rejectList);
         return result;
     }
 
