@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -63,7 +62,7 @@ public class DatabaseFunctions{
      * @param courses is a list of courses of the user
      * @param meetingType is the users preferred meeting type
      */
-    public static void writeNewUser(String userId, String name, String email, Major major, List<Courses> courses, MeetingType meetingType) {
+    public static void writeNewUser(String userId, String name, String email, String major, List<Courses> courses, MeetingType meetingType) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
         UserInfo user = new UserInfo(name, email, major, courses, meetingType);
@@ -98,7 +97,7 @@ public class DatabaseFunctions{
      * @param courses is a list of courses of the user
      * @param meetingType is the users preferred meeting type
      */
-    public static void updateUser(String userId, String name, String email, Major major, List<Courses> courses, MeetingType meetingType) {
+    public static void updateUser(String userId, String name, String email, String major, List<Courses> courses, MeetingType meetingType) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
         Map<String, Object> childUpdates = new HashMap<>();
@@ -166,7 +165,7 @@ public class DatabaseFunctions{
     private static void afterRead(Task<DataSnapshot> task) {
         String name = String.valueOf(task.getResult().child("username").getValue());
         String email = String.valueOf(task.getResult().child("email").getValue());
-        Major major = Major.valueOf(String.valueOf(task.getResult().child("major").getValue()));
+        String major = String.valueOf(task.getResult().child("major").getValue());
         MeetingType meetingType = MeetingType.valueOf(String.valueOf(task.getResult().child("meeting type").getValue()));
         String[] list_courses = String.valueOf(task.getResult().child("courses").getValue()).split(",");
         List<Courses> courses = new ArrayList<>();

@@ -6,49 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".MessageActivity"
     android:theme="@style/AppTheme"
+
     >
-
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="41dp">
-
-        <!--            Dynamic profile image display code @TODO-->
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            >
-
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profile_image_message"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                />
-
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/username_msg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginLeft="25dp"
-                />
-        </androidx.appcompat.widget.Toolbar>
-
-    </com.google.android.material.appbar.AppBarLayout>
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_above="@id/input_block"
+        android:background="@drawable/bucky"
         />
-
-
-
 
     <RelativeLayout
         android:layout_width="match_parent"

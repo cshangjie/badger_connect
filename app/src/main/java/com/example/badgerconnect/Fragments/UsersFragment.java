@@ -8,12 +8,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.badgerconnect.Adapter.UserAdapter;
+import com.example.badgerconnect.MainActivity_msg;
 import com.example.badgerconnect.Model.User;
 import com.example.badgerconnect.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,9 +38,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+
+///BIG changes made, in order to integrate chat feature to nav bar, we'll be bypassong the mainActivity_msg class
+//I have adapted and integrated the important sections of that class directly into userFragments
 public class UsersFragment extends Fragment {
 
     private RecyclerView recyclerView;
+    FirebaseAuth auth;
     private UserAdapter userAdapter;
     private List<User> mUsers;
     private ArrayList<String> participants = new ArrayList<>();
@@ -41,8 +53,35 @@ public class UsersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_users, container, false);
+        ///////////////////////////////////////////////////
+        auth=FirebaseAuth.getInstance();
 
+        String email1 = "test1@gmail.com";
+        String email2 = "cbfu@wisc.edu";
+        String password = "000000";
+
+        //auth.signOut();
+        //System.out.println("About to sign in");
+
+        //TODO remove upon integration
+        auth.signInWithEmailAndPassword(email1, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    FirebaseUser user = auth.getCurrentUser();
+                    // Do something with the user object
+                }
+//                else {
+//                    // If sign in fails, display a message to the user.
+//                    Toast.makeText(UsersFragment.this, "Authentication failed.",
+//                            Toast.LENGTH_SHORT).show();
+//                }
+            }
+        });
+        ////////////////////////////////////////////////////
+
+        View view = inflater.inflate(R.layout.fragment_users, container, false);
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -53,38 +92,10 @@ public class UsersFragment extends Fragment {
         return view;
     }
 
-    // Define a callback interface for data retrieval
-    public interface DataCallback {
-        void onDataReceived(DataSnapshot dataSnapshot);
-    }
-
-    // Define a callback interface for data retrieval errors
-    public interface DataErrorCallback {
-        void onDataError(DatabaseError databaseError);
-    }
-
-    // Define a method for retrieving data with a callback
-    public static void retrieveData(DatabaseReference ref, final DataCallback callback, final DataErrorCallback errorCallback) {
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Call the callback with the data
-                callback.onDataReceived(dataSnapshot);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Call the error callback with the error
-                errorCallback.onDataError(databaseError);
-            }
-        });
-    }
-
-
     private void readUsers() {
         DatabaseReference DataRef = FirebaseDatabase.getInstance().getReference("Data");
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        DataRef.addValueEventListener(new ValueEventListener() {
+        DataRef.addListenerForSingleValueEvent(new ValueEventListener() {
             DataSnapshot convData = null;
             DataSnapshot userData = null;
 
@@ -137,7 +148,7 @@ public class UsersFragment extends Fragment {
                         //check to see if the users we're parsing are in the list
                         assert user != null;
                         assert firebaseUser != null;
-                        System.out.println("ppp  " + participants);
+                       // System.out.println("ppp  " + participants); SEND IS CRASHING!
                         if (!user.getUid().equals(firebaseUser.getUid()) && participants.contains(user.getUid()) && !mUsers.contains(user.getUid())) {
                             mUsers.add(user);
                         }
@@ -145,14 +156,18 @@ public class UsersFragment extends Fragment {
                     }
                     userAdapter = new UserAdapter(getContext(), mUsers);
                     recyclerView.setAdapter(userAdapter);
+
+                    mUsers=new ArrayList<User>(); //empty the list for next reload!
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
     }
+
+
+
 
 }
