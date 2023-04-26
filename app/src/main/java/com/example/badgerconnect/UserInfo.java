@@ -41,7 +41,7 @@ public class UserInfo {
         put("Mentor", false);
         put("Mentee", false);
         put("StudyBuddy", false);
-    }};;
+    }};
     public String bio;
     public Year year;
     public int numCourses;
