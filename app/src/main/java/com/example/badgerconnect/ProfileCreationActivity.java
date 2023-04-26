@@ -1,5 +1,6 @@
 package com.example.badgerconnect;
 
+import android.app.Application;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -7,14 +8,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Toast;
-
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import android.app.Dialog;
+import android.app.DialogFragment;
 
 
 public class ProfileCreationActivity extends AppCompatActivity {
@@ -22,7 +29,10 @@ public class ProfileCreationActivity extends AppCompatActivity {
     private int mentee = -1;
     private int studybuddy = -1;
 
+    private boolean physical, virtual;
+
     private CheckBox isLookingForMentorCB, notLookingForMentorCB, isMentorCB, notMentorCB, isStudyBuddyCB, notStudyBuddyCB;
+    private CheckBox physicalCB, virtualCB;
     private Button continueButton;
 
     @Override
@@ -31,7 +41,9 @@ public class ProfileCreationActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
         String major = intent.getStringExtra("major");
-        Date dob = (Date) intent.getSerializableExtra("dob");
+        String year = intent.getStringExtra("year");
+        String dob = intent.getStringExtra("dob");
+        String bio = intent.getStringExtra("bio");
         Bitmap imagePfp = (Bitmap) intent.getParcelableExtra("image_pfp");
 
         setContentView(R.layout.activity_profile_creation);
@@ -91,33 +103,82 @@ public class ProfileCreationActivity extends AppCompatActivity {
             }
         });
 
-//        public boolean onOptionsItemSelected(MenuItem item){
-//            Intent myIntent = new Intent(getApplicationContext(), MyActivity.class);
-//            startActivityForResult(myIntent, 0);
-//            return true;
-//        }
+        physicalCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Update the boolean variable based on whether the checkbox is checked or unchecked
+                physical = isChecked;
+            }
+        });
+        virtualCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Update the boolean variable based on whether the checkbox is checked or unchecked
+                virtual = isChecked;
+            }
+        });
 
 
 
         // On-click, need to verify that the user has at least entered in one course, and then continue
         continueButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
+                if(physical == false && virtual == false){
+                    Toast.makeText(getApplicationContext(), "Please select at least one meeting preference", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if((mentor == -1) && (mentee == -1) && (studybuddy == -1)){
-                    Toast.makeText(getApplicationContext(), "Please select preferences", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please select connection preferences", Toast.LENGTH_SHORT).show();
+                    return;
                 }else if(((mentor == 0) && (mentee == 0) && (studybuddy == 0))){
                     Toast.makeText(getApplicationContext(), "Please select yes to at least one category", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-                // if the studybudy == 0 create user and then just send them to the dashboard
+                // if the studybudy == 0 create user and then just send them to the dashboard TODO
                 else if(studybuddy == 0){
-                    Intent myIntent = new Intent(ProfileCreationActivity.this, DashboardActivity.class);
+                    List<String> connectionTypes = new ArrayList<>();
+                    if(mentor == 1){
+                        connectionTypes.add("Mentor");
+                    }
+                    if(mentee == 1){
+                        connectionTypes.add("Mentee");
+                    }
+                    Intent myIntent = new Intent(ProfileCreationActivity.this, ApplicationWrapperActivity.class);
                     // TODO create user
+                    MeetingType userMeetingPref;
+                    if(physical && virtual){
+                        userMeetingPref = MeetingType.BOTH;
+                    }else if(physical){
+                        userMeetingPref = MeetingType.IN_PERSON;
+                    }
+                    else{
+                        userMeetingPref = MeetingType.VIRTUAL;
+                    }
+                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                    FirebaseUser currentUser = mAuth.getCurrentUser();
+                    String uid = currentUser.getUid();
+                    String email = currentUser.getEmail();
+                    // Write new user
+                    DatabaseFunctions.writeNewUser(uid, name, email, major, connectionTypes, bio, Year.valueOf(year), userMeetingPref, dob);
+                    // Upload PFP
+                    DatabaseFunctions.uploadPFP(uid, imagePfp);
                     startActivity(myIntent);
                 }
                 // otherwise send them to a course selection page
                 else{
                     Intent myIntent = new Intent(ProfileCreationActivity.this, ProfileCreationCourseInfoActivity.class);
-                    // todo Create user
+                    // pack all needed information
+                    myIntent.putExtra("name", name);
+                    myIntent.putExtra("major", major);
+                    myIntent.putExtra("dob", dob);
+                    myIntent.putExtra("image_pfp", imagePfp);
+                    myIntent.putExtra("mentor", mentor);
+                    myIntent.putExtra("mentee", mentee);
+                    myIntent.putExtra("studybuddy", studybuddy);
+                    myIntent.putExtra("physical", physical);
+                    myIntent.putExtra("virtual", virtual);
                     startActivity(myIntent);
                 }
             }
@@ -132,6 +193,8 @@ public class ProfileCreationActivity extends AppCompatActivity {
         notMentorCB = findViewById(R.id.no_checkbox_2);
         isStudyBuddyCB = findViewById(R.id.yes_checkbox_3);
         notStudyBuddyCB = findViewById(R.id.no_checkbox_3);
+        physicalCB = findViewById(R.id.physicalCheckbox);
+        virtualCB = findViewById(R.id.virtualCheckbox);
     }
 
 
@@ -143,4 +206,10 @@ public class ProfileCreationActivity extends AppCompatActivity {
         }
         return true;
     }
+
+    public void onTextEntered(String inputText) {
+        // Do something with the input text
+        Toast.makeText(this, "You entered: " + inputText, Toast.LENGTH_SHORT).show();
+    }
+
 }

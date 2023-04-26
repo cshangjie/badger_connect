@@ -12,6 +12,13 @@
     <string name="on">On</string>
     <string name="share_location">Share Location</string>
 
+    <string-array name="years_array">
+        <item>Freshman</item>
+        <item>Sophomore</item>
+        <item>Junior</item>
+        <item>Senior</item>
+    </string-array>
+
     <string-array name="bs_majors">
         <item>African Cultural Studies</item>
         <item>Afro-American Studies</item>

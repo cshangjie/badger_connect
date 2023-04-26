@@ -3,6 +3,7 @@ package com.example.badgerconnect;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -13,6 +14,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.Arrays;
@@ -31,6 +33,7 @@ public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_profile_creation_courses);
         // Get the ActionBar instance
         ActionBar actionBar = getSupportActionBar();
@@ -48,7 +51,6 @@ public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
             major = extras.getString("major");
             dob = extras.getString("dob");
         }
-
 
         // Add Course Text Field On-Click Listener
         addCourseFieldButton.setOnClickListener(v -> {
@@ -102,9 +104,8 @@ public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
             Set<String> courseSet = new HashSet<>(Arrays.asList(courseList));
 
             for (int i = 0; i < userEntries.length; i++) {
-                Log.i("0", userEntries[i]);
-                Log.i("1", String.valueOf(courseSet.contains(userEntries[i])));
-
+//                Log.i("0", userEntries[i]);
+//                Log.i("1", String.valueOf(courseSet.contains(userEntries[i])));
                 if(!courseSet.contains(userEntries[i])){
                     // Request focus on the corresponding AutoCompleteTextView
                     View invalidView = autocompleteContainer.getChildAt(i);
