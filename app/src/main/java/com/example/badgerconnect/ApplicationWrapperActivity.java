@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.badgerconnect.Fragments.MapsFragment;
 import com.example.badgerconnect.Fragments.UsersFragment;
 import com.example.badgerconnect.Model.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -53,6 +54,8 @@ public class ApplicationWrapperActivity extends AppCompatActivity
     HomepageFragment homepageFragment = new HomepageFragment();
     MapFragment mapFragment = new MapFragment();
 
+    MapsFragment mapsFragment = new MapsFragment();
+
     @Override
     public boolean
     onNavigationItemSelected(@NonNull MenuItem item)
@@ -79,7 +82,7 @@ public class ApplicationWrapperActivity extends AppCompatActivity
                 getSupportActionBar().setTitle("Map");
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.flFragment, mapFragment)
+                        .replace(R.id.flFragment, mapsFragment)
                         .commit();
                 return true;
         }
