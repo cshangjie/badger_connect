@@ -1,17 +1,22 @@
 package com.example.badgerconnect;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -22,9 +27,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,7 +40,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.security.cert.PolicyNode;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -54,11 +65,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_maps);
 
+        // Get references to UI elements
         editTextLatitude = findViewById(R.id.editText);
         editTextLongitude = findViewById(R.id.editText2);
 
         // Initialize Firebase Database reference
-        databaseReference = FirebaseDatabase.getInstance().getReference("Location");
+        databaseReference = FirebaseDatabase.getInstance().getReference("Data/Map");
 
         // Check if user is already signed in
         if (mAuth.getCurrentUser() != null) {
@@ -84,41 +96,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PackageManager.PERMISSION_GRANTED);
 
-        // Set up a database reference for all users' locations
-        DatabaseReference allUserLocationsReference = databaseReference;
+        // Get the current user's ID
         String uid = mAuth.getCurrentUser().getUid();
-        allUserLocationsReference.addValueEventListener(new ValueEventListener() {
+
+        // Set up a database reference for the user's location
+        DatabaseReference userLocationReference = databaseReference.child(uid);
+
+        userLocationReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mMap.clear(); // Clear existing markers
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    try {
-                        String databaseLatitudeString = userSnapshot.child("latitude").getValue().toString();
-                        String databaseLongitudeString = userSnapshot.child("longitude").getValue().toString();
-                        String name = userSnapshot.child("name").getValue().toString();
-                        String major = userSnapshot.child("major").getValue().toString();
+                mMap.clear();
+                try {
+                    String databaseLatitudeString = dataSnapshot.child("user_latitude").getValue().toString();
+                    String databaseLongitudedeString = dataSnapshot.child("user_longitude").getValue().toString();
 
+                    LatLng latLng = new LatLng(Double.parseDouble(databaseLatitudeString), Double.parseDouble(databaseLongitudedeString));
 
-
-                        LatLng latLng = new LatLng(Double.parseDouble(databaseLatitudeString), Double.parseDouble(databaseLongitudeString));
-
-
-                        if (userSnapshot.getKey().equals(uid)) { // Check if the user's ID matches the current user's ID
-                            // Add a special marker to the map to indicate the user's location, such as changing the marker color or adding a custom icon
-                            Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title("You are here"));
-                        } else {
-                            String description = userSnapshot.child("description").getValue(String.class);
-                            String markerTitle = name + "-" + major;
-                            if (description != null && !description.isEmpty()) {
-                                markerTitle += "-" + description;
-                            }
-                            Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(markerTitle));
-                        }
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if (previousMarker != null) {
+                        previousMarker.remove(); // remove previous marker
                     }
+                    previousMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(databaseLatitudeString + " , " + databaseLongitudedeString));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+
+
             }
 
             @Override
@@ -128,53 +134,112 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-
-
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        String title;
         mMap = googleMap;
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+        String uid = mAuth.getCurrentUser().getUid();
+        DatabaseReference eventRef = databaseReference.child(uid).child("Events").push();
+
+
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
-            public boolean onMarkerClick(Marker marker) {
-                if (marker.getTitle().equals("You are here")) { // Check if the marker clicked is the user's location marker
-                    // Show a pop-up dialog with an EditText for the user to input their meeting description
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-                    builder.setTitle("Set meeting description");
+            public void onMapLongClick(LatLng latLng) {
+                // Show a pop-up dialog with EditTexts for the user to input the event details
+                AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                builder.setTitle("Set event details");
 
-                    // Set up the input
-                    final EditText input = new EditText(MapsActivity.this);
-                    builder.setView(input);
+                // Set up the input fields
+                final EditText titleInput = new EditText(MapsActivity.this);
+                titleInput.setHint("Title");
+                final EditText descriptionInput = new EditText(MapsActivity.this);
+                descriptionInput.setHint("Description");
+                final EditText timeInput = new EditText(MapsActivity.this);
+                timeInput.setHint("Time");
 
-                    // Set up the OK button
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Save the meeting description to the user's database location
-                            String description = input.getText().toString();
-                            String uid = mAuth.getCurrentUser().getUid();
-                            DatabaseReference userLocationReference = databaseReference.child(uid);
-                            userLocationReference.child("description").setValue(description);
-                        }
-                    });
+                // Set up the view
+                LinearLayout layout = new LinearLayout(MapsActivity.this);
+                layout.setOrientation(LinearLayout.VERTICAL);
+                layout.setBackgroundColor(Color.parseColor("#90CAF9"));
+                layout.addView(titleInput);
+                layout.addView(descriptionInput);
+                layout.addView(timeInput);
+                builder.setView(layout);
 
-                    // Set up the Cancel button
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
+                // Set up the OK button
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Save the event details and add a marker to the map
+                        String title = titleInput.getText().toString();
+                        String description = descriptionInput.getText().toString();
+                        String time = timeInput.getText().toString();
+                        String markerTitle = "Title: " + title + "\nDescription: " + description + "\nTime: " + time;
+                        Map<String, Object> eventMap = new HashMap<>();
+                        eventMap.put("title", title);
+                        eventMap.put("description", description);
+                        eventMap.put("time", time);
+                        eventMap.put("latitude", latLng.latitude);
+                        eventMap.put("longitude", latLng.longitude);
 
-                    // Show the dialog
-                    builder.show();
+                        eventRef.setValue(eventMap)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            // Create the marker
+                                            MarkerOptions markerOptions = new MarkerOptions()
+                                                    .position(latLng)
+                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                                            Marker marker = mMap.addMarker(markerOptions);
 
-                    return true;
-                } else {
-                    return false;
-                }
+                                            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                                                @Override
+                                                public View getInfoWindow(Marker marker) {
+                                                    return null;
+                                                }
+
+                                                @Override
+                                                public View getInfoContents(Marker marker) {
+                                                    // Inflate the layout for the InfoWindow
+                                                    View view = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+
+                                                    // Set the title, description, and time in the layout
+                                                    @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView titleTextView = view.findViewById(R.id.event_title);
+                                                    TextView descriptionTextView = view.findViewById(R.id.event_description);
+                                                    TextView timeTextView = view.findViewById(R.id.event_time);
+
+
+                                                    titleTextView.setText(title);
+                                                    descriptionTextView.setText(description);
+                                                    timeTextView.setText(time);
+
+                                                    return view;
+                                                }
+                                            });
+
+// Show the InfoWindow when the marker is clicked
+                                            marker.showInfoWindow();
+
+                                        }
+                                    }
+                                });
+                    }
+                });
+
+                // Set up the Cancel button
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                // Show the dialog
+                builder.show();
             }
         });
+
 
 
         LocationListener locationListener = new LocationListener() {
@@ -190,19 +255,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // Get the current user's ID
                     String uid = mAuth.getCurrentUser().getUid();
 
-
                     // Set up a database reference for the user's location
+                    DatabaseReference userLocationReference = databaseReference.child(uid);
 
-                        DatabaseReference userLocationReference = databaseReference.child(uid);
-
-                        userLocationReference.child("latitude").setValue(location.getLatitude());
-                        userLocationReference.child("longitude").setValue(location.getLongitude());
-
-                        previousLocation = location;
-
+                    userLocationReference.child("user_latitude").setValue(location.getLatitude());
+                    userLocationReference.child("user_longitude").setValue(location.getLongitude());
+                    previousLocation = location;
                 }
             }
-
 
             @Override
             public void onProviderDisabled(String provider) {
@@ -229,17 +289,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DIST, locationListener);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DIST, locationListener);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
-
-
-
-
-
-
-
-

@@ -1,6 +1,8 @@
 package com.example.badgerconnect;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.badgerconnect.Fragments.MapsFragment;
@@ -84,6 +87,7 @@ public class ApplicationWrapperActivity extends AppCompatActivity
                         .beginTransaction()
                         .replace(R.id.flFragment, mapsFragment)
                         .commit();
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PackageManager.PERMISSION_GRANTED);
                 return true;
         }
         return false;

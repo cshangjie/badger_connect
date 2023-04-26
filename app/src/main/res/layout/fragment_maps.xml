@@ -5,10 +5,65 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.MapsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="550dp"
+        tools:layout="@android:layout/simple_spinner_dropdown_item" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="550dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/latitude"
+        android:inputType="textPersonName"
+        android:minHeight="48dp" />
+
+    <EditText
+        android:id="@+id/editText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="220dp"
+        android:layout_marginTop="550dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/longitude"
+        android:inputType="textPersonName"
+        android:minHeight="48dp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="0.7"
+            android:text="@string/share_location"
+            android:textSize="18sp" />
+
+        <Switch
+            android:id="@+id/pin_switch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:checked="true"
+            android:minWidth="48dp"
+            android:minHeight="32dp"
+            android:textOff="@string/off"
+            android:textOn="@string/on"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    </LinearLayout>
+
+
 
 </FrameLayout>
