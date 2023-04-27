@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.example.badgerconnect.Fragments.MapsFragment;
 import com.example.badgerconnect.Fragments.UsersFragment;
 import com.example.badgerconnect.Model.User;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,15 +50,10 @@ public class ApplicationWrapperActivity extends AppCompatActivity
         bottomNavigationView
                 .setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+
+
     }
-   // ConnectionsFragment connectionsFragment = new ConnectionsFragment();
-    //MainActivity_msg mainActivity_msg= new MainActivity_msg();
-    UsersFragment usersFragment= new UsersFragment();
 
-    HomepageFragment homepageFragment = new HomepageFragment();
-    MapFragment mapFragment = new MapFragment();
-
-    MapsFragment mapsFragment = new MapsFragment();
 
     @Override
     public boolean
@@ -66,10 +62,9 @@ public class ApplicationWrapperActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
             case R.id.navigation_people:
-               //getSupportActionBar().setTitle("Messages & Connections");
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.flFragment, usersFragment)
+                        .replace(R.id.flFragment, new UsersFragment())
                         .commit();
                 return true;
 
@@ -77,17 +72,18 @@ public class ApplicationWrapperActivity extends AppCompatActivity
                 getSupportActionBar().setTitle("BadgerConnect");
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.flFragment, homepageFragment)
+                        .replace(R.id.flFragment, new HomepageFragment())
                         .commit();
                 return true;
 
             case R.id.navigation_map:
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PackageManager.PERMISSION_GRANTED);
+                //getSupportFragmentManager().beginTransaction().add(R.id.flFragment, new MapsFragment(), "tag").commit();
                 getSupportActionBar().setTitle("Map");
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.flFragment, mapsFragment)
+                        .replace(R.id.flFragment, new MapsFragment())
                         .commit();
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PackageManager.PERMISSION_GRANTED);
                 return true;
         }
         return false;
@@ -113,7 +109,6 @@ public class ApplicationWrapperActivity extends AppCompatActivity
 //    }
 
 
-    //////////////////////////ADDED From MainActivity_msg /////////////////////////
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -123,24 +118,17 @@ public class ApplicationWrapperActivity extends AppCompatActivity
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
-                // profile_image_menu= menu.findItem(R.id.profile_image_menu);
-
-
                 User user = new User();
                 for (DataSnapshot userinfo : datasnapshot.getChildren()) {
 
                     user = userinfo.getValue(User.class);
                     if (user.getUid().equals(firebaseUser.getUid())) {
-                        if (user.getProfile_pic().equals("default")) {
-                            ImageView profile_image = null; //not used..?
-                            profile_image.setImageResource(R.mipmap.ic_launcher);
-                        } else {
+                        if (!user.getProfile_pic().equals("default")) {
 
                             CircleImageView profileImageForMenu = findViewById(R.id.profile_image_icon);
                             TextView profile_username = findViewById(R.id.profile_username);
                             MenuItem profileImageMenuItem=menu.findItem(R.id.profile_image_menu);
                             MenuItem username_menu=menu.findItem(R.id.username_menu);
-//                            username_menu.setTitle(user.getName());
                             profile_username.setText(user.getName());
 
                             // Inflate the layout and set it as the action view for the menu item
@@ -163,7 +151,6 @@ public class ApplicationWrapperActivity extends AppCompatActivity
     }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        //return super.onOptionsItemSelected(item);
         switch (item.getItemId()){
 
             case R.id.logout:
@@ -173,6 +160,4 @@ public class ApplicationWrapperActivity extends AppCompatActivity
         }
         return false;
     }
-
-    ///////////////////////////////////////////////////////////////////////////////
 }

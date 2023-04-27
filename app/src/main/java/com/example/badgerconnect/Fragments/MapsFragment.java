@@ -1,40 +1,29 @@
 package com.example.badgerconnect.Fragments;
 
+import static android.content.Context.LOCATION_SERVICE;
+
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
-
+import android.location.LocationManager;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.example.badgerconnect.MapsActivity;
 import com.example.badgerconnect.R;
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.badgerconnect.SignInActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -75,6 +64,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private EditText editTextLatitude;
     private EditText editTextLongitude;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -91,26 +81,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         if (mAuth.getCurrentUser() != null) {
             // User is signed in, display map
             setUpMap();
-        } else {
-            // User is not signed in, display login screen
-            showSignInScreen();
         }
+        System.out.println("mmmmmz " + view);
 
     return view;
     }
 
-//    private void showSignInScreen() {
-//        Intent signInIntent = new Intent(this, SignInActivity.class);
-//        startActivity(signInIntent);
-//        finish();
-//        previousLocation = null;
-//    }
-
     private void setUpMap() {
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        FragmentActivity fragmentActivity= new FragmentActivity();
-        SupportMapFragment mapFragment = (SupportMapFragment) fragmentActivity.getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used
+        //CHANGES BY CJ -- VERY NEXT LINE GAVE ERROS DUE IMPROPER UNNESTING. RESOLVED
+       SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().getFragments().get(0).getChildFragmentManager().getFragments().get(0);
+       mapFragment.getMapAsync(this);
+
 
 
         // Get the current user's ID
@@ -122,7 +104,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         userLocationReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mMap.clear();
+//                mMap.clear(); //@TODO FOR DIVY--WOULD CRASH THE CODE. TRY TO DERIVE THE SAME RESULT USING ANOTHER METHOD
+
                 try {
                     String databaseLatitudeString = dataSnapshot.child("user_latitude").getValue().toString();
                     String databaseLongitudedeString = dataSnapshot.child("user_longitude").getValue().toString();
@@ -140,8 +123,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-
             }
 
             @Override
@@ -163,19 +144,19 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onMapLongClick(LatLng latLng) {
                 // Show a pop-up dialog with EditTexts for the user to input the event details
-                AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Set event details");
 
                 // Set up the input fields
-                final EditText titleInput = new EditText(MapsActivity.this);
+                final EditText titleInput = new EditText(getContext());
                 titleInput.setHint("Title");
-                final EditText descriptionInput = new EditText(MapsActivity.this);
+                final EditText descriptionInput = new EditText(getContext());
                 descriptionInput.setHint("Description");
-                final EditText timeInput = new EditText(MapsActivity.this);
+                final EditText timeInput = new EditText(getContext());
                 timeInput.setHint("Time");
 
                 // Set up the view
-                LinearLayout layout = new LinearLayout(MapsActivity.this);
+                LinearLayout layout = new LinearLayout(getContext());
                 layout.setOrientation(LinearLayout.VERTICAL);
                 layout.setBackgroundColor(Color.parseColor("#90CAF9"));
                 layout.addView(titleInput);
@@ -297,9 +278,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             }
         };
 
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (getActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && getActivity().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
 
