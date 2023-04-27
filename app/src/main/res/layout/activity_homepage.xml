@@ -6,12 +6,11 @@
     android:layout_height="match_parent">
 
     <ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".HomepageActivity">
 
     <LinearLayout
     android:layout_width="match_parent"
@@ -19,7 +18,7 @@
     android:orientation="vertical">
 
          <RelativeLayout
-             android:layput_marginTop="32dp"
+             android:layout_marginTop="32dp"
              android:layout_width="wrap_content"
              android:layout_height="match_parent"
              android:layout_marginRight="20dp"
@@ -30,13 +29,12 @@
                      android:layout_height="wrap_content"
                      android:textColor="@color/colorPrimaryDark"
                      android:textSize="22sp"
-                     android:text="My Profile"/>
+                     android:text="My Profile" />
 
                 <ImageView
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:layout_alingParentRight="true"
-                    android:src=""/>
+                    android:layout_alignParentRight="true" />
 
             </RelativeLayout>
 
@@ -49,6 +47,7 @@
             android:columnOrderPreserved="false">
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/card1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -56,7 +55,9 @@
                 app:cardElevation="6dp"
                 app:cardCornerRadius="12dp"
                 android:layout_margin="12dp"
-                android:backgroundTint="@color/colorPrimaryDark">
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:onClick="pullUserDataBox1"
+                android:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -68,8 +69,7 @@
                     <ImageView
                         android:id="@+id/profile_picture1"
                         android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:src=""/>
+                        android:layout_height="80dp" />
                     <TextView
                         android:id="@+id/name1"
                         android:layout_width="wrap_content"
@@ -84,6 +84,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/card2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -91,7 +92,9 @@
                 app:cardElevation="6dp"
                 app:cardCornerRadius="12dp"
                 android:layout_margin="12dp"
-                android:backgroundTint="@color/colorPrimaryDark">
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:onClick="pullUserDataBox2"
+                android:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -103,8 +106,7 @@
                     <ImageView
                         android:id="@+id/profile_picture2"
                         android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:src=""/>
+                        android:layout_height="80dp"/>
                     <TextView
                         android:id="@+id/name2"
                         android:layout_width="wrap_content"
@@ -119,6 +121,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/card3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -126,7 +129,9 @@
                 app:cardElevation="6dp"
                 app:cardCornerRadius="12dp"
                 android:layout_margin="12dp"
-                android:backgroundTint="@color/colorPrimaryDark">
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:onClick="pullUserDataBox3"
+                android:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -138,8 +143,7 @@
                     <ImageView
                         android:id="@+id/profile_picture3"
                         android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:src=""/>
+                        android:layout_height="80dp"/>
                     <TextView
                         android:id="@+id/name3"
                         android:layout_width="wrap_content"
@@ -154,6 +158,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/card4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -161,7 +166,9 @@
                 app:cardElevation="6dp"
                 app:cardCornerRadius="12dp"
                 android:layout_margin="12dp"
-                android:backgroundTint="@color/colorPrimaryDark">
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:onClick="pullUserDataBox4"
+                android:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -173,8 +180,7 @@
                     <ImageView
                         android:id="@+id/profile_picture4"
                         android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:src=""/>
+                        android:layout_height="80dp"/>
                     <TextView
                         android:id="@+id/name4"
                         android:layout_width="wrap_content"
@@ -189,6 +195,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/card5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -196,7 +203,9 @@
                 app:cardElevation="6dp"
                 app:cardCornerRadius="12dp"
                 android:layout_margin="12dp"
-                android:backgroundTint="@color/colorPrimaryDark">
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:onClick="pullUserDataBox5"
+                android:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -208,8 +217,7 @@
                     <ImageView
                         android:id="@+id/profile_picture5"
                         android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:src=""/>
+                        android:layout_height="80dp"/>
                     <TextView
                         android:id="@+id/name5"
                         android:layout_width="wrap_content"
@@ -224,6 +232,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/card6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -231,7 +240,9 @@
                 app:cardElevation="6dp"
                 app:cardCornerRadius="12dp"
                 android:layout_margin="12dp"
-                android:backgroundTint="@color/colorPrimaryDark" >
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:onClick="pullUserDataBox6"
+                android:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -243,8 +254,7 @@
                     <ImageView
                         android:id="@+id/profile_picture6"
                         android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:src=""/>
+                        android:layout_height="80dp"/>
                     <TextView
                         android:id="@+id/name6"
                         android:layout_width="wrap_content"

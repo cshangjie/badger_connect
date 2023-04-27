@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class DatabaseFunctions{
 
@@ -72,7 +73,8 @@ public class DatabaseFunctions{
         //deleteUser(userId);
         HashMap<String, Integer> result = new HashMap<>();
         List<String> result2 = new ArrayList<>();
-        algorithmMentor(userId2, result2);
+        //algorithmMentor(userId2, result2);
+        //uploadPFP("000003", BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
     }
 //
 //    public void deleteMessage(View view) {
@@ -237,7 +239,8 @@ public class DatabaseFunctions{
      * @param userId the userId of the user we are searching for
      * @param user the user information returned
      */
-    public static void readUserData(String userId, UserInfo user) {
+    public static CompletableFuture<UserInfo> readUserData(String userId, UserInfo user) {
+        CompletableFuture<UserInfo> future = new CompletableFuture<>();
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         mDatabase.child("UserData").child(userId).get()
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -247,10 +250,11 @@ public class DatabaseFunctions{
                         }
                         else {
                             Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                            afterRead(task, user);
+                            afterRead(task, user, future);
                         }
                     }
                 });
+        return future;
     }
 
     /**
@@ -258,12 +262,12 @@ public class DatabaseFunctions{
      *
      * @param task the user information
      */
-    private static void afterRead(Task<DataSnapshot> task, UserInfo user) {
+    private static void afterRead(Task<DataSnapshot> task, UserInfo user, CompletableFuture<UserInfo> future) {
         String name = String.valueOf(task.getResult().child("Username").getValue());
         String email = String.valueOf(task.getResult().child("Email").getValue());
         String major = String.valueOf(task.getResult().child("Major").getValue());
         HashMap<String, String> studyBuddyCoursesHash = (HashMap<String, String>) task.getResult().child("StudyBuddyCourses").getValue(Object.class);
-        List<String> studyBuddyCourses = (List<String>) studyBuddyCoursesHash.values();
+        List<String> studyBuddyCourses = new ArrayList<String>(studyBuddyCoursesHash.values());
         HashMap<String, Boolean> connectionTypes = (HashMap<String, Boolean>) task.getResult().child("ConnectionTypes").getValue(Object.class);
         List<String> connectTypes = new ArrayList<>();
         for(String connectionType : connectionTypes.keySet()) {
@@ -272,10 +276,21 @@ public class DatabaseFunctions{
             }
         }
         String bio = String.valueOf(task.getResult().child("Bio").getValue());
-        Year year = task.getResult().child("Year").getValue(Year.class);
+        Integer yearInt = task.getResult().child("Year").getValue(Integer.class);
+        Year year;
+        if(yearInt == 1) {
+            year = Year.Freshman;
+        } else if(yearInt == 2) {
+            year = Year.Sophomore;
+        } else if(yearInt == 3) {
+            year = Year.Junior;
+        } else {
+            year = Year.Senior;
+        }
         MeetingType meetingType = task.getResult().child("MeetingType").getValue(MeetingType.class);
         String dateOfBirth = String.valueOf(task.getResult().child("DateOfBirth").getValue());
         user.setUserInformation(name, email, major, studyBuddyCourses.size(), studyBuddyCourses, connectTypes, bio, year, meetingType, dateOfBirth);
+        future.complete(user);
     }
 
     /**
@@ -360,7 +375,6 @@ public class DatabaseFunctions{
     public static void downloadPFP(String userId, ImageView imageView) {
         mStorage = FirebaseStorage.getInstance().getReference();
         StorageReference pfpRef = mStorage.child("images").child(userId+"/pfp.jpg");
-
         // get image view obj
         //final ImageView imageView = findViewById(R.id.monke);
         final long ONE_MEGABYTE = 1024 * 1024;
@@ -388,7 +402,8 @@ public class DatabaseFunctions{
      *
      * @param userId the userId of the current user conducting the search
      */
-    public static void algorithmMentor(String userId, List<String> results) {
+    public static CompletableFuture<List<String>> algorithmMentor(String userId, List<String> results) {
+        CompletableFuture<List<String>> future = new CompletableFuture<>();
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         mDatabase.child("UserData").child(userId).get()
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -398,11 +413,12 @@ public class DatabaseFunctions{
                         }
                         else {
                             Log.d("firebase", "Found current user");
-                            findMentor(task, results);
+                            findMentor(task, results, future);
                         }
                     }
                 });
 
+        return future;
     }
 
     /**
@@ -410,7 +426,8 @@ public class DatabaseFunctions{
      *
      * @param task the data snapshot of the user info of the current user.
      */
-    private static void findMentor(Task<DataSnapshot> task, List<String> results) {
+    private static void findMentor(Task<DataSnapshot> task, List<String> results, CompletableFuture<List<String>> future) {
+
         mDatabase = FirebaseDatabase.getInstance().getReference("Data/UserData");
 
         Integer currentSchoolYear = task.getResult().child("Year").getValue(Integer.class);
@@ -455,6 +472,7 @@ public class DatabaseFunctions{
                             }
                         }
                     }
+                    future.complete(results);
                 }
             }
         });
@@ -465,8 +483,8 @@ public class DatabaseFunctions{
      *
      * @param userId the userId of the current user conducting the search
      */
-    public static void algorithmMentee(String userId, List<String> results) {
-
+    public static CompletableFuture<List<String>> algorithmMentee(String userId, List<String> results) {
+        CompletableFuture<List<String>> future = new CompletableFuture<>();
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         mDatabase.child("UserData").child(userId).get()
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -476,11 +494,11 @@ public class DatabaseFunctions{
                         }
                         else {
                             Log.d("firebase", "Found current user");
-                            findMentee(task, results);
+                            findMentee(task, results, future);
                         }
                     }
                 });
-
+        return future;
     }
 
     /**
@@ -488,7 +506,7 @@ public class DatabaseFunctions{
      *
      * @param task the data snapshot of the user info of the current user.
      */
-    private static void findMentee(Task<DataSnapshot> task, List<String> results) {
+    private static void findMentee(Task<DataSnapshot> task, List<String> results, CompletableFuture<List<String>> future) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data/UserData");
 
         Integer currentSchoolYear = task.getResult().child("Year").getValue(Integer.class);
@@ -534,6 +552,7 @@ public class DatabaseFunctions{
                             }
                         }
                     }
+                    future.complete(results);
                 }
             }
         });
@@ -544,8 +563,8 @@ public class DatabaseFunctions{
      *
      * @param userId the userId of the current user conducting the search
      */
-    public static void algorithmStudyBuddy(String userId, HashMap<String, Integer> results) {
-        Log.d("firebase", "i got here");
+    public static CompletableFuture<HashMap<String, Integer>> algorithmStudyBuddy(String userId, HashMap<String, Integer> results) {
+        CompletableFuture<HashMap<String, Integer>> future = new CompletableFuture<>();
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         mDatabase.child("UserData").child(userId).get()
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -555,11 +574,11 @@ public class DatabaseFunctions{
                         }
                         else {
                             Log.d("firebase", "Found current user");
-                            findStudyBuddy(task, results);
+                            findStudyBuddy(task, results, future);
                         }
                     }
                 });
-
+        return future;
     }
 
     /**
@@ -567,7 +586,7 @@ public class DatabaseFunctions{
      *
      * @param task the data snapshot of the user info of the current user.
      */
-    private static void findStudyBuddy(Task<DataSnapshot> task, HashMap<String, Integer> results) {
+    private static void findStudyBuddy(Task<DataSnapshot> task, HashMap<String, Integer> results, CompletableFuture<HashMap<String, Integer>> future) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data/UserData");
 
         HashMap<String, String> currCourses = (HashMap<String, String>) task.getResult().child("StudyBuddyCourses").getValue(Object.class);
@@ -628,6 +647,7 @@ public class DatabaseFunctions{
                         //}
 
                     }
+                    future.complete(results);
                 }
             }
         });
