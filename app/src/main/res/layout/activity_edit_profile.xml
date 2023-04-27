@@ -13,7 +13,7 @@
             android:layout_width="240dp"
             android:layout_height="240dp"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/portrait_placeholder" />
+            android:src="@android:color/transparent" />
 
         <TextView
             android:id="@+id/name_label"
@@ -44,6 +44,21 @@
             android:enabled="false"
             android:gravity="center"
             android:text="Major" />
+
+        <TextView
+            android:id="@+id/year_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Year:" />
+
+        <EditText
+            android:id="@+id/year_field"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@drawable/custom_edit_text_cut"
+            android:enabled="false"
+            android:gravity="center"
+            android:text="Year" />
 
         <TextView
             android:id="@+id/birthdate_label"

@@ -7,29 +7,32 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.concurrent.CompletableFuture;
+
 public class EditProfileActivity extends AppCompatActivity {
     private boolean editMode = false;
     private ImageView pfp;
+    private EditText name_EditText, year_EditText, dob_EditText, major_EditText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-        // set pfp object
-        pfp = findViewById(R.id.profile_picture);
-        /* set image*/
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        String uid = currentUser.getUid();
 
-        DatabaseFunctions.downloadPFP(uid, pfp);
+        // initUI
+        initializeUI();
+        /* set image*/
+        setUserDataFromDatabase();
     }
 
     @Override
@@ -148,8 +151,30 @@ public class EditProfileActivity extends AppCompatActivity {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         String uid = currentUser.getUid();
-
+        UserInfo currUser = new UserInfo();
         DatabaseFunctions.downloadPFP(uid, pfp);
+        pfp.setVisibility(View.VISIBLE);
+
+//        CompletableFuture<UserInfo> currUserData = DatabaseFunctions.readUserData(uid, currUser);
+//        currUserData.thenAccept(user -> {
+//            name_EditText.setText(user.getUsername());
+//            name_EditText.setVisibility(View.VISIBLE);
+//            major_EditText.setText(user.getMajor());
+//            major_EditText.setVisibility(View.VISIBLE);
+//        });
         // TODO
+    }
+
+    private void initializeUI() {
+        pfp = findViewById(R.id.profile_picture);
+        pfp.setVisibility(View.INVISIBLE);
+        name_EditText = findViewById(R.id.name_field);
+        name_EditText.setVisibility(View.INVISIBLE);
+        major_EditText = findViewById(R.id.major_field);
+        major_EditText.setVisibility(View.INVISIBLE);
+        dob_EditText = findViewById(R.id.birthdate_field);
+        dob_EditText.setVisibility(View.INVISIBLE);
+        year_EditText = findViewById(R.id.year_field);
+        year_EditText.setVisibility(View.INVISIBLE);
     }
 }
