@@ -56,7 +56,6 @@ public class ProfileCreationActivity extends AppCompatActivity {
 
 
         initializeUI();
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         isLookingForMentorCB.setOnCheckedChangeListener((buttonView, isChecked) -> {
             // user has checked yes on looking for mentor
@@ -146,7 +145,6 @@ public class ProfileCreationActivity extends AppCompatActivity {
                         connectionTypes.add("Mentee");
                     }
                     Intent myIntent = new Intent(ProfileCreationActivity.this, ApplicationWrapperActivity.class);
-                    // TODO create user
                     MeetingType userMeetingPref;
                     if(physical && virtual){
                         userMeetingPref = MeetingType.BOTH;
@@ -164,6 +162,7 @@ public class ProfileCreationActivity extends AppCompatActivity {
                     DatabaseFunctions.writeNewUser(uid, name, email, major, connectionTypes, bio, Year.valueOf(year), userMeetingPref, dob);
                     // Upload PFP
                     DatabaseFunctions.uploadPFP(uid, imagePfp);
+                    // TODO create user for CJ
                     startActivity(myIntent);
                 }
                 // otherwise send them to a course selection page
@@ -172,13 +171,25 @@ public class ProfileCreationActivity extends AppCompatActivity {
                     // pack all needed information
                     myIntent.putExtra("name", name);
                     myIntent.putExtra("major", major);
+                    myIntent.putExtra("year", year);
                     myIntent.putExtra("dob", dob);
-                    myIntent.putExtra("image_pfp", imagePfp);
-                    myIntent.putExtra("mentor", mentor);
-                    myIntent.putExtra("mentee", mentee);
-                    myIntent.putExtra("studybuddy", studybuddy);
+                    myIntent.putExtra("bio", bio);
+
+                    // build connection types
+                    List<String> connectionTypes = new ArrayList<>();
+                    if(mentor == 1){
+                        connectionTypes.add("Mentor");
+                    }
+                    if(mentee == 1){
+                        connectionTypes.add("Mentee");
+                    }
+                    if(studybuddy == 1){
+                        connectionTypes.add("StudyBuddy");
+                    }
+                    myIntent.putStringArrayListExtra("connectionType", (ArrayList<String>) connectionTypes);
                     myIntent.putExtra("physical", physical);
                     myIntent.putExtra("virtual", virtual);
+                    myIntent.putExtra("image_pfp", imagePfp);
                     startActivity(myIntent);
                 }
             }

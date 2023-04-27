@@ -15,7 +15,6 @@ public class DashboardActivity extends AppCompatActivity{
         mAuth = FirebaseAuth.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-        // TODO build out dashboard information
         // print user id
         FirebaseUser user = mAuth.getCurrentUser();
         Log.d("2", user.getEmail());

@@ -234,7 +234,7 @@ public class ProfileCreationGeneralInfoActivity extends AppCompatActivity {
             intent.putExtra("year", yearSelected);
             intent.putExtra("bio", userBio);
             intent.putExtra("image_pfp", selectedImageBitmap);
-            Log.i("Intent Extras", mName + "\n" + mMajor + "\n" + bday + "\n" + yearSelected + "\n" + userBio);
+//            Log.i("Intent Extras", mName + "\n" + mMajor + "\n" + bday + "\n" + yearSelected + "\n" + userBio);
             startActivity(intent);
 
 
