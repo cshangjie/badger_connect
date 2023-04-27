@@ -28,7 +28,8 @@ enum Year {
     }
 }
 enum MeetingType {
-    IN_PERSON, VIRTUAL;
+    IN_PERSON, VIRTUAL, BOTH
+
 }
 
 @IgnoreExtraProperties
@@ -50,16 +51,23 @@ public class UserInfo {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public UserInfo(String username, String email, String major,
-                    List<String> connectionTypes, String bio, Year year) {
-        this.username = username;
+    public UserInfo(String username, String email, String major, List<Courses> courses, MeetingType meetingType) {
         this.email = email;
+        this.username = username;
         this.major = major;
-        for (String connectionType : connectionTypes) {
-            this.connectionTypes.put(connectionType, true);
+        if (courses != null) {
+            for (int i = 0; i < courses.size(); i++) {
+                if (i == (courses.size() - 1)) {
+                    this.courses += courses.get(i).toString();
+                } else {
+                    this.courses += courses.get(i).toString();
+                    this.courses += ",";
+                }
+            }
         }
-        this.bio = bio;
-        this.year = year;
+        if(meetingType != null) {
+            this.meetingType = meetingType.toString();
+        }
     }
 
     public UserInfo(String username, String email, String major, int numCourses,

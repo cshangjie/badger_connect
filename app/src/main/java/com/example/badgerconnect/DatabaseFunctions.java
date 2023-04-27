@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -91,9 +90,9 @@ public class DatabaseFunctions{
      * @param bio is a description that the user inputs to talk about themselves
      * @param year the school year of the user
      */
-    public static void writeNewUser(String userId, String username, String email,
-                                    String major, int numCourses, List<String> studyBuddyCourses,
-                                    List<String> connectionTypes, String bio, Year year) {
+
+    public static void writeNewUser(String userId, String name, String email, String major, List<Courses> courses, MeetingType meetingType) {
+
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
         UserInfo user = new UserInfo(username, email, major, numCourses, studyBuddyCourses, connectionTypes, bio, year);
@@ -131,9 +130,7 @@ public class DatabaseFunctions{
      * @param bio is a description that the user inputs to talk about themselves
      * @param year the school year of the user
      */
-    public static void updateUser(String userId, String username, String email,
-                                  String major, int numCourses, List<String> studyBuddyCourses,
-                                  List<String> connectionTypes, String bio, Year year) {
+    public static void updateUser(String userId, String name, String email, String major, List<Courses> courses, MeetingType meetingType) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
         Map<String, Object> childUpdates = new HashMap<>();
@@ -205,9 +202,18 @@ public class DatabaseFunctions{
      * @param task the user information
      */
     private static void afterRead(Task<DataSnapshot> task) {
-        String name = String.valueOf(task.getResult().child("Username").getValue());
-        String email = String.valueOf(task.getResult().child("Email").getValue());
-        String major = String.valueOf(task.getResult().child("Major").getValue());
+
+        String name = String.valueOf(task.getResult().child("username").getValue());
+        String email = String.valueOf(task.getResult().child("email").getValue());
+        String major = String.valueOf(task.getResult().child("major").getValue());
+        MeetingType meetingType = MeetingType.valueOf(String.valueOf(task.getResult().child("meeting type").getValue()));
+        String[] list_courses = String.valueOf(task.getResult().child("courses").getValue()).split(",");
+        List<Courses> courses = new ArrayList<>();
+        for(String course : list_courses) {
+            courses.add(Courses.valueOf(course));
+        }
+        UserInfo user = new UserInfo(name, email, major, courses, meetingType);
+
     }
 
     /**

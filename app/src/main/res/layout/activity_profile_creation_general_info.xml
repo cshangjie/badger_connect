@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_bg"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="26dp"
+    tools:context=".ProfileCreationGeneralInfoActivity">
+
+    <!-- Profile image placeholder -->
+    <FrameLayout
+        android:layout_width="250dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:background="@color/white"
+        android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="Profile Image"
+            android:onClick="updatePic"
+            android:scaleType="centerCrop"
+            android:src="@drawable/monkey" />
+
+    </FrameLayout>
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/custom_edit_cut_text"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:hint="Name"
+        android:imeOptions="actionDone"
+        android:inputType="textPersonName"
+        android:textColorHint="@color/colorPrimaryDark"
+        android:textSize="20sp" />
+
+    <AutoCompleteTextView
+        android:id="@+id/major"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/custom_edit_cut_text"
+        android:hint="Major"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:textColor="@color/colorPrimaryDark"
+        android:textColorHint="@color/colorPrimaryDark"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/datePickerEditText"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/custom_edit_cut_text"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:hint="Birthdate (mm/dd/year)"
+        android:inputType="date"
+        android:textColorHint="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        android:focusable="true"
+        />
+
+    <Button
+        android:id="@+id/continueButton"
+        android:layout_width="128dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="@color/colorAccent"
+        android:text="Continue"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold" />
+
+</LinearLayout>
