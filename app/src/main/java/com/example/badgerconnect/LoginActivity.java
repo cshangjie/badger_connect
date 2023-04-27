@@ -39,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
+            //TODO: Change back to original version
             public void onClick(View v) {
                 loginUserAccount();
             }
