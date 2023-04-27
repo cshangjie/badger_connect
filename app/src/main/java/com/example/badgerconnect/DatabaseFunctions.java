@@ -287,6 +287,44 @@ public class DatabaseFunctions{
     }
 
     /**
+     * Reject a user and they will not show up on recommended connections anymore
+     *
+     * @param userId of the current user
+     * @param rejectedUserId of the user who is to be rejected
+     */
+    public static void addRejection(String userId, String rejectedUserId) {
+        mDatabase = FirebaseDatabase.getInstance().getReference("Data");
+        String key = userId;
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/UserData/" + key + "/RejectionList/" + rejectedUserId, true);
+        mDatabase.updateChildren(childUpdates)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("firebase", "Data updated");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("firebase", "Error getting data");
+                    }
+                });
+    }
+
+    /**
+     * Undo the rejection of a user so they show up on recommended connections
+     *
+     * @param userId of the current user
+     * @param rejectedUserId of the user to be un-rejected
+     */
+    public static void removeRejection(String userId, String rejectedUserId) {
+        mDatabase = FirebaseDatabase.getInstance().getReference("Data");
+        mDatabase.child("UserData").child(userId).child("RejectionList").child(rejectedUserId).removeValue();
+    }
+
+    /**
      * Uploads a picture to the database as a profile picture
      *
      * @param bitmap the bitmap of the image being uploaded
@@ -348,7 +386,7 @@ public class DatabaseFunctions{
      *
      * @param userId the userId of the current user conducting the search
      */
-    public static void algorithmMentor(String userId) {
+    public static void algorithmMentor(String userId, List<String> results) {
 
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         mDatabase.child("UserData").child(userId).get()
@@ -359,7 +397,7 @@ public class DatabaseFunctions{
                         }
                         else {
                             Log.d("firebase", "Found current user");
-                            findMentor(task);
+                            findMentor(task, results);
                         }
                     }
                 });
@@ -371,10 +409,12 @@ public class DatabaseFunctions{
      *
      * @param task the data snapshot of the user info of the current user.
      */
-    private static void findMentor(Task<DataSnapshot> task) {
+    private static void findMentor(Task<DataSnapshot> task, List<String> results) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data/UserData");
 
         Integer currentSchoolYear = task.getResult().child("Year").getValue(Integer.class);
+
+        HashMap<String, Boolean> rejectList = (HashMap<String, Boolean>) task.getResult().child("RejectionList").getValue(Object.class);
 
         String major = String.valueOf(task.getResult().child("Major").getValue());
 
@@ -397,10 +437,11 @@ public class DatabaseFunctions{
                             int schoolYear = snapshot.child("Year").getValue(Integer.class);
                             HashMap<String, Boolean> connectionType = snapshot.child("ConnectionTypes").getValue(HashMap.class);
                             // Perform additional filtering on the client side
-                            if ((schoolYear > currentSchoolYear) && connectionType.get("Mentor")) {
+                            if ((schoolYear > currentSchoolYear) && connectionType.get("Mentor") && !rejectList.containsKey(userId)) {
                                 // User has the same major and is in a higher school year
                                 // Handle the userId as needed (e.g. add to a list, display in UI, etc.)
                                 Log.d("Users", userId);
+                                results.add(userId);
                             }
                         }
                     }
@@ -414,7 +455,7 @@ public class DatabaseFunctions{
      *
      * @param userId the userId of the current user conducting the search
      */
-    public static void algorithmMentee(String userId) {
+    public static void algorithmMentee(String userId, List<String> results) {
 
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         mDatabase.child("UserData").child(userId).get()
@@ -425,7 +466,7 @@ public class DatabaseFunctions{
                         }
                         else {
                             Log.d("firebase", "Found current user");
-                            findMentee(task);
+                            findMentee(task, results);
                         }
                     }
                 });
@@ -437,10 +478,12 @@ public class DatabaseFunctions{
      *
      * @param task the data snapshot of the user info of the current user.
      */
-    private static void findMentee(Task<DataSnapshot> task) {
+    private static void findMentee(Task<DataSnapshot> task, List<String> results) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data/UserData");
 
         Integer currentSchoolYear = task.getResult().child("Year").getValue(Integer.class);
+
+        HashMap<String, Boolean> rejectList = (HashMap<String, Boolean>) task.getResult().child("RejectionList").getValue(Object.class);
 
         String major = String.valueOf(task.getResult().child("Major").getValue());
 
@@ -463,10 +506,11 @@ public class DatabaseFunctions{
                             int schoolYear = snapshot.child("Year").getValue(Integer.class);
                             HashMap<String, Boolean> connectionType = (HashMap<String, Boolean>) snapshot.child("ConnectionTypes").getValue(Object.class);
                             // Perform additional filtering on the client side
-                            if ((schoolYear < currentSchoolYear) && connectionType.get("Mentee")) {
+                            if ((schoolYear < currentSchoolYear) && connectionType.get("Mentee") && !rejectList.containsKey(userId)) {
                                 // User has the same major and is in a higher school year
                                 // Handle the userId as needed (e.g. add to a list, display in UI, etc.)
                                 Log.d("Users", userId);
+                                results.add(userId);
                             }
                         }
                     }
@@ -480,7 +524,7 @@ public class DatabaseFunctions{
      *
      * @param userId the userId of the current user conducting the search
      */
-    public static void algorithmStudyBuddy(String userId) {
+    public static void algorithmStudyBuddy(String userId, HashMap<String, Integer> results) {
 
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         mDatabase.child("UserData").child(userId).get()
@@ -491,7 +535,7 @@ public class DatabaseFunctions{
                         }
                         else {
                             Log.d("firebase", "Found current user");
-                            findStudyBuddy(task);
+                            findStudyBuddy(task, results);
                         }
                     }
                 });
@@ -503,16 +547,12 @@ public class DatabaseFunctions{
      *
      * @param task the data snapshot of the user info of the current user.
      */
-    private static void findStudyBuddy(Task<DataSnapshot> task) {
+    private static void findStudyBuddy(Task<DataSnapshot> task, HashMap<String, Integer> results) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data/UserData");
 
         HashMap<String, String> currCourses = (HashMap<String, String>) task.getResult().child("StudyBuddyCourses").getValue(Object.class);
 
-        //Query findStudyBuddy = mDatabase.orderByValue().equalTo("ECE 353");
-
-        //Query findStudyBuddy = mDatabase.orderByChild("ConnectionTypes/StudyBuddy").equalTo(true).limitToFirst(50);
-        //Query findStudyBuddy = mDatabase.orderByChild("StudyBuddyCourses")
-        //        .startAt("ECE 353").endAt("ECE 353\uf8ff");
+        HashMap<String, Boolean> rejectList = (HashMap<String, Boolean>) task.getResult().child("RejectionList").getValue(Object.class);
 
         // Query to retrieve data in batches
         Query findStudyBuddy = mDatabase.orderByChild("ConnectionTypes/StudyBuddy")
@@ -531,29 +571,29 @@ public class DatabaseFunctions{
                     Log.d("firebase", String.valueOf(innerTask.getResult().getValue()));
                     DataSnapshot dataSnapshot = innerTask.getResult();
                     if (dataSnapshot.exists()) {
-                        HashMap<String, Integer> usersBySimilarity = new HashMap<>();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             // Retrieve the user data for each user
                             String userId = snapshot.getKey();
-                            if(!userId.equals(task.getResult().getKey())) {
+                            if(!userId.equals(task.getResult().getKey()) && !rejectList.containsKey(userId)) {
                                 HashMap<String, String> courses = (HashMap<String, String>) snapshot.child("StudyBuddyCourses").getValue(Object.class);
                                 // Perform additional filtering on the client side
                                 int similarityRating = findSimilarityRating(currCourses, courses);
-                                usersBySimilarity.put(userId, similarityRating);
+                                results.put(userId, similarityRating);
                             }
                         }
                         // Convert the HashMap to a List of Map.Entry objects
-                        List<Map.Entry<String, Integer>> entryList = new ArrayList<>(usersBySimilarity.entrySet());
+                        //List<Map.Entry<String, Integer>> entryList = new ArrayList<>(usersBySimilarity.entrySet());
 
                         // Sort the List in descending order based on similarity rating using a lambda expression
-                        entryList.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+                        //entryList.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
 
                         // Retrieve the sorted user IDs
-                        List<String> sortedUserIds = new ArrayList<>();
-                        for (Map.Entry<String, Integer> entry : entryList) {
-                            sortedUserIds.add(entry.getKey());
-                            Log.d("Users", entry.getKey());
-                        }
+                        //List<String> sortedUserIds = new ArrayList<>();
+                        //for (Map.Entry<String, Integer> entry : entryList) {
+                        //    sortedUserIds.add(entry.getKey());
+                        //    Log.d("Users", entry.getKey());
+                        //}
+
                     }
                 }
             }
