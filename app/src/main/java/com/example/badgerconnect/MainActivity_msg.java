@@ -81,19 +81,15 @@ public class MainActivity_msg extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     // Sign in success, update UI with the signed-in user's information
-                    //System.out.println("Sign in success");
                     FirebaseUser user = auth.getCurrentUser();
                     // Do something with the user object
                 } else {
                     // If sign in fails, display a message to the user.
-                   // System.out.println("Sign in failed");
                     Toast.makeText(MainActivity_msg.this, "Authentication failed.",
                             Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
-        //System.out.println("Past sign in");
 
 
         firebaseUser=FirebaseAuth.getInstance().getCurrentUser();
