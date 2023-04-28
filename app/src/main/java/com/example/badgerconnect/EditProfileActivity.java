@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,7 +31,9 @@ public class EditProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_profile);
 
         // initUI
+        Log.i("","INIT UI");
         initializeUI();
+        Log.i("","CALLING SET USER");
         /* set image*/
         setUserDataFromDatabase();
     }
@@ -154,14 +157,37 @@ public class EditProfileActivity extends AppCompatActivity {
         UserInfo currUser = new UserInfo();
         DatabaseFunctions.downloadPFP(uid, pfp);
         pfp.setVisibility(View.VISIBLE);
-
-//        CompletableFuture<UserInfo> currUserData = DatabaseFunctions.readUserData(uid, currUser);
-//        currUserData.thenAccept(user -> {
-//            name_EditText.setText(user.getUsername());
-//            name_EditText.setVisibility(View.VISIBLE);
-//            major_EditText.setText(user.getMajor());
-//            major_EditText.setVisibility(View.VISIBLE);
-//        });
+        Log.i("","hello i am here");
+        CompletableFuture<UserInfo> currUserData = DatabaseFunctions.readUserData(uid, currUser);
+        currUserData.thenAccept(user -> {
+            name_EditText.setText(user.getUsername());
+            name_EditText.setVisibility(View.VISIBLE);
+            major_EditText.setText(user.getMajor());
+            major_EditText.setVisibility(View.VISIBLE);
+            int userYear = user.getYear().getNumVal();
+            String yearString;
+            switch (userYear) {
+                case 1:
+                    yearString = "Freshman";
+                    break;
+                case 2:
+                    yearString = "Sophomore";
+                    break;
+                case 3:
+                    yearString = "Junior";
+                    break;
+                case 4:
+                    yearString = "Senior";
+                    break;
+                default:
+                    yearString = "uh oh";
+                    break;
+            }
+            year_EditText.setText(userYear);
+            year_EditText.setVisibility(View.VISIBLE);
+//            dob_EditText.setText(user.getDateOfBirth());
+//            year_EditText.setVisibility(View.VISIBLE);
+        });
         // TODO
     }
 
