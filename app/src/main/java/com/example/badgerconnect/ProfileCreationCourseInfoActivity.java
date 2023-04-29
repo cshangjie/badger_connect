@@ -3,6 +3,8 @@ package com.example.badgerconnect;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -13,10 +15,16 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
@@ -31,6 +39,7 @@ public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_profile_creation_courses);
         // Get the ActionBar instance
         ActionBar actionBar = getSupportActionBar();
@@ -39,14 +48,22 @@ public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         initializeUI();
-        // Retrieve the extras from the intent
-        Bundle extras = getIntent().getExtras();
 
-        if (extras != null) {
-            // Retrieve the name, major, and date of birth from the extras
-            name = extras.getString("name");
-            major = extras.getString("major");
-            dob = extras.getString("dob");
+        // retrieve extras
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("name");
+        String major = intent.getStringExtra("major");
+        String year = intent.getStringExtra("year");
+        String dob = intent.getStringExtra("dob");
+        String bio = intent.getStringExtra("bio");
+        Bitmap imagePfp = (Bitmap) intent.getParcelableExtra("image_pfp");
+        List<String> connectionTypes = getIntent().getStringArrayListExtra("connectionType");
+        boolean physical = getIntent().getBooleanExtra("physical", false);
+        boolean virtual = getIntent().getBooleanExtra("virtual", false);
+
+        if (!physical && !virtual) {
+            Toast.makeText(this, "Both In-Person or Virtual meeting preferences were unselected.", Toast.LENGTH_SHORT).show();
+            finish(); // Finish the activity and return to the previous one
         }
 
 
@@ -88,8 +105,8 @@ public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
             // iterate over the autoCompleteContainer to add user entries
             int course_count = autocompleteContainer.getChildCount();
             String[] userEntries = new String[course_count];
-            for(int i = 0; i < course_count; i++){
-                View childView  = autocompleteContainer.getChildAt(i);
+            for (int i = 0; i < course_count; i++) {
+                View childView = autocompleteContainer.getChildAt(i);
                 if (childView instanceof AutoCompleteTextView) {
                     AutoCompleteTextView autocompleteTextView = (AutoCompleteTextView) childView;
                     String userText = autocompleteTextView.getText().toString();
@@ -102,10 +119,9 @@ public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
             Set<String> courseSet = new HashSet<>(Arrays.asList(courseList));
 
             for (int i = 0; i < userEntries.length; i++) {
-                Log.i("0", userEntries[i]);
-                Log.i("1", String.valueOf(courseSet.contains(userEntries[i])));
-
-                if(!courseSet.contains(userEntries[i])){
+//                Log.i("0", userEntries[i]);
+//                Log.i("1", String.valueOf(courseSet.contains(userEntries[i])));
+                if (!courseSet.contains(userEntries[i])) {
                     // Request focus on the corresponding AutoCompleteTextView
                     View invalidView = autocompleteContainer.getChildAt(i);
                     if (invalidView instanceof AutoCompleteTextView) {
@@ -118,8 +134,26 @@ public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
             }
 
             // user entries are in the set (aka valid)
-            // TODO send to db
+            // create user in DB TODO
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            String uid = currentUser.getUid();
+            String email = currentUser.getEmail();
 
+            MeetingType meetingType;
+            if(physical && virtual){
+                meetingType = MeetingType.BOTH;
+            }else if(physical){
+                meetingType = MeetingType.IN_PERSON;
+            }else{
+                meetingType = MeetingType.VIRTUAL;
+            }
+
+            DatabaseFunctions.writeNewUser(uid, name, email,major, course_count, Arrays.asList(userEntries), connectionTypes, bio, Year.valueOf(year), meetingType, dob);
+            DatabaseFunctions.uploadPFP(uid,imagePfp);
+            Log.i("User Written to DB", "yeeeehaw");
+            Intent myIntent = new Intent(ProfileCreationCourseInfoActivity.this, ApplicationWrapperActivity.class);
+            startActivity(myIntent);
         });
 
 

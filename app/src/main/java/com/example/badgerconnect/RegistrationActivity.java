@@ -23,6 +23,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private ProgressBar progressBar;
 
     private FirebaseAuth mAuth;
+    private Button loginBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +37,13 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 registerNewUser();
+            }
+        });
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -53,6 +61,11 @@ public class RegistrationActivity extends AppCompatActivity {
         }
         if (TextUtils.isEmpty(password)) {
             Toast.makeText(getApplicationContext(), "Please enter password!", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(!email.contains("@wisc.edu")){
+            emailTV.setError("Please use a wisc.edu email.");
+            emailTV.requestFocus();
             return;
         }
 
@@ -80,5 +93,6 @@ public class RegistrationActivity extends AppCompatActivity {
         passwordTV = findViewById(R.id.password);
         regBtn = findViewById(R.id.register);
         progressBar = findViewById(R.id.progressBar);
+        loginBtn = findViewById(R.id.btnLogin);
     }
 }

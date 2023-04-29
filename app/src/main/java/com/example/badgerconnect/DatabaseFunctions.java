@@ -267,7 +267,10 @@ public class DatabaseFunctions{
         String email = String.valueOf(task.getResult().child("Email").getValue());
         String major = String.valueOf(task.getResult().child("Major").getValue());
         HashMap<String, String> studyBuddyCoursesHash = (HashMap<String, String>) task.getResult().child("StudyBuddyCourses").getValue(Object.class);
-        List<String> studyBuddyCourses = new ArrayList<String>(studyBuddyCoursesHash.values());
+        List<String> studyBuddyCourses = null;
+        if(studyBuddyCoursesHash != null) {
+            studyBuddyCourses = new ArrayList<String>(studyBuddyCoursesHash.values());
+        }
         HashMap<String, Boolean> connectionTypes = (HashMap<String, Boolean>) task.getResult().child("ConnectionTypes").getValue(Object.class);
         List<String> connectTypes = new ArrayList<>();
         for(String connectionType : connectionTypes.keySet()) {

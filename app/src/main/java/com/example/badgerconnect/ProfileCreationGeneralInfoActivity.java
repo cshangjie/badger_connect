@@ -9,11 +9,15 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.Manifest;
 
@@ -26,9 +30,12 @@ import androidx.core.content.ContextCompat;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 
 public class ProfileCreationGeneralInfoActivity extends AppCompatActivity {
@@ -40,6 +47,14 @@ public class ProfileCreationGeneralInfoActivity extends AppCompatActivity {
     private ImageView profileImg;
     private int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     private Bitmap selectedImageBitmap = null;
+    private Spinner yearSpinner;
+    private String yearSelected;
+    private String userBio = "";
+
+    private String mName, mMajor;
+    private Date mBirthdate = null;
+    private SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,17 +63,27 @@ public class ProfileCreationGeneralInfoActivity extends AppCompatActivity {
         initializeUI();
 
 
-        continueBtn.setOnClickListener(new View.OnClickListener() {
-            String mName, mMajor;
-            Date mBirthdate = null;
+        yearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                yearSelected = parent.getItemAtPosition(position).toString();
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+
+
+        continueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // check the birthdate, name and major for strings.
                 mName = nameField.getText().toString().trim();
                 mMajor = majorField.getText().toString().trim();
                 String dateString = birthdayField.getText().toString();
-                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+//                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
 
                 try {
                     mBirthdate = format.parse(dateString);
@@ -67,7 +92,7 @@ public class ProfileCreationGeneralInfoActivity extends AppCompatActivity {
                 }
                 // if any are null/empty -- show the corresponding error msg
                 // check the profile picture
-                if(selectedImageBitmap == null){
+                if (selectedImageBitmap == null) {
                     Toast.makeText(getApplicationContext(), "Please add a profile picture", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -80,6 +105,21 @@ public class ProfileCreationGeneralInfoActivity extends AppCompatActivity {
                 if (mMajor.isBlank()) {
                     majorField.setError("Major is required!");
                     majorField.requestFocus();
+                    return;
+                }
+
+                // major validity checks
+                String[] majorList = getResources().getStringArray(R.array.bs_majors);
+                Set<String> majorSet = new HashSet<>(Arrays.asList(majorList));
+                if (!majorSet.contains(mMajor)) {
+                    majorField.requestFocus();
+                    majorField.setError("Invalid major");
+                    return;
+
+                }
+                if (yearSelected == null || yearSelected.isBlank() || yearSelected.isEmpty()) {
+                    yearSpinner.requestFocus();
+                    Toast.makeText(getApplicationContext(), "Please select your current year", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (dateString.isBlank()) {
@@ -107,16 +147,10 @@ public class ProfileCreationGeneralInfoActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "You must be at least 13 years old", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                // prompt for bio
+                BioDialogFragment dialog = new BioDialogFragment();
+                dialog.show(getSupportFragmentManager(), "TextEntryDialog");
 
-
-                // Passed all information Validation, send the information to the next activity.
-                Intent intent = new Intent(ProfileCreationGeneralInfoActivity.this, ProfileCreationActivity.class);
-                // bundle all information in this activity to the next
-                intent.putExtra("name", mName);
-                intent.putExtra("major", mMajor);
-                intent.putExtra("dob", mBirthdate);
-                intent.putExtra("image_pfp", selectedImageBitmap);
-                startActivity(intent);
             }
         });
 
@@ -179,11 +213,49 @@ public class ProfileCreationGeneralInfoActivity extends AppCompatActivity {
         }
     });
 
+    public void onTextEntered(String inputText) {
+        if (inputText == null) {
+            userBio = null;
+            // do nothing
+        } else {
+            if (inputText.isBlank() || inputText.isEmpty()) {
+                userBio = "";
+            } else {
+                userBio = inputText;
+            }
+
+            // Passed all information Validation, send the information to the next activity.
+            Intent intent = new Intent(ProfileCreationGeneralInfoActivity.this, ProfileCreationActivity.class);
+            // bundle all information in this activity to the next
+            String bday = format.format(mBirthdate);
+            intent.putExtra("name", mName);
+            intent.putExtra("major", mMajor);
+            intent.putExtra("dob", bday);
+            intent.putExtra("year", yearSelected);
+            intent.putExtra("bio", userBio);
+            intent.putExtra("image_pfp", selectedImageBitmap);
+//            Log.i("Intent Extras", mName + "\n" + mMajor + "\n" + bday + "\n" + yearSelected + "\n" + userBio);
+            startActivity(intent);
+
+
+        }
+//        Log.i("123123123123123123", inputText);
+    }
+
     private void initializeUI() {
         nameField = findViewById(R.id.name);
         majorField = findViewById(R.id.major);
+        ArrayAdapter<CharSequence> majorAdapter = ArrayAdapter.createFromResource(this, R.array.bs_majors, android.R.layout.simple_dropdown_item_1line);
+        majorField.setAdapter(majorAdapter);
+
+
         birthdayField = findViewById(R.id.datePickerEditText);
         continueBtn = findViewById(R.id.continueButton);
         profileImg = findViewById(R.id.profileImage);
+
+        yearSpinner = findViewById(R.id.year_spinner);
+        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(this, R.array.years_array, android.R.layout.simple_spinner_item);
+        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        yearSpinner.setAdapter(spinAdapter);
     }
 }
