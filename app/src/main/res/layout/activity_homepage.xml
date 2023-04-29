@@ -10,7 +10,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomepageActivity">
+    tools:context=".HomepageFragment">
 
     <LinearLayout
     android:layout_width="match_parent"
@@ -56,7 +56,6 @@
                 app:cardCornerRadius="12dp"
                 android:layout_margin="12dp"
                 android:backgroundTint="@color/colorPrimaryDark"
-                android:onClick="pullUserDataBox1"
                 android:visibility="visible">
 
                 <LinearLayout
@@ -93,7 +92,6 @@
                 app:cardCornerRadius="12dp"
                 android:layout_margin="12dp"
                 android:backgroundTint="@color/colorPrimaryDark"
-                android:onClick="pullUserDataBox2"
                 android:visibility="visible">
 
                 <LinearLayout
@@ -130,7 +128,6 @@
                 app:cardCornerRadius="12dp"
                 android:layout_margin="12dp"
                 android:backgroundTint="@color/colorPrimaryDark"
-                android:onClick="pullUserDataBox3"
                 android:visibility="visible">
 
                 <LinearLayout
@@ -167,7 +164,6 @@
                 app:cardCornerRadius="12dp"
                 android:layout_margin="12dp"
                 android:backgroundTint="@color/colorPrimaryDark"
-                android:onClick="pullUserDataBox4"
                 android:visibility="visible">
 
                 <LinearLayout
@@ -204,7 +200,6 @@
                 app:cardCornerRadius="12dp"
                 android:layout_margin="12dp"
                 android:backgroundTint="@color/colorPrimaryDark"
-                android:onClick="pullUserDataBox5"
                 android:visibility="visible">
 
                 <LinearLayout
@@ -241,7 +236,6 @@
                 app:cardCornerRadius="12dp"
                 android:layout_margin="12dp"
                 android:backgroundTint="@color/colorPrimaryDark"
-                android:onClick="pullUserDataBox6"
                 android:visibility="visible">
 
                 <LinearLayout
