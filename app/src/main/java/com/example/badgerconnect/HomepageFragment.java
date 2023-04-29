@@ -11,8 +11,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
@@ -21,27 +19,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.badgerconnect.Adapter.UserAdapter;
-import com.example.badgerconnect.Model.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +40,6 @@ public class HomepageFragment extends Fragment {
     ArrayList<UserInfo> userInfos = new ArrayList<>(6);
     ArrayList<String> userIds = new ArrayList<>(6);
     SwipeRefreshLayout swipeRefreshLayout;
-    FirebaseUser firebaseUser;
     HashMap<String, String> sortMap = new HashMap<>();
     HashMap<String, String> prevOp = new HashMap<String, String>() {{
         put("ConnectionType", "null");
@@ -64,13 +48,13 @@ public class HomepageFragment extends Fragment {
     HashMap<String, Integer> foundUsersStudyBuddy= new HashMap<>();
 
     //TODO:Add actual firebase userId
-    //firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-    String currUserId = "000003";
+    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+    String currUserId = firebaseUser.getUid();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_homepage, container, false);
+        View view = inflater.inflate(R.layout.fragment_homepage, container, false);
         initializeUI(view);
 
         return view;
@@ -216,7 +200,11 @@ public class HomepageFragment extends Fragment {
 
             // Get references to the views in the dialog layout
             ImageView profilePictureImageView = dialogView.findViewById(R.id.user_profile_picture);
-            TextView userNameTextView = dialogView.findViewById(R.id.user_name);
+            TextView userNameTextView = dialogView.findViewById(R.id.name_field);
+            TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
+            TextView userYearTextView = dialogView.findViewById(R.id.year_field);
+            TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
+
             Button closeButton = dialogView.findViewById(R.id.close_button);
 
             // Set the views' content based on the selected user
@@ -224,6 +212,9 @@ public class HomepageFragment extends Fragment {
             //TODO: replace the set image view with the actual user's image
             //downloadPFP(userIds.get(0), profilePictureImageView);
             userNameTextView.setText(userInfos.get(0).getUsername());
+            userMajorTextView.setText(userInfos.get(0).getMajor());
+            userYearTextView.setText(String.valueOf(userInfos.get(0).getYear()));
+            userBirthdateTextView.setText(userInfos.get(0).getDateOfBirth());
 
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
@@ -255,7 +246,11 @@ public class HomepageFragment extends Fragment {
 
             // Get references to the views in the dialog layout
             ImageView profilePictureImageView = dialogView.findViewById(R.id.user_profile_picture);
-            TextView userNameTextView = dialogView.findViewById(R.id.user_name);
+            TextView userNameTextView = dialogView.findViewById(R.id.name_field);
+            TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
+            TextView userYearTextView = dialogView.findViewById(R.id.year_field);
+            TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
+
             Button closeButton = dialogView.findViewById(R.id.close_button);
 
             // Set the views' content based on the selected user
@@ -263,6 +258,9 @@ public class HomepageFragment extends Fragment {
             //TODO: replace the set image view with the actual user's image
             //downloadPFP(userIds.get(0), profilePictureImageView);
             userNameTextView.setText(userInfos.get(1).getUsername());
+            userMajorTextView.setText(userInfos.get(1).getMajor());
+            userYearTextView.setText(String.valueOf(userInfos.get(1).getYear()));
+            userBirthdateTextView.setText(userInfos.get(1).getDateOfBirth());
 
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
@@ -294,7 +292,11 @@ public class HomepageFragment extends Fragment {
 
             // Get references to the views in the dialog layout
             ImageView profilePictureImageView = dialogView.findViewById(R.id.user_profile_picture);
-            TextView userNameTextView = dialogView.findViewById(R.id.user_name);
+            TextView userNameTextView = dialogView.findViewById(R.id.name_field);
+            TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
+            TextView userYearTextView = dialogView.findViewById(R.id.year_field);
+            TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
+
             Button closeButton = dialogView.findViewById(R.id.close_button);
 
             // Set the views' content based on the selected user
@@ -302,6 +304,9 @@ public class HomepageFragment extends Fragment {
             //TODO: replace the set image view with the actual user's image
             //downloadPFP(userIds.get(0), profilePictureImageView);
             userNameTextView.setText(userInfos.get(2).getUsername());
+            userMajorTextView.setText(userInfos.get(2).getMajor());
+            userYearTextView.setText(String.valueOf(userInfos.get(2).getYear()));
+            userBirthdateTextView.setText(userInfos.get(2).getDateOfBirth());
 
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
@@ -333,7 +338,11 @@ public class HomepageFragment extends Fragment {
 
             // Get references to the views in the dialog layout
             ImageView profilePictureImageView = dialogView.findViewById(R.id.user_profile_picture);
-            TextView userNameTextView = dialogView.findViewById(R.id.user_name);
+            TextView userNameTextView = dialogView.findViewById(R.id.name_field);
+            TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
+            TextView userYearTextView = dialogView.findViewById(R.id.year_field);
+            TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
+
             Button closeButton = dialogView.findViewById(R.id.close_button);
 
             // Set the views' content based on the selected user
@@ -341,6 +350,9 @@ public class HomepageFragment extends Fragment {
             //TODO: replace the set image view with the actual user's image
             //downloadPFP(userIds.get(0), profilePictureImageView);
             userNameTextView.setText(userInfos.get(3).getUsername());
+            userMajorTextView.setText(userInfos.get(3).getMajor());
+            userYearTextView.setText(String.valueOf(userInfos.get(3).getYear()));
+            userBirthdateTextView.setText(userInfos.get(3).getDateOfBirth());
 
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
@@ -372,7 +384,11 @@ public class HomepageFragment extends Fragment {
 
             // Get references to the views in the dialog layout
             ImageView profilePictureImageView = dialogView.findViewById(R.id.user_profile_picture);
-            TextView userNameTextView = dialogView.findViewById(R.id.user_name);
+            TextView userNameTextView = dialogView.findViewById(R.id.name_field);
+            TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
+            TextView userYearTextView = dialogView.findViewById(R.id.year_field);
+            TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
+
             Button closeButton = dialogView.findViewById(R.id.close_button);
 
             // Set the views' content based on the selected user
@@ -380,6 +396,9 @@ public class HomepageFragment extends Fragment {
             //TODO: replace the set image view with the actual user's image
             //downloadPFP(userIds.get(0), profilePictureImageView);
             userNameTextView.setText(userInfos.get(4).getUsername());
+            userMajorTextView.setText(userInfos.get(4).getMajor());
+            userYearTextView.setText(String.valueOf(userInfos.get(4).getYear()));
+            userBirthdateTextView.setText(userInfos.get(4).getDateOfBirth());
 
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
@@ -411,7 +430,11 @@ public class HomepageFragment extends Fragment {
 
             // Get references to the views in the dialog layout
             ImageView profilePictureImageView = dialogView.findViewById(R.id.user_profile_picture);
-            TextView userNameTextView = dialogView.findViewById(R.id.user_name);
+            TextView userNameTextView = dialogView.findViewById(R.id.name_field);
+            TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
+            TextView userYearTextView = dialogView.findViewById(R.id.year_field);
+            TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
+
             Button closeButton = dialogView.findViewById(R.id.close_button);
 
             // Set the views' content based on the selected user
@@ -419,6 +442,9 @@ public class HomepageFragment extends Fragment {
             //TODO: replace the set image view with the actual user's image
             //downloadPFP(userIds.get(0), profilePictureImageView);
             userNameTextView.setText(userInfos.get(5).getUsername());
+            userMajorTextView.setText(userInfos.get(5).getMajor());
+            userYearTextView.setText(String.valueOf(userInfos.get(5).getYear()));
+            userBirthdateTextView.setText(userInfos.get(5).getDateOfBirth());
 
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
