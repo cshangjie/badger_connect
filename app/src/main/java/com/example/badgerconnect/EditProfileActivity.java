@@ -131,18 +131,20 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     public void enableUserFields(boolean val){
-        EditText nameField = findViewById(R.id.name_field);
-        EditText majorField = findViewById(R.id.major_field);
-        EditText birthdateField = findViewById(R.id.birthdate_field);
+//        EditText nameField = findViewById(R.id.name_field);
+//        EditText majorField = findViewById(R.id.major_field);
+//        EditText birthdateField = findViewById(R.id.birthdate_field);
         if(val){
-            nameField.setEnabled(true);
-            majorField.setEnabled(true);
-            birthdateField.setEnabled(true);
+            name_EditText.setEnabled(true);
+            major_EditText.setEnabled(true);
+            dob_EditText.setEnabled(true);
+            // TODO set colors to black
         }
         else{
-            nameField.setEnabled(false);
-            majorField.setEnabled(false);
-            birthdateField.setEnabled(false);
+            name_EditText.setEnabled(false);
+            major_EditText.setEnabled(false);
+            dob_EditText.setEnabled(false);
+            // TODO set colors back to the original
         }
     }
 
@@ -164,29 +166,10 @@ public class EditProfileActivity extends AppCompatActivity {
             name_EditText.setVisibility(View.VISIBLE);
             major_EditText.setText(user.getMajor());
             major_EditText.setVisibility(View.VISIBLE);
-            int userYear = user.getYear().getNumVal();
-            String yearString;
-            switch (userYear) {
-                case 1:
-                    yearString = "Freshman";
-                    break;
-                case 2:
-                    yearString = "Sophomore";
-                    break;
-                case 3:
-                    yearString = "Junior";
-                    break;
-                case 4:
-                    yearString = "Senior";
-                    break;
-                default:
-                    yearString = "uh oh";
-                    break;
-            }
-            year_EditText.setText(userYear);
+            year_EditText.setText(String.valueOf(user.getYear()));
             year_EditText.setVisibility(View.VISIBLE);
-//            dob_EditText.setText(user.getDateOfBirth());
-//            year_EditText.setVisibility(View.VISIBLE);
+            dob_EditText.setText(user.getDateOfBirth());
+            dob_EditText.setVisibility(View.VISIBLE);
         });
         // TODO
     }
