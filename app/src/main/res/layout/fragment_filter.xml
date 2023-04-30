@@ -36,5 +36,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/mentee_checkbox"
         android:layout_marginTop="16dp"
-        android:text="Study Buddy" />
+        android:text="Study Buddy"
+        android:visibility="visible"/>
 </RelativeLayout>

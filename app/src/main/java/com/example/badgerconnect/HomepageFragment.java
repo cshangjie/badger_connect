@@ -5,6 +5,9 @@ import static com.example.badgerconnect.DatabaseFunctions.algorithmMentor;
 import static com.example.badgerconnect.DatabaseFunctions.algorithmStudyBuddy;
 import static com.example.badgerconnect.DatabaseFunctions.downloadPFP;
 import static com.example.badgerconnect.DatabaseFunctions.readUserData;
+import static com.example.badgerconnect.DatabaseFunctions.readWhetherMentee;
+import static com.example.badgerconnect.DatabaseFunctions.readWhetherMentor;
+import static com.example.badgerconnect.DatabaseFunctions.readWhetherStudyBuddy;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -505,6 +508,9 @@ public class HomepageFragment extends Fragment {
         CheckBox menteeCheckBox = dialogView.findViewById(R.id.mentee_checkbox);
         CheckBox studyBuddyCheckBox = dialogView.findViewById(R.id.study_buddy_checkbox);
 
+        CompletableFuture<Boolean> whetherStudyBuddy = readWhetherStudyBuddy(currUserId);
+        CompletableFuture<Boolean> whetherMentor = readWhetherMentor(currUserId);
+        CompletableFuture<Boolean> whetherMentee = readWhetherMentee(currUserId);
         // Set up the checkboxes to allow only one selection at a time
         CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -527,11 +533,35 @@ public class HomepageFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         // Handle the selected checkbox here
                         if (mentorCheckBox.isChecked()) {
-                            sortMap.put("ConnectionType", "Mentor");
+                            whetherMentee.thenAccept(bool -> {
+                                if(!bool) {
+                                    Toast.makeText(requireContext(), "You have not opted to be a mentee", Toast.LENGTH_SHORT).show();
+                                    sortMap.put("ConnectionType", "none");
+                                }
+                                else {
+                                    sortMap.put("ConnectionType", "Mentor");
+                                }
+                            });
                         } else if (menteeCheckBox.isChecked()) {
-                            sortMap.put("ConnectionType", "Mentee");
+                            whetherMentor.thenAccept(bool -> {
+                                if(!bool) {
+                                    Toast.makeText(requireContext(), "You have not opted to be a mentor", Toast.LENGTH_SHORT).show();
+                                    sortMap.put("ConnectionType", "none");
+                                }
+                                else {
+                                    sortMap.put("ConnectionType", "Mentee");
+                                }
+                            });
                         } else if (studyBuddyCheckBox.isChecked()) {
-                            sortMap.put("ConnectionType", "StudyBuddy");
+                            whetherStudyBuddy.thenAccept(bool -> {
+                                if(!bool) {
+                                    Toast.makeText(requireContext(), "You have not opted to be a study buddy", Toast.LENGTH_SHORT).show();
+                                    sortMap.put("ConnectionType", "none");
+                                }
+                                else {
+                                    sortMap.put("ConnectionType", "StudyBuddy");
+                                }
+                            });
                         }
                         else {
                             sortMap.put("ConnectionType", "none");
