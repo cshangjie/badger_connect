@@ -1,6 +1,16 @@
 <resources>
     <string name="app_name">BadgerConnect</string>
 
+    <!--        <string name="app_name">MapsActivity</string>-->
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="longitude">LONGITUDE</string>
+    <string name="latitude">LATITUDE</string>
+    <string name="title_activity_sign_in">app</string>
+    <string name="event_description">event</string>
+    <string name="save_description">save</string>
+    <string name="off">Off</string>
+    <string name="on">On</string>
+    <string name="share_location">Share Location</string>
 
     <string-array name="years_array">
         <item>Freshman</item>
@@ -10937,15 +10947,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <!--        <string name="app_name">MapsActivity</string>-->
-    <string name="title_activity_maps">MapsActivity</string>
-    <string name="longitude">LONGITUDE</string>
-    <string name="latitude">LATITUDE</string>
-    <string name="title_activity_sign_in">app</string>
-    <string name="event_description">event</string>
-    <string name="save_description">save</string>
-    <string name="off">Off</string>
-    <string name="on">On</string>
-    <string name="share_location">Share Location</string>
 
 </resources>

@@ -18,13 +18,10 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
-/*
-Where the list of users currently connected to the main users is generated
-this code collects the list of users from firebase and displays them on the main chat activity
-Next step will be to only display users who share a chat history with main user and when clicked
-will take main user to a chat page
-*/
-
+//Where the list of users currently connected to the main users is generated
+//this code collects the list of users from firebase and displays them on the main chat activity
+//Next step will be to only display users who share a chat history with main user and when clicked
+//will take main user to a chat page
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
     public static final int MSG_TYPE_LEFT=0;
@@ -48,6 +45,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             super(itemView);
             show_message=itemView.findViewById(R.id.show_message);
             profile_image= itemView.findViewById(R.id.profile_image);
+
         }
     }
 

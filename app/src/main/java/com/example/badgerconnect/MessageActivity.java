@@ -173,7 +173,7 @@ public class MessageActivity extends AppCompatActivity {
     // function to the button on press
 
 
-    /*handles sending message to the firebase cloud
+    ///handles sending message to the firebase cloud
     //message should have conversation id, message, senderId,
     //date sent, generated messageId
     //conditions, handles one-on-one chats no group chats
@@ -181,14 +181,14 @@ public class MessageActivity extends AppCompatActivity {
     //upi do not need to assign cid
     //@todo create new conversation instances
     //clean code
-    */
     private void sendMessage(String messageToSend, String senderId, String receiverId){
         DatabaseReference convRef= FirebaseDatabase.getInstance().getReference("Data").child("Conversations");//give me desired conversation
         //find desired conversation using participant list
         String curr_user=fuser.getUid();
-        Query ConvRefQuery = convRef;
 
-        ConvRefQuery.addValueEventListener(new ValueEventListener() {
+        Query queryx = convRef;
+
+        queryx.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //System.out.println("participants" + dataSnapshot.getValue());
@@ -231,7 +231,7 @@ public class MessageActivity extends AppCompatActivity {
 //        conversation.DeleteConversation("1");
 
         //push a message to that conversation
-        ConvRefQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        queryx.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
                 //System.out.println("DesConv ind is: " + desiredConvId);
@@ -261,6 +261,8 @@ public class MessageActivity extends AppCompatActivity {
                     HashMap<String, Object> pMap= convSnapshot.child("Participants").getValue(p3);
 
                     ArrayList<Object> participants= new ArrayList<>(pMap.values());
+                   // ArrayList<Object> participants= new ArrayList<>();
+                    //System.out.println(" in datachange " + participants.get(1)); //show me the participants
 
                     // check if both users are in the conversation
                      System.out.println("p is:" + curr_user + " and " + receiverId);
@@ -275,6 +277,7 @@ public class MessageActivity extends AppCompatActivity {
                             chat.setDate(msgSnapshot.child("date").getValue(String.class));
                             chat.setSender(msgSnapshot.child("sender").getValue(String.class));
                             mChat.add(chat);
+                            //System.out.println("chat is before:" + chat.getMessage());
                         }
                     }
                 }
@@ -282,6 +285,7 @@ public class MessageActivity extends AppCompatActivity {
                 messageAdapter = new MessageAdapter(MessageActivity.this, mChat, imageurl);
                 recyclerView.setAdapter(messageAdapter);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }

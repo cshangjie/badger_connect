@@ -1,11 +1,7 @@
 package com.example.badgerconnect.Model;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class User {
 
@@ -63,18 +59,6 @@ public class User {
 
     public void setChat_ids(ArrayList<String> chat_ids) {
         Chat_ids = chat_ids;
-    }
-
-    //add new user ot remote database
-    public void addUser(){
-        DatabaseReference UserRef = FirebaseDatabase.getInstance().getReference("Data").child("Users");
-        HashMap<String, Object> map= new HashMap<>();
-        map.put("Chat_ids", getChat_ids());
-        map.put("Name", getName());
-        map.put("Uid", getUid());
-        map.put("profile_pic", getProfile_pic());
-
-        UserRef.push().setValue(map);
     }
 
 }

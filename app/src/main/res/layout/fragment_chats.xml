@@ -3,14 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments.PendingRequests">
+    android:background="#7E3232"
+    android:accessibilityPaneTitle="Chat"
+    tools:context=".Fragments.ChatsFragment">
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_requests"
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:id="@+id/chatsFragment_textview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
-
+      />
 
 </FrameLayout>
