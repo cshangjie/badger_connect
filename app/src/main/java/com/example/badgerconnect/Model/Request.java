@@ -16,6 +16,9 @@ import java.util.Map;
 
 public class Request {
 
+    private ArrayList<String> request_ids;
+    private String senders_id, recipients_id;
+
     public Request(){
 
         this.request_ids=new ArrayList<>();
@@ -52,8 +55,7 @@ public class Request {
 
     }
 
-    private ArrayList<String> request_ids;
-    private String senders_id, recipients_id;
+
 
 
 }

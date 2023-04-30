@@ -65,15 +65,7 @@ public class ApplicationWrapperActivity extends AppCompatActivity
         auth.signInWithEmailAndPassword(email1, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                   // System.out.println("SIGN IN SUCCESSFUL");
-                }
-//                else {
-//                    // If sign in fails, display a message to the user.
-//                    Toast.makeText(UsersFragment.this, "Authentication failed.",
-//                            Toast.LENGTH_SHORT).show();
-//                }
+
             }
         });
         ////////////////////////////////////////////////////
@@ -136,26 +128,6 @@ public class ApplicationWrapperActivity extends AppCompatActivity
         }
         return false;
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.profile_menu, menu);
-//        getSupportActionBar().setTitle("BadgerConnect");
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if (id == R.id.menu_profile) {
-//            // Handle profile icon click
-//            Intent intent = new Intent(ApplicationWrapperActivity.this, EditProfileActivity.class);
-//            startActivity(intent);
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
