@@ -36,23 +36,17 @@ public class Conversation {
         this.participant_ids=participant_ids;
     }
 
+    //instantiate db
+    //access data-> conversation
+    //push new conversation
   public void CreateNewConversation(){
-      //instantiate db
-      //access data-> conversation
-      //push new conversation
       DatabaseReference convRef = FirebaseDatabase.getInstance().getReference("Data").child("Conversations");
-      //final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
       HashMap<String, Object> convMap= new HashMap<>();
       convMap.put("Messages", msg);
-
       convMap.put("Participants", participant_ids);
-      //System.out.println("mappp " + participant_ids);
-
       convRef.addListenerForSingleValueEvent(new ValueEventListener() {
           @Override
           public void onDataChange(@NonNull DataSnapshot datasnapshot) {
-              //System.out.println("DesConv ind is: " + desiredConvId);
               convRef.push().setValue(convMap);
           }
           @Override
@@ -62,15 +56,10 @@ public class Conversation {
   }
     public void DeleteConversation(String convId){
         DatabaseReference convRef = FirebaseDatabase.getInstance().getReference("Data").child("Conversations");
-        //final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-
-
         convRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
                 convRef.child(""+ convId).removeValue();
-
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
