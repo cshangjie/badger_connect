@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.badgerconnect.Adapter.RequestAdapter;
+import com.example.badgerconnect.Model.Request;
 import com.example.badgerconnect.Model.User;
 import com.example.badgerconnect.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,13 +47,15 @@ public class PendingRequestsFragment extends Fragment {
     private RequestAdapter requestAdapter;
     private List<User> mUsers;
     private ArrayList<String> sender_ids = new ArrayList<>();
+    private FirebaseUser firebaseUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         auth = FirebaseAuth.getInstance();
-
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+       // System.out.println("r keys " + FirebaseAuth.getInstance().getCurrentUser());
         View view = inflater.inflate(R.layout.fragment_pending_requests, container, false);
         recyclerView = view.findViewById(R.id.recycler_view_requests);
         recyclerView.setHasFixedSize(true);
@@ -61,12 +64,16 @@ public class PendingRequestsFragment extends Fragment {
         mUsers = new ArrayList<>();
         readUsers();
 
+        //TESTING SENDREQUEST
+        Request request= new Request();
+        request.SendRequest( "vvv", firebaseUser.getUid());
+
         return view;
     }
 
     private void readUsers() {
         DatabaseReference DataRef = FirebaseDatabase.getInstance().getReference("Data");
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
         DataRef.addValueEventListener(new ValueEventListener() {
             DataSnapshot requestData = null;
             DataSnapshot userData = null;
@@ -88,7 +95,7 @@ public class PendingRequestsFragment extends Fragment {
                     for (DataSnapshot reqSnapshot : requestData.getChildren()) {
                         GenericTypeIndicator<HashMap<String, Object>> p2 = new GenericTypeIndicator<HashMap<String, Object>>() {
                         };
-                       // System.out.println("r keys " + firebaseUser.getUid());
+                        //System.out.println("r keys " + firebaseUser.getUid());
                         if (reqSnapshot.getKey().equals(firebaseUser.getUid())){
                             for (DataSnapshot senderID: reqSnapshot.getChildren()){
                                // System.out.println("r senderids " + senderID.getValue());
@@ -123,6 +130,7 @@ public class PendingRequestsFragment extends Fragment {
                         i++;
                     }
                     requestAdapter = new RequestAdapter(getContext(), mUsers);
+                    requestAdapter.notifyDataSetChanged(); //how to update fragment upon accept/decline
                     recyclerView.setAdapter(requestAdapter);
 
                     mUsers=new ArrayList<User>(); //empty the list for next reload!

@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.badgerconnect.Fragments.PendingRequestsFragment;
 import com.example.badgerconnect.MessageActivity;
 import com.example.badgerconnect.Model.Conversation;
 import com.example.badgerconnect.Model.Request;
@@ -39,6 +40,7 @@ import java.util.Map;
 
 //should extend userAdapter and baseically do all that useradaper does only difference
 //should be onclick which should show an option to connect with the sender
+//TODO Make list of request automatically reload. Might have something to do with not clearing musers correctly
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHolder> {
 
         private Context mContext;
@@ -96,17 +98,16 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
             @Override
             public void onClick(View view) {
                 //remove sender_id from recipient's list
-                //find currUser's json structure
-                //delete sender_id
-                DatabaseReference RequestDataaRef = FirebaseDatabase.getInstance().getReference("Data").child("Pending_Connection_Requests");
+                DatabaseReference RequestDataRef = FirebaseDatabase.getInstance().getReference("Data").child("Pending_Connection_Requests");
 
-                RequestDataaRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                RequestDataRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot datasnapshot) {
                         for (DataSnapshot recipientJson : datasnapshot.getChildren()) {
+                            //System.out.println("ddddd " + datasnapshot.getValue());
                             if (recipientJson.getKey().equals(currUserId)){
-                                //System.out.println("iiiddd2 " + RequestDataaRef.child(""+currUserId).child(""+sender_id));
-                                DatabaseReference recipientRef=RequestDataaRef.child(""+currUserId);
+
+                                DatabaseReference recipientRef=RequestDataRef.child(""+currUserId);
                                 recipientRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -124,7 +125,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
                                 map.put(currUserId, currUserId);
                                 Conversation conversation= new Conversation(map);
                                 conversation.CreateNewConversation();
-                                }
+
+                            }
                         }
                     }
                     @Override
@@ -132,43 +134,45 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 
                     }
                 });
+            }
+        });
 
-                holder.decline_btn.setOnClickListener(new View.OnClickListener() {
+        holder.decline_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //remove sender_id from recipient's list
+                DatabaseReference RequestDataRef = FirebaseDatabase.getInstance().getReference("Data").child("Pending_Connection_Requests");
+
+                RequestDataRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onClick(View view) {
-                        //remove sender_id from recipient's list
-                        DatabaseReference RequestDataaRef = FirebaseDatabase.getInstance().getReference("Data").child("Pending_Connection_Requests");
-
-                        RequestDataaRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
-                                for (DataSnapshot recipientJson : datasnapshot.getChildren()) {
-                                    if (recipientJson.getKey().equals(currUserId)){
-                                        DatabaseReference recipientRef=RequestDataaRef.child(""+currUserId);
-                                        recipientRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                recipientRef.child(""+sender_id).removeValue();
-                                            }
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                            }
-                                        });
+                    public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+                        for (DataSnapshot recipientJson : datasnapshot.getChildren()) {
+                            if (recipientJson.getKey().equals(currUserId)){
+                                DatabaseReference recipientRef=RequestDataRef.child(""+currUserId);
+                                recipientRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        recipientRef.child(""+sender_id).removeValue();
                                     }
-                                }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
                             }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                            }
-                        });
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
                     }
                 });
+            }
+        });
 
-                /////// display profile if it's clicked
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+        /////// display profile if it's clicked
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
 
 //                    Intent intent = new Intent(mContext, MessageActivity.class);
@@ -176,10 +180,10 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
 //                    intent.putExtra("image_URL", user.getProfile_pic());
 //                    mContext.startActivity(intent);
 
-                    }
-                });
             }
         });
+
+
     };
 
         @Override

@@ -44,7 +44,7 @@ import java.util.List;
 public class UsersFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    FirebaseAuth auth;
+
     private UserAdapter userAdapter;
     private List<User> mUsers;
     private ArrayList<String> participants = new ArrayList<>();
@@ -52,34 +52,6 @@ public class UsersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        ///////////////////////////////////////////////////
-        auth=FirebaseAuth.getInstance();
-
-        String email1 = "test1@gmail.com";
-        String email2 = "cbfu@wisc.edu";
-        String password = "000000";
-
-        //auth.signOut();
-        //System.out.println("About to sign in");
-
-        //TODO remove upon integration
-        auth.signInWithEmailAndPassword(email1, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                    FirebaseUser user = auth.getCurrentUser();
-                    // Do something with the user object
-                }
-//                else {
-//                    // If sign in fails, display a message to the user.
-//                    Toast.makeText(UsersFragment.this, "Authentication failed.",
-//                            Toast.LENGTH_SHORT).show();
-//                }
-            }
-        });
-        ////////////////////////////////////////////////////
 
         View view = inflater.inflate(R.layout.fragment_users, container, false);
         recyclerView = view.findViewById(R.id.recycler_view);
