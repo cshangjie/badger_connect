@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.Image;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -12,8 +13,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,7 +30,10 @@ import java.util.concurrent.CompletableFuture;
 public class EditProfileActivity extends AppCompatActivity {
     private boolean editMode = false;
     private ImageView pfp;
-    private EditText name_EditText, year_EditText, dob_EditText, major_EditText;
+    private EditText name_EditText, dob_EditText, major_EditText;
+//    private AutoCompleteTextView year_EditText;
+    private TextView year_TextView;
+    private Spinner year_Spinner;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,19 +140,26 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     public void enableUserFields(boolean val){
-//        EditText nameField = findViewById(R.id.name_field);
-//        EditText majorField = findViewById(R.id.major_field);
-//        EditText birthdateField = findViewById(R.id.birthdate_field);
         if(val){
+            // editing
             name_EditText.setEnabled(true);
             major_EditText.setEnabled(true);
             dob_EditText.setEnabled(true);
+            year_Spinner.setEnabled(true);
+            year_Spinner.setDropDownVerticalOffset(0);
+
             // TODO set colors to black
+            name_EditText.setTextColor(Color.BLACK);
+            major_EditText.setTextColor(Color.BLACK);
+            dob_EditText.setTextColor(Color.BLACK);
         }
         else{
+            // no longer editing
             name_EditText.setEnabled(false);
             major_EditText.setEnabled(false);
             dob_EditText.setEnabled(false);
+            year_Spinner.setEnabled(false);
+            year_Spinner.setDropDownVerticalOffset(Integer.MAX_VALUE);
             // TODO set colors back to the original
         }
     }
@@ -159,15 +175,12 @@ public class EditProfileActivity extends AppCompatActivity {
         UserInfo currUser = new UserInfo();
         DatabaseFunctions.downloadPFP(uid, pfp);
         pfp.setVisibility(View.VISIBLE);
-        Log.i("","hello i am here");
         CompletableFuture<UserInfo> currUserData = DatabaseFunctions.readUserData(uid, currUser);
         currUserData.thenAccept(user -> {
             name_EditText.setText(user.getUsername());
             name_EditText.setVisibility(View.VISIBLE);
             major_EditText.setText(user.getMajor());
             major_EditText.setVisibility(View.VISIBLE);
-            year_EditText.setText(String.valueOf(user.getYear()));
-            year_EditText.setVisibility(View.VISIBLE);
             dob_EditText.setText(user.getDateOfBirth());
             dob_EditText.setVisibility(View.VISIBLE);
         });
@@ -183,7 +196,16 @@ public class EditProfileActivity extends AppCompatActivity {
         major_EditText.setVisibility(View.INVISIBLE);
         dob_EditText = findViewById(R.id.birthdate_field);
         dob_EditText.setVisibility(View.INVISIBLE);
-        year_EditText = findViewById(R.id.year_field);
-        year_EditText.setVisibility(View.INVISIBLE);
+//        year_TextView = findViewById(R.id.year_field);
+//        year_TextView.setVisibility(View.INVISIBLE);
+
+        year_Spinner = findViewById(R.id.year_spinner);
+        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(this, R.array.years_array, R.layout.spinner_item);
+        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        year_Spinner.setAdapter(spinAdapter);
+
+// Set the drop down vertical offset to a large value
+        year_Spinner.setDropDownVerticalOffset(Integer.MAX_VALUE);
+        year_Spinner.setEnabled(false);
     }
 }

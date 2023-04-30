@@ -17,4 +17,16 @@
         <item name="android:textSize">500sp</item>
     </style>
 
+    <style name="SpinnerStyle">
+        <item name="android:background">@drawable/spinner_background</item>
+    </style>
+
+    <drawable name="spinner_background">
+        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+            android:shape="rectangle">
+            <solid android:color="#FFFFFF" /> <!-- set background color to white -->
+            <corners android:radius="10dp" /> <!-- set corner radius to 10dp -->
+        </shape>
+    </drawable>
+
 </resources>

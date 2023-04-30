@@ -51,14 +51,21 @@
             android:layout_height="wrap_content"
             android:text="Year:" />
 
-        <EditText
-            android:id="@+id/year_field"
+<!--        <TextView-->
+<!--            android:id="@+id/year_field"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="35dp"-->
+<!--            android:background="@drawable/custom_edit_text_cut"-->
+<!--            android:enabled="false"-->
+<!--            android:gravity="center"-->
+<!--            android:text="Year" />-->
+        <Spinner
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:background="@drawable/custom_edit_text_cut"
-            android:enabled="false"
-            android:gravity="center"
-            android:text="Year" />
+            android:id="@+id/year_spinner"
+            android:spinnerMode="dropdown"
+            android:textColor="#FFFFFF"
+            />
 
         <TextView
             android:id="@+id/birthdate_label"
