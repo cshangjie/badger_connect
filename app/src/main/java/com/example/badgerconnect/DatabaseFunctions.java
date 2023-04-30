@@ -656,6 +656,78 @@ public class DatabaseFunctions{
         });
     }
 
+    /**
+     * Reads the user data and returns whether the user is a study buddy or not.
+     *
+     * @param userId the userId of the user we are searching for
+     */
+    public static CompletableFuture<Boolean> readWhetherStudyBuddy(String userId) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        mDatabase = FirebaseDatabase.getInstance().getReference("Data");
+        mDatabase.child("UserData").child(userId).get()
+                .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        }
+                        else {
+                            Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                            HashMap<String, Boolean> connectionType = (HashMap<String, Boolean>) task.getResult().child("ConnectionTypes").getValue(Object.class);
+                            future.complete(connectionType.get("StudyBuddy"));
+                        }
+                    }
+                });
+        return future;
+    }
+
+    /**
+     * Reads the user data and returns whether the user is a mentor or not.
+     *
+     * @param userId the userId of the user we are searching for
+     */
+    public static CompletableFuture<Boolean> readWhetherMentor(String userId) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        mDatabase = FirebaseDatabase.getInstance().getReference("Data");
+        mDatabase.child("UserData").child(userId).get()
+                .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        }
+                        else {
+                            Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                            HashMap<String, Boolean> connectionType = (HashMap<String, Boolean>) task.getResult().child("ConnectionTypes").getValue(Object.class);
+                            future.complete(connectionType.get("Mentor"));
+                        }
+                    }
+                });
+        return future;
+    }
+
+    /**
+     * Reads the user data and returns whether the user is a mentee or not.
+     *
+     * @param userId the userId of the user we are searching for
+     */
+    public static CompletableFuture<Boolean> readWhetherMentee(String userId) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        mDatabase = FirebaseDatabase.getInstance().getReference("Data");
+        mDatabase.child("UserData").child(userId).get()
+                .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        }
+                        else {
+                            Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                            HashMap<String, Boolean> connectionType = (HashMap<String, Boolean>) task.getResult().child("ConnectionTypes").getValue(Object.class);
+                            future.complete(connectionType.get("Mentee"));
+                        }
+                    }
+                });
+        return future;
+    }
+
     private static int findSimilarityRating(HashMap<String, String> currCourses, HashMap<String, String> courses) {
         int similarityRating = 0;
         Set<String> currCoursesSet = new HashSet<>(currCourses.values());

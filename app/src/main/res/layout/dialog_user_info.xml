@@ -5,16 +5,59 @@
 
     <ImageView
         android:id="@+id/user_profile_picture"
-        android:layout_width="80dp"
-        android:layout_height="80dp"  />
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@android:color/transparent" />
 
     <TextView
-        android:id="@+id/user_name"
+        android:id="@+id/name_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="User Name"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:text="Name:" />
+
+    <TextView
+        android:id="@+id/name_field"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/major_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Major:" />
+
+    <TextView
+        android:id="@+id/major_field"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/year_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Year:" />
+
+    <TextView
+        android:id="@+id/year_field"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/birthdate_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Birthdate:" />
+
+    <TextView
+        android:id="@+id/birthdate_field"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:gravity="center"
+        android:inputType="date"/>
 
     <Button
         android:id="@+id/close_button"
