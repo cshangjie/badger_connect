@@ -65,8 +65,8 @@ public class PendingRequestsFragment extends Fragment {
         readUsers();
 
         //TESTING SENDREQUEST
-        Request request= new Request();
-        request.SendRequest( "vvv", firebaseUser.getUid());
+        //Request request= new Request();
+        //request.SendRequest( "vvv", firebaseUser.getUid());
 
         return view;
     }

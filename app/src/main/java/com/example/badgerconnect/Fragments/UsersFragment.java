@@ -61,6 +61,14 @@ public class UsersFragment extends Fragment {
         mUsers = new ArrayList<>();
         readUsers();
 
+        //TEST the ADDUSER method
+        User user= new User("USERX",
+                "John Doe",
+                "https://www.google.com/imgres?imgurl=https%3A%2F%2Fd2jyir0m79gs60.cloudfront.net%2Fnews%2Fimages%2Fsuccessful-college-student-lg.png&tbnid=NsNZ54F8DxDgSM&vet=12ahUKEwivprXJwdL-AhW2E94AHafxCxUQMygAegUIARDkAQ..i&imgrefurl=https%3A%2F%2Fplexuss.com%2Fnews%2Farticle%2Fhow-to-be-a-successful-college-student&docid=4xUYG0LqyYhxbM&w=700&h=500&q=college%20student&ved=2ahUKEwivprXJwdL-AhW2E94AHafxCxUQMygAegUIARDkAQ",
+                null);
+        user.addUser();
+
+
         return view;
     }
 
