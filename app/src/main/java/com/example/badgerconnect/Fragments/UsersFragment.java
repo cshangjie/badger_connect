@@ -116,6 +116,7 @@ public class UsersFragment extends Fragment {
                     for (DataSnapshot convSnapshot : convData.getChildren()) {
                         GenericTypeIndicator<HashMap<String, Object>> p2 = new GenericTypeIndicator<HashMap<String, Object>>() {
                         };
+                       // System.out.println("ppp111 " + convSnapshot.child("Participants").getValue());
                         HashMap<String, Object> pMap = convSnapshot.child("Participants").getValue(p2);
                         String curr_userId = FirebaseAuth.getInstance().getUid();
                         //Add participants from conversations in which current user is a member of

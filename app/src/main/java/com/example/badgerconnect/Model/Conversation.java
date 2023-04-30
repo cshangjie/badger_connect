@@ -13,17 +13,27 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Conversation {
 
     private Message msg;
-    private ArrayList<String> participant_ids;
+    private Map<String, String> participant_ids;
 
 
-    public Conversation(Message msg, ArrayList<String> participant_ids) {
+    public Conversation(Message msg, Map<String, String> participant_ids) {
       this.msg=msg;
       this.participant_ids=participant_ids;
+    }
+    public Conversation( Map<String, String> participant_ids) {
+        Date date= new Date();
+        this.msg=new Message();
+        this.msg.setText("New Connection Established!");
+        this.msg.setSender(participant_ids.get(0));
+        this.msg.setDate(String.valueOf(date));
+        this.participant_ids=participant_ids;
     }
 
   public void CreateNewConversation(){
@@ -35,7 +45,9 @@ public class Conversation {
 
       HashMap<String, Object> convMap= new HashMap<>();
       convMap.put("Messages", msg);
+
       convMap.put("Participants", participant_ids);
+      System.out.println("mappp " + participant_ids);
 
       convRef.addListenerForSingleValueEvent(new ValueEventListener() {
           @Override
