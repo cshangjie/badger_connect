@@ -16,10 +16,15 @@ import androidx.core.app.ActivityCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.badgerconnect.Fragments.MapsFragment;
+//import com.example.badgerconnect.Fragments.PendingRequests;
+import com.example.badgerconnect.Fragments.PendingRequestsFragment;
 import com.example.badgerconnect.Fragments.UsersFragment;
 import com.example.badgerconnect.Model.User;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,7 +41,9 @@ public class ApplicationWrapperActivity extends AppCompatActivity
         .OnNavigationItemSelectedListener {
 
     BottomNavigationView bottomNavigationView;
+    FirebaseUser firebaseUser;
     DatabaseReference reference;
+    FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -44,6 +51,35 @@ public class ApplicationWrapperActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_application_wrapper);
 
+        /////////////////////SIGN IN BYPASS- VIP//////////////////////
+        auth=FirebaseAuth.getInstance();
+
+        String email1 = "test1@gmail.com";
+        String email2 = "cbfu@wisc.edu";
+        String password = "000000";
+
+        // auth.signOut();
+        //System.out.println("About to sign in");
+
+        //TODO remove upon integration
+        auth.signInWithEmailAndPassword(email1, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                   // System.out.println("SIGN IN SUCCESSFUL");
+                }
+//                else {
+//                    // If sign in fails, display a message to the user.
+//                    Toast.makeText(UsersFragment.this, "Authentication failed.",
+//                            Toast.LENGTH_SHORT).show();
+//                }
+            }
+        });
+        ////////////////////////////////////////////////////
+
+
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         bottomNavigationView
                 = findViewById(R.id.bottomNavigationView);
 
@@ -62,6 +98,8 @@ public class ApplicationWrapperActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
             case R.id.navigation_people:
+                getSupportActionBar().setTitle("BadgerConnect");
+                getSupportActionBar().setSubtitle("Connections");
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.flFragment, new UsersFragment())
@@ -70,16 +108,26 @@ public class ApplicationWrapperActivity extends AppCompatActivity
 
             case R.id.navigation_home:
                 getSupportActionBar().setTitle("BadgerConnect");
+                getSupportActionBar().setSubtitle("Home");
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.flFragment, new HomepageFragment())
+                        .commit();
+                return true;
+            case R.id.navigation_pending_requests:
+                getSupportActionBar().setTitle("BadgerConnect");
+                getSupportActionBar().setSubtitle("Pending Requests");
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flFragment, new PendingRequestsFragment())
                         .commit();
                 return true;
 
             case R.id.navigation_map:
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PackageManager.PERMISSION_GRANTED);
                 //getSupportFragmentManager().beginTransaction().add(R.id.flFragment, new MapsFragment(), "tag").commit();
-                getSupportActionBar().setTitle("Map");
+                getSupportActionBar().setTitle("BadgerConnect");
+                getSupportActionBar().setSubtitle("Map");
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.flFragment, new MapsFragment())
@@ -112,7 +160,8 @@ public class ApplicationWrapperActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+
         reference= FirebaseDatabase.getInstance().getReference("Data").child("Users");
         Query query= reference;
         query.addListenerForSingleValueEvent(new ValueEventListener() {
