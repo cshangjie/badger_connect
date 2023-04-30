@@ -1,10 +1,13 @@
 package com.example.badgerconnect;
 
+import static com.example.badgerconnect.DatabaseFunctions.algorithmMentee;
 import static com.example.badgerconnect.DatabaseFunctions.algorithmMentor;
 import static com.example.badgerconnect.DatabaseFunctions.algorithmStudyBuddy;
+import static com.example.badgerconnect.DatabaseFunctions.downloadPFP;
 import static com.example.badgerconnect.DatabaseFunctions.readUserData;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
@@ -18,7 +21,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,12 +43,17 @@ public class HomepageFragment extends Fragment {
     ImageView box1Image, box2Image, box3Image, box4Image, box5Image, box6Image;
     TextView box1Text, box2Text, box3Text, box4Text, box5Text, box6Text;
     CardView box1Card, box2Card, box3Card, box4Card, box5Card, box6Card;
+    ImageView filterButton;
+    TextView lookingForText;
     ArrayList<UserInfo> userInfos = new ArrayList<>(6);
     ArrayList<String> userIds = new ArrayList<>(6);
     SwipeRefreshLayout swipeRefreshLayout;
-    HashMap<String, String> sortMap = new HashMap<>();
+    LinearLayout linearLayout;
+    HashMap<String, String> sortMap = new HashMap<>() {{
+        put("ConnectionType", "none");
+    }};
     HashMap<String, String> prevOp = new HashMap<String, String>() {{
-        put("ConnectionType", "null");
+        put("ConnectionType", "none");
     }};
     List<String> foundUsers = new ArrayList<>();
     HashMap<String, Integer> foundUsersStudyBuddy= new HashMap<>();
@@ -63,8 +74,8 @@ public class HomepageFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(this::onRefresh);
+        filterButton.setOnClickListener(this::pullFilterDialog);
         box1Card.setOnClickListener(this::pullUserDataBox1);
         box2Card.setOnClickListener(this::pullUserDataBox2);
         box3Card.setOnClickListener(this::pullUserDataBox3);
@@ -79,33 +90,50 @@ public class HomepageFragment extends Fragment {
         // to refresh the content
         //TODO: Set the sortMap with the user selections
         setBoxesInvisible();
-        sortMap.put("ConnectionType", "StudyBuddy");
+        userIds.clear();
+        userInfos.clear();
         if((sortMap.get("ConnectionType").equals("Mentor")) && (!prevOp.get("ConnectionType").equals("Mentor"))) {
+            lookingForText.setText("Looking for Mentors");
             CompletableFuture<List<String>> futureUsers = algorithmMentor(currUserId, foundUsers);
             futureUsers.thenAccept(users -> {
                 populateSquares(users);
             });
+            linearLayout.setVisibility(View.GONE);
         }
         else if((sortMap.get("ConnectionType").equals("Mentee")) && (!prevOp.get("ConnectionType").equals("Mentee"))) {
-            CompletableFuture<List<String>> futureUsers = algorithmMentor(currUserId, foundUsers);
+            lookingForText.setText("Looking for Mentees");
+            CompletableFuture<List<String>> futureUsers = algorithmMentee(currUserId, foundUsers);
             futureUsers.thenAccept(users -> {
                 populateSquares(users);
             });
+            linearLayout.setVisibility(View.GONE);
         }
         else if((sortMap.get("ConnectionType").equals("StudyBuddy")) && (!prevOp.get("ConnectionType").equals("StudyBuddy"))) {
+            lookingForText.setText("Looking for Study Buddies");
             CompletableFuture<HashMap<String, Integer>> futureUsers = algorithmStudyBuddy(currUserId, foundUsersStudyBuddy);
             futureUsers.thenAccept(users -> {
                 populateSquaresStudyBuddy(users);
             });
+            linearLayout.setVisibility(View.GONE);
         }
         else if((sortMap.get("ConnectionType").equals("Mentor")) && (prevOp.get("ConnectionType").equals("Mentor"))) {
+            lookingForText.setText("Looking for Mentors");
             populateSquares(foundUsers);
+            linearLayout.setVisibility(View.GONE);
         }
         else if((sortMap.get("ConnectionType").equals("Mentee")) && (prevOp.get("ConnectionType").equals("Mentee"))) {
+            lookingForText.setText("Looking for Mentees");
             populateSquares(foundUsers);
+            linearLayout.setVisibility(View.GONE);
         }
         else if((sortMap.get("ConnectionType").equals("StudyBuddy")) && (prevOp.get("ConnectionType").equals("StudyBuddy"))) {
+            lookingForText.setText("Looking for Study Buddies");
             populateSquaresStudyBuddy(foundUsersStudyBuddy);
+            linearLayout.setVisibility(View.GONE);
+        }
+        else {
+            Toast.makeText(requireContext(), "Please select a type of connection to search for", Toast.LENGTH_SHORT).show();
+            swipeRefreshLayout.setRefreshing(false);
         }
         prevOp.put("ConnectionType", sortMap.get("ConnectionType"));
     }
@@ -130,6 +158,9 @@ public class HomepageFragment extends Fragment {
         box5Card = view.findViewById(R.id.card5);
         box6Card = view.findViewById(R.id.card6);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        filterButton = view.findViewById(R.id.filter_button);
+        linearLayout = view.findViewById(R.id.linearLayout);
+        lookingForText = view.findViewById(R.id.looking_for);
     }
 
     private void populateSquaresStudyBuddy(HashMap<String, Integer> foundUsers) {
@@ -149,12 +180,12 @@ public class HomepageFragment extends Fragment {
             TextView currTextView = textViews[i];
             ImageView currImageView = imageViews[i];
             CardView currCardView = cardViews[i];
+            userIds.add(i, currUserId);
             currUserData.thenAccept(user -> {
                 userInfos.add(currIndex, user);
                 currCardView.setVisibility(View.VISIBLE);
                 currTextView.setText(user.getUsername());
-                currImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
-                //downloadPFP(currUserId, currImageView);
+                downloadPFP(currUserId, currImageView);
             });
         }
         swipeRefreshLayout.setRefreshing(false);
@@ -175,12 +206,12 @@ public class HomepageFragment extends Fragment {
             ImageView currImageView = imageViews[i];
             CardView currCardView = cardViews[i];
             CompletableFuture<UserInfo> currUserData = readUserData(currUserId, currUser);
+            userIds.add(i, currUserId);
             currUserData.thenAccept(user -> {
                 userInfos.add(currIndex, user);
                 currCardView.setVisibility(View.VISIBLE);
                 currTextView.setText(user.getUsername());
-                currImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
-                //downloadPFP(currUserId, currImageView);
+                downloadPFP(currUserId, currImageView);
             });
         }
         swipeRefreshLayout.setRefreshing(false);
@@ -208,9 +239,9 @@ public class HomepageFragment extends Fragment {
             Button closeButton = dialogView.findViewById(R.id.close_button);
 
             // Set the views' content based on the selected user
-            profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
+            //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
             //TODO: replace the set image view with the actual user's image
-            //downloadPFP(userIds.get(0), profilePictureImageView);
+            downloadPFP(userIds.get(0), profilePictureImageView);
             userNameTextView.setText(userInfos.get(0).getUsername());
             userMajorTextView.setText(userInfos.get(0).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(0).getYear()));
@@ -254,9 +285,9 @@ public class HomepageFragment extends Fragment {
             Button closeButton = dialogView.findViewById(R.id.close_button);
 
             // Set the views' content based on the selected user
-            profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
+            //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
             //TODO: replace the set image view with the actual user's image
-            //downloadPFP(userIds.get(0), profilePictureImageView);
+            downloadPFP(userIds.get(1), profilePictureImageView);
             userNameTextView.setText(userInfos.get(1).getUsername());
             userMajorTextView.setText(userInfos.get(1).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(1).getYear()));
@@ -300,9 +331,9 @@ public class HomepageFragment extends Fragment {
             Button closeButton = dialogView.findViewById(R.id.close_button);
 
             // Set the views' content based on the selected user
-            profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
+            //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
             //TODO: replace the set image view with the actual user's image
-            //downloadPFP(userIds.get(0), profilePictureImageView);
+            downloadPFP(userIds.get(2), profilePictureImageView);
             userNameTextView.setText(userInfos.get(2).getUsername());
             userMajorTextView.setText(userInfos.get(2).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(2).getYear()));
@@ -346,9 +377,9 @@ public class HomepageFragment extends Fragment {
             Button closeButton = dialogView.findViewById(R.id.close_button);
 
             // Set the views' content based on the selected user
-            profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
+            //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
             //TODO: replace the set image view with the actual user's image
-            //downloadPFP(userIds.get(0), profilePictureImageView);
+            downloadPFP(userIds.get(3), profilePictureImageView);
             userNameTextView.setText(userInfos.get(3).getUsername());
             userMajorTextView.setText(userInfos.get(3).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(3).getYear()));
@@ -392,9 +423,9 @@ public class HomepageFragment extends Fragment {
             Button closeButton = dialogView.findViewById(R.id.close_button);
 
             // Set the views' content based on the selected user
-            profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
+            //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
             //TODO: replace the set image view with the actual user's image
-            //downloadPFP(userIds.get(0), profilePictureImageView);
+            downloadPFP(userIds.get(4), profilePictureImageView);
             userNameTextView.setText(userInfos.get(4).getUsername());
             userMajorTextView.setText(userInfos.get(4).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(4).getYear()));
@@ -438,9 +469,9 @@ public class HomepageFragment extends Fragment {
             Button closeButton = dialogView.findViewById(R.id.close_button);
 
             // Set the views' content based on the selected user
-            profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
+            //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
             //TODO: replace the set image view with the actual user's image
-            //downloadPFP(userIds.get(0), profilePictureImageView);
+            downloadPFP(userIds.get(5), profilePictureImageView);
             userNameTextView.setText(userInfos.get(5).getUsername());
             userMajorTextView.setText(userInfos.get(5).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(5).getYear()));
@@ -461,6 +492,56 @@ public class HomepageFragment extends Fragment {
         else {
             Toast.makeText(requireContext(), "No User In This Box", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void pullFilterDialog(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        // Inflate the custom layout for the dialog box
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.fragment_filter, null);
+
+        CheckBox mentorCheckBox = dialogView.findViewById(R.id.mentor_checkbox);
+        CheckBox menteeCheckBox = dialogView.findViewById(R.id.mentee_checkbox);
+        CheckBox studyBuddyCheckBox = dialogView.findViewById(R.id.study_buddy_checkbox);
+
+        // Set up the checkboxes to allow only one selection at a time
+        CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mentorCheckBox.setChecked(buttonView == mentorCheckBox);
+                    menteeCheckBox.setChecked(buttonView == menteeCheckBox);
+                    studyBuddyCheckBox.setChecked(buttonView == studyBuddyCheckBox);
+                }
+            }
+        };
+
+        mentorCheckBox.setOnCheckedChangeListener(listener);
+        menteeCheckBox.setOnCheckedChangeListener(listener);
+        studyBuddyCheckBox.setOnCheckedChangeListener(listener);
+
+        builder.setView(dialogView)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Handle the selected checkbox here
+                        if (mentorCheckBox.isChecked()) {
+                            sortMap.put("ConnectionType", "Mentor");
+                        } else if (menteeCheckBox.isChecked()) {
+                            sortMap.put("ConnectionType", "Mentee");
+                        } else if (studyBuddyCheckBox.isChecked()) {
+                            sortMap.put("ConnectionType", "StudyBuddy");
+                        }
+                        else {
+                            sortMap.put("ConnectionType", "none");
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     public void setBoxesInvisible() {
