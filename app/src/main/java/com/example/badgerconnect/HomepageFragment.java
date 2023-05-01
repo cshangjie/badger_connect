@@ -282,6 +282,7 @@ public class HomepageFragment extends Fragment {
             userMajorTextView.setText(userInfos.get(0).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(0).getYear()));
             userBirthdateTextView.setText(userInfos.get(0).getDateOfBirth());
+            Log.i("Birthday",userInfos.get(0).getDateOfBirth());
 
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
