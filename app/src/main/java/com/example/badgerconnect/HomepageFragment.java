@@ -174,7 +174,6 @@ public class HomepageFragment extends Fragment {
         TextView[] textViews = {box1Text, box2Text, box3Text, box4Text, box5Text, box6Text};
         CardView[] cardViews = {box1Card, box2Card, box3Card, box4Card, box5Card, box6Card};
         int size = (users.size() < 6) ? users.size() : 6;
-        Log.d("firebase", "i got here in the middle of populate");
         for(int i = 0 ; i < size ; i++) {
             UserInfo currUser = new UserInfo();
             String currUserId = users.get(i);

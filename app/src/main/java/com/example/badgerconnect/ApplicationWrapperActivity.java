@@ -51,23 +51,23 @@ public class ApplicationWrapperActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_application_wrapper);
 
-        /////////////////////SIGN IN BYPASS- VIP//////////////////////
-        auth=FirebaseAuth.getInstance();
-
-        String email1 = "test1@gmail.com";
-        String email2 = "cbfu@wisc.edu";
-        String email3 = "cjsu@wisc.edu";
-        String password = "000000";
-        String password3 = "010289";
-
-        //auth.signOut();
-        //TODO remove upon integration
-        auth.signInWithEmailAndPassword(email3, password3).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-            }
-        });
-        //////////////////////////////////////////////////////////////////////////////////////
+//        /////////////////////SIGN IN BYPASS- VIP//////////////////////
+//        auth=FirebaseAuth.getInstance();
+//
+//        String email1 = "test1@gmail.com";
+//        String email2 = "cbfu@wisc.edu";
+//        String email3 = "cjsu@wisc.edu";
+//        String password = "000000";
+//        String password3 = "010289";
+//
+//        //auth.signOut();
+//        //TODO remove upon integration
+//        auth.signInWithEmailAndPassword(email3, password3).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//            @Override
+//            public void onComplete(@NonNull Task<AuthResult> task) {
+//            }
+//        });
+//        //////////////////////////////////////////////////////////////////////////////////////
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         bottomNavigationView
