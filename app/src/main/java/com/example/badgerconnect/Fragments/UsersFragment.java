@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-///BIG changes made, in order to integrate chat feature to nav bar, we'll be bypassong the mainActivity_msg class
+///BIG changes made, in order to integrate chat feature to nav bar, we'll be bypassing the mainActivity_msg class
 //I have adapted and integrated the important sections of that class directly into userFragments
 public class UsersFragment extends Fragment {
 
@@ -62,11 +62,11 @@ public class UsersFragment extends Fragment {
         readUsers();
 
         //TEST the ADDUSER method
-        User user= new User("USERX",
-                "John Doe",
-                "https://www.google.com/imgres?imgurl=https%3A%2F%2Fd2jyir0m79gs60.cloudfront.net%2Fnews%2Fimages%2Fsuccessful-college-student-lg.png&tbnid=NsNZ54F8DxDgSM&vet=12ahUKEwivprXJwdL-AhW2E94AHafxCxUQMygAegUIARDkAQ..i&imgrefurl=https%3A%2F%2Fplexuss.com%2Fnews%2Farticle%2Fhow-to-be-a-successful-college-student&docid=4xUYG0LqyYhxbM&w=700&h=500&q=college%20student&ved=2ahUKEwivprXJwdL-AhW2E94AHafxCxUQMygAegUIARDkAQ",
-                null);
-        user.addUser();
+//        User user= new User("USERX",
+//                "John Doe",
+//                "https://www.google.com/imgres?imgurl=https%3A%2F%2Fd2jyir0m79gs60.cloudfront.net%2Fnews%2Fimages%2Fsuccessful-college-student-lg.png&tbnid=NsNZ54F8DxDgSM&vet=12ahUKEwivprXJwdL-AhW2E94AHafxCxUQMygAegUIARDkAQ..i&imgrefurl=https%3A%2F%2Fplexuss.com%2Fnews%2Farticle%2Fhow-to-be-a-successful-college-student&docid=4xUYG0LqyYhxbM&w=700&h=500&q=college%20student&ved=2ahUKEwivprXJwdL-AhW2E94AHafxCxUQMygAegUIARDkAQ",
+//                null);
+//        user.addUser();
 
 
         return view;
@@ -85,10 +85,8 @@ public class UsersFragment extends Fragment {
                 for (DataSnapshot data : datasnapshot.getChildren()) {
                     if (data.getKey().equals("Conversations")) {
                         convData = data;
-                        //System.out.println("Conv " + convData.getValue());
                     } else if (data.getKey().equals("Users")) {
                         userData = data;
-                        //System.out.println("Usss " + data.getValue());
                     }
                 }
 
@@ -96,7 +94,6 @@ public class UsersFragment extends Fragment {
                     for (DataSnapshot convSnapshot : convData.getChildren()) {
                         GenericTypeIndicator<HashMap<String, Object>> p2 = new GenericTypeIndicator<HashMap<String, Object>>() {
                         };
-                       // System.out.println("ppp111 " + convSnapshot.child("Participants").getValue());
                         HashMap<String, Object> pMap = convSnapshot.child("Participants").getValue(p2);
                         String curr_userId = FirebaseAuth.getInstance().getUid();
                         //Add participants from conversations in which current user is a member of
@@ -104,7 +101,6 @@ public class UsersFragment extends Fragment {
                             pMap.forEach((key, value) -> participants.add(value.toString()));
                         }
                     }
-                    //System.out.println("ppp111 " + participants);
                 }
 
                 ///////USER////////
@@ -147,8 +143,5 @@ public class UsersFragment extends Fragment {
             }
         });
     }
-
-
-
 
 }

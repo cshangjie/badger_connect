@@ -2,6 +2,134 @@
     <string name="app_name">BadgerConnect</string>
 
 
+    <string-array name="years_array">
+        <item>Freshman</item>
+        <item>Sophomore</item>
+        <item>Junior</item>
+        <item>Senior</item>
+    </string-array>
+
+    <string-array name="bs_majors">
+        <item>African Cultural Studies</item>
+        <item>Afro-American Studies</item>
+        <item>Agricultural and Applied Economics</item>
+        <item>Agricultural Business Management</item>
+        <item>Agronomy</item>
+        <item>Animal Sciences</item>
+        <item>Anthropology</item>
+        <item>Applied Mathematics, Engineering, and Physics</item>
+        <item>Art</item>
+        <item>Art Education</item>
+        <item>Art History</item>
+        <item>Asian Languages and Cultures</item>
+        <item>Astronomy-Physics</item>
+        <item>Atmospheric and Oceanic Sciences</item>
+        <item>Biochemistry (CALS)</item>
+        <item>Biochemistry (L&amp;S)</item>
+        <item>Biological Systems Engineering</item>
+        <item>Biology (CALS)</item>
+        <item>Biology (L&amp;S)</item>
+        <item>Biomedical Engineering</item>
+        <item>Botany</item>
+        <item>Cartography and Geographic Information Systems</item>
+        <item>Chemical Engineering</item>
+        <item>Chemistry</item>
+        <item>Chinese</item>
+        <item>Civil Engineering</item>
+        <item>Classical Humanities</item>
+        <item>Classics</item>
+        <item>Communication Arts</item>
+        <item>Communication Sciences and Disorders</item>
+        <item>Community and Environmental Sociology</item>
+        <item>Community and Nonprofit Leadership</item>
+        <item>Computer Engineering</item>
+        <item>Computer Sciences</item>
+        <item>Conservation Biology</item>
+        <item>Consumer Behavior and Marketplace Studies</item>
+        <item>Consumer Finance and Financial Planning</item>
+        <item>Consumer Marketplace Studies</item>
+        <item>Dairy Science</item>
+        <item>Dance</item>
+        <item>Data Science</item>
+        <item>Economics</item>
+        <item>Education Studies</item>
+        <item>Electrical Engineering</item>
+        <item>Engineering Mechanics</item>
+        <item>Engineering Physics</item>
+        <item>English</item>
+        <item>Entomology</item>
+        <item>Environmental Engineering</item>
+        <item>Environmental Sciences (CALS)</item>
+        <item>Environmental Sciences (L&amp;S)</item>
+        <item>Environmental Studies</item>
+        <item>Food Science</item>
+        <item>Forest Science</item>
+        <item>French</item>
+        <item>Gender and Women�s Studies</item>
+        <item>Genetics and Genomics</item>
+        <item>Geography</item>
+        <item>Geological Engineering</item>
+        <item>Geology and Geophysics</item>
+        <item>German</item>
+        <item>Global Health</item>
+        <item>Health Promotion and Health Equity</item>
+        <item>History</item>
+        <item>Horticulture</item>
+        <item>Human Development and Family Studies</item>
+        <item>Individual Major (CALS)</item>
+        <item>Individual Major (SOHE)</item>
+        <item>Individual Major (L&amp;S)</item>
+        <item>Industrial Engineering</item>
+        <item>Information Science</item>
+        <item>Interior Architecture</item>
+        <item>International Studies</item>
+        <item>Italian</item>
+        <item>Japanese</item>
+        <item>Jewish Studies</item>
+        <item>Kinesiology</item>
+        <item>Landscape and Urban Studies</item>
+        <item>Latin</item>
+        <item>Latin American, Caribbean, and Iberian Studies</item>
+        <item>Legal Studies</item>
+        <item>Life Sciences Communication</item>
+        <item>Linguistics</item>
+        <item>Materials Science and Engineering</item>
+        <item>Mathematics</item>
+        <item>Mechanical Engineering</item>
+        <item>Microbiology (CALS)</item>
+        <item>Microbiology (L&amp;S)</item>
+        <item>Molecular and Cell Biology</item>
+        <item>Music</item>
+        <item>Neurobiology</item>
+        <item>Nuclear Engineering</item>
+        <item>Nutritional Sciences</item>
+        <item>Nutritional Sciences, Nutrition, and Dietetics</item>
+        <item>Personal Finance</item>
+        <item>Pharmaceutical Sciences</item>
+        <item>Pharmacology and Toxicology</item>
+        <item>Philosophy</item>
+        <item>Physical Education</item>
+        <item>Physics</item>
+        <item>Plant Pathology</item>
+        <item>Polish</item>
+        <item>Political Science</item>
+        <item>Portuguese</item>
+        <item>Psychology</item>
+        <item>Rehabilitation Psychology</item>
+        <item>Religious Studies</item>
+        <item>Russian</item>
+        <item>Scandinavian Studies</item>
+        <item>Social Welfare</item>
+        <item>Sociology</item>
+        <item>Soil Science</item>
+        <item>Spanish</item>
+        <item>Statistics</item>
+        <item>Textiles and Fashion Design</item>
+        <item>Theatre and Drama</item>
+        <item>Wildlife Ecology</item>
+        <item>Zoology</item>
+    </string-array>
+
     <string-array name="full_courses_array">
         <item>GEOG 399</item>
         <item>RP &amp; SE 402</item>

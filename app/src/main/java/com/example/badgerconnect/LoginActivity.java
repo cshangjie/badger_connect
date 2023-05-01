@@ -119,7 +119,9 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
                             progressBar.setVisibility(View.GONE);
 
-                            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                            // TODO add check that the user is fully registered
+
+                            Intent intent = new Intent(LoginActivity.this, ApplicationWrapperActivity.class);
                             startActivity(intent);
                         }
                         else {

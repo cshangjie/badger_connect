@@ -103,7 +103,6 @@ public class PendingRequestsFragment extends Fragment {
                             }
                         }
                     }
-                    //System.out.println("ppp111 " + sender_ids);
                 }
 
                 ///////USER////////
@@ -135,14 +134,11 @@ public class PendingRequestsFragment extends Fragment {
 
                     mUsers=new ArrayList<User>(); //empty the list for next reload!
                 }
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-
         });
     }
 }

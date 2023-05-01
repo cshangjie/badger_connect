@@ -67,7 +67,6 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
                 profile_image= itemView.findViewById(R.id.profile_image);
                 accept_btn=itemView.findViewById(R.id.accept_btn);
                 decline_btn=itemView.findViewById(R.id.decline_btn);
-
             }
         }
 
