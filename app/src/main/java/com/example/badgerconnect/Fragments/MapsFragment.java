@@ -2,6 +2,8 @@ package com.example.badgerconnect.Fragments;
 
 import static android.content.Context.LOCATION_SERVICE;
 
+import static com.example.badgerconnect.DatabaseFunctions.readUserData;
+
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -24,7 +26,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.example.badgerconnect.DatabaseFunctions;
 import com.example.badgerconnect.R;
+import com.example.badgerconnect.UserInfo;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -45,6 +49,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Nullable;
 
@@ -77,6 +82,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private List<Marker> markerList = new ArrayList<>();
 
     private Set<String> removedMarkerTitles = new HashSet<>();
+    private UserInfo user;
+    private String username;
+    private String major;
 
 
     @Override
@@ -98,6 +106,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         // Check if user is already signed in
         if (mAuth.getCurrentUser() != null) {
             // User is signed in, display map
+            CompletableFuture<UserInfo> currUserInfo = readUserData(mAuth.getCurrentUser().getUid(), user);
+            currUserInfo.thenAccept(user -> {
+                major = user.getMajor();
+                username = user.getUsername();
+            });
             setUpMap();
         }
 
