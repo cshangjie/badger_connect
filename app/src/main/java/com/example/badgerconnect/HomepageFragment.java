@@ -270,18 +270,18 @@ public class HomepageFragment extends Fragment {
             TextView userNameTextView = dialogView.findViewById(R.id.name_field);
             TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
             TextView userYearTextView = dialogView.findViewById(R.id.year_field);
-            TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
+            // TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
             Button connectButton = dialogView.findViewById(R.id.connect_button);
 
             // Set the views' content based on the selected user
-            //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
+            // profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
             downloadPFP(userIds.get(0), profilePictureImageView);
             userNameTextView.setText(userInfos.get(0).getUsername());
             userMajorTextView.setText(userInfos.get(0).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(0).getYear()));
-            userBirthdateTextView.setText(userInfos.get(0).getDateOfBirth());
+            // userBirthdateTextView.setText(userInfos.get(0).getDateOfBirth());
             Log.i("Birthday",userInfos.get(0).getDateOfBirth());
 
             // Create the dialog and show it
@@ -329,7 +329,7 @@ public class HomepageFragment extends Fragment {
             TextView userNameTextView = dialogView.findViewById(R.id.name_field);
             TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
             TextView userYearTextView = dialogView.findViewById(R.id.year_field);
-            TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
+            // TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
             Button connectButton = dialogView.findViewById(R.id.connect_button);
@@ -340,7 +340,7 @@ public class HomepageFragment extends Fragment {
             userNameTextView.setText(userInfos.get(1).getUsername());
             userMajorTextView.setText(userInfos.get(1).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(1).getYear()));
-            userBirthdateTextView.setText(userInfos.get(1).getDateOfBirth());
+            // userBirthdateTextView.setText(userInfos.get(1).getDateOfBirth());
 
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
@@ -388,7 +388,7 @@ public class HomepageFragment extends Fragment {
             TextView userNameTextView = dialogView.findViewById(R.id.name_field);
             TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
             TextView userYearTextView = dialogView.findViewById(R.id.year_field);
-            TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
+            // TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
             Button connectButton = dialogView.findViewById(R.id.connect_button);
@@ -399,7 +399,7 @@ public class HomepageFragment extends Fragment {
             userNameTextView.setText(userInfos.get(2).getUsername());
             userMajorTextView.setText(userInfos.get(2).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(2).getYear()));
-            userBirthdateTextView.setText(userInfos.get(2).getDateOfBirth());
+            // userBirthdateTextView.setText(userInfos.get(2).getDateOfBirth());
 
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
@@ -447,7 +447,7 @@ public class HomepageFragment extends Fragment {
             TextView userNameTextView = dialogView.findViewById(R.id.name_field);
             TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
             TextView userYearTextView = dialogView.findViewById(R.id.year_field);
-            TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
+            // TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
             Button connectButton = dialogView.findViewById(R.id.connect_button);
@@ -458,7 +458,7 @@ public class HomepageFragment extends Fragment {
             userNameTextView.setText(userInfos.get(3).getUsername());
             userMajorTextView.setText(userInfos.get(3).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(3).getYear()));
-            userBirthdateTextView.setText(userInfos.get(3).getDateOfBirth());
+            // userBirthdateTextView.setText(userInfos.get(3).getDateOfBirth());
 
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
@@ -506,7 +506,7 @@ public class HomepageFragment extends Fragment {
             TextView userNameTextView = dialogView.findViewById(R.id.name_field);
             TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
             TextView userYearTextView = dialogView.findViewById(R.id.year_field);
-            TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
+            // TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
             Button connectButton = dialogView.findViewById(R.id.connect_button);
@@ -517,7 +517,7 @@ public class HomepageFragment extends Fragment {
             userNameTextView.setText(userInfos.get(4).getUsername());
             userMajorTextView.setText(userInfos.get(4).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(4).getYear()));
-            userBirthdateTextView.setText(userInfos.get(4).getDateOfBirth());
+            // userBirthdateTextView.setText(userInfos.get(4).getDateOfBirth());
 
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
@@ -565,7 +565,7 @@ public class HomepageFragment extends Fragment {
             TextView userNameTextView = dialogView.findViewById(R.id.name_field);
             TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
             TextView userYearTextView = dialogView.findViewById(R.id.year_field);
-            TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
+            // TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
             Button connectButton = dialogView.findViewById(R.id.connect_button);
@@ -576,7 +576,7 @@ public class HomepageFragment extends Fragment {
             userNameTextView.setText(userInfos.get(5).getUsername());
             userMajorTextView.setText(userInfos.get(5).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(5).getYear()));
-            userBirthdateTextView.setText(userInfos.get(5).getDateOfBirth());
+            // userBirthdateTextView.setText(userInfos.get(5).getDateOfBirth());
 
             // Create the dialog and show it
             AlertDialog dialog = builder.create();

@@ -70,7 +70,7 @@
                     android:padding="16dp"
                     android:orientation="vertical">
                     
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profile_picture1"
                         android:layout_width="80dp"
                         android:layout_height="80dp" />
@@ -107,7 +107,7 @@
                     android:padding="16dp"
                     android:orientation="vertical">
 
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profile_picture2"
                         android:layout_width="80dp"
                         android:layout_height="80dp"/>
@@ -144,7 +144,7 @@
                     android:padding="16dp"
                     android:orientation="vertical">
 
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profile_picture3"
                         android:layout_width="80dp"
                         android:layout_height="80dp"/>
@@ -181,7 +181,7 @@
                     android:padding="16dp"
                     android:orientation="vertical">
 
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profile_picture4"
                         android:layout_width="80dp"
                         android:layout_height="80dp"/>
@@ -218,7 +218,7 @@
                     android:padding="16dp"
                     android:orientation="vertical">
 
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profile_picture5"
                         android:layout_width="80dp"
                         android:layout_height="80dp"/>
@@ -255,7 +255,7 @@
                     android:padding="16dp"
                     android:orientation="vertical">
 
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profile_picture6"
                         android:layout_width="80dp"
                         android:layout_height="80dp"/>
