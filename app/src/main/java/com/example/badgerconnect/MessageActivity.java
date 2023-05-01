@@ -263,8 +263,8 @@ public class MessageActivity extends AppCompatActivity {
                     ArrayList<Object> participants= new ArrayList<>(pMap.values());
 
                     // check if both users are in the conversation
-                     System.out.println("p is:" + curr_user + " and " + receiverId);
-                     System.out.println("px is:" + participants);
+                    // System.out.println("p is:" + curr_user + " and " + receiverId);
+                    // System.out.println("px is:" + participants);
                     if(participants.contains(curr_user) && participants.contains(receiverId)) {
 //                        System.out.println("p is:" + curr_user + " and " + receiverId);
 //                        System.out.println("px is:" + participants);
