@@ -51,32 +51,32 @@ public class ApplicationWrapperActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_application_wrapper);
 
-        /////////////////////SIGN IN BYPASS- VIP//////////////////////
-        auth=FirebaseAuth.getInstance();
-
-        String email1 = "test1@gmail.com";
-        String email2 = "cbfu@wisc.edu";
-        String password = "000000";
-
-        // auth.signOut();
-        //System.out.println("About to sign in");
-
-        //TODO remove upon integration
-        auth.signInWithEmailAndPassword(email1, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                   // System.out.println("SIGN IN SUCCESSFUL");
-                }
-//                else {
-//                    // If sign in fails, display a message to the user.
-//                    Toast.makeText(UsersFragment.this, "Authentication failed.",
-//                            Toast.LENGTH_SHORT).show();
+//        /////////////////////SIGN IN BYPASS- VIP//////////////////////
+//        auth=FirebaseAuth.getInstance();
+//
+//        String email1 = "test1@gmail.com";
+//        String email2 = "cbfu@wisc.edu";
+//        String password = "000000";
+//
+//        // auth.signOut();
+//        //System.out.println("About to sign in");
+//
+//        //TODO remove upon integration
+//        auth.signInWithEmailAndPassword(email1, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//            @Override
+//            public void onComplete(@NonNull Task<AuthResult> task) {
+//                if (task.isSuccessful()) {
+//                    // Sign in success, update UI with the signed-in user's information
+//                   // System.out.println("SIGN IN SUCCESSFUL");
 //                }
-            }
-        });
-        ////////////////////////////////////////////////////
+////                else {
+////                    // If sign in fails, display a message to the user.
+////                    Toast.makeText(UsersFragment.this, "Authentication failed.",
+////                            Toast.LENGTH_SHORT).show();
+////                }
+//            }
+//        });
+//        ////////////////////////////////////////////////////
 
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -137,76 +137,75 @@ public class ApplicationWrapperActivity extends AppCompatActivity
         return false;
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.profile_menu, menu);
-//        getSupportActionBar().setTitle("BadgerConnect");
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if (id == R.id.menu_profile) {
-//            // Handle profile icon click
-//            Intent intent = new Intent(ApplicationWrapperActivity.this, EditProfileActivity.class);
-//            startActivity(intent);
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-
-
-        reference= FirebaseDatabase.getInstance().getReference("Data").child("Users");
-        Query query= reference;
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
-                User user = new User();
-                for (DataSnapshot userinfo : datasnapshot.getChildren()) {
-
-                    user = userinfo.getValue(User.class);
-                    if (user.getUid().equals(firebaseUser.getUid())) {
-                        if (!user.getProfile_pic().equals("default")) {
-
-                            CircleImageView profileImageForMenu = findViewById(R.id.profile_image_icon);
-                            TextView profile_username = findViewById(R.id.profile_username);
-                            MenuItem profileImageMenuItem=menu.findItem(R.id.profile_image_menu);
-                            MenuItem username_menu=menu.findItem(R.id.username_menu);
-                            profile_username.setText(user.getName());
-
-                            // Inflate the layout and set it as the action view for the menu item
-                            View profileImageView = profileImageMenuItem.getActionView();
-                            if (profileImageView != null) {
-                                profileImageMenuItem.setActionView(profileImageView);
-                            }
-
-                            Glide.with(ApplicationWrapperActivity.this).load(user.getProfile_pic()).into(profileImageForMenu);
-
-                        }
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+        getMenuInflater().inflate(R.menu.profile_menu, menu);
+        getSupportActionBar().setTitle("BadgerConnect");
         return true;
     }
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
 
-            case R.id.logout:
-                FirebaseAuth.getInstance().signOut();
-                finish();
-                return true;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_profile) {
+            // Handle profile icon click
+            Intent intent = new Intent(ApplicationWrapperActivity.this, EditProfileActivity.class);
+            startActivity(intent);
+            return true;
         }
-        return false;
+        return super.onOptionsItemSelected(item);
     }
+
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu, menu);
+//
+//
+//        reference= FirebaseDatabase.getInstance().getReference("Data").child("Users");
+//        Query query= reference;
+//        query.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+//                User user = new User();
+//                for (DataSnapshot userinfo : datasnapshot.getChildren()) {
+//
+//                    user = userinfo.getValue(User.class);
+//                    if (user.getUid().equals(firebaseUser.getUid())) {
+//                        if (!user.getProfile_pic().equals("default")) {
+//
+//                            CircleImageView profileImageForMenu = findViewById(R.id.profile_image_icon);
+//                            TextView profile_username = findViewById(R.id.profile_username);
+//                            MenuItem profileImageMenuItem=menu.findItem(R.id.profile_image_menu);
+//                            MenuItem username_menu=menu.findItem(R.id.username_menu);
+//                            profile_username.setText(user.getName());
+//
+//                            // Inflate the layout and set it as the action view for the menu item
+//                            View profileImageView = profileImageMenuItem.getActionView();
+//                            if (profileImageView != null) {
+//                                profileImageMenuItem.setActionView(profileImageView);
+//                            }
+//                            Glide.with(ApplicationWrapperActivity.this).load(user.getProfile_pic()).into(profileImageForMenu);
+//                        }
+//                    }
+//                }
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//            }
+//        });
+//        return true;
+//    }
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        switch (item.getItemId()){
+//
+//            case R.id.logout:
+//                FirebaseAuth.getInstance().signOut();
+//                finish();
+//                return true;
+//
+//        }
+//        return false;
+//    }
 }

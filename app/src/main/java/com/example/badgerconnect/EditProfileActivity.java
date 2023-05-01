@@ -5,26 +5,40 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.Image;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 public class EditProfileActivity extends AppCompatActivity {
     private boolean editMode = false;
     private ImageView pfp;
-    private EditText name_EditText, year_EditText, dob_EditText, major_EditText;
+    private EditText name_EditText, dob_EditText, major_EditText;
+    private EditText bio_EditText;
+    private CheckBox mentor_CB, mentee_CB, studybuddy_CB;
+    private Spinner year_Spinner;
+    private LinearLayout autocompleteContainer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,23 +145,37 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     public void enableUserFields(boolean val){
-        EditText nameField = findViewById(R.id.name_field);
-        EditText majorField = findViewById(R.id.major_field);
-        EditText birthdateField = findViewById(R.id.birthdate_field);
         if(val){
-            nameField.setEnabled(true);
-            majorField.setEnabled(true);
-            birthdateField.setEnabled(true);
+            // editing
+            name_EditText.setEnabled(true);
+            major_EditText.setEnabled(true);
+            dob_EditText.setEnabled(true);
+            year_Spinner.setEnabled(true);
+            bio_EditText.setEnabled(true);
+
+            // TODO set colors to black
+            name_EditText.setTextColor(Color.BLACK);
+            major_EditText.setTextColor(Color.BLACK);
+            dob_EditText.setTextColor(Color.BLACK);
+            bio_EditText.setTextColor(Color.BLACK);
         }
         else{
-            nameField.setEnabled(false);
-            majorField.setEnabled(false);
-            birthdateField.setEnabled(false);
+            // no longer editing
+            name_EditText.setEnabled(false);
+            major_EditText.setEnabled(false);
+            dob_EditText.setEnabled(false);
+            year_Spinner.setEnabled(false);
+            bio_EditText.setEnabled(false);
+            // TODO set colors back to the original
+            name_EditText.setTextColor(Color.LTGRAY);
+            major_EditText.setTextColor(Color.LTGRAY);
+            dob_EditText.setTextColor(Color.LTGRAY);
+            bio_EditText.setTextColor(Color.LTGRAY);
         }
     }
 
     /*
-    reads user data from database and displays it TODO
+    reads user data from database and displays it
      */
     public void setUserDataFromDatabase(){
         /* set image*/
@@ -157,50 +185,97 @@ public class EditProfileActivity extends AppCompatActivity {
         UserInfo currUser = new UserInfo();
         DatabaseFunctions.downloadPFP(uid, pfp);
         pfp.setVisibility(View.VISIBLE);
-        Log.i("","hello i am here");
+
         CompletableFuture<UserInfo> currUserData = DatabaseFunctions.readUserData(uid, currUser);
         currUserData.thenAccept(user -> {
+            bio_EditText.setText(user.getBio());
+            bio_EditText.setVisibility(View.VISIBLE);
             name_EditText.setText(user.getUsername());
             name_EditText.setVisibility(View.VISIBLE);
             major_EditText.setText(user.getMajor());
             major_EditText.setVisibility(View.VISIBLE);
-            int userYear = user.getYear().getNumVal();
-            String yearString;
-            switch (userYear) {
-                case 1:
-                    yearString = "Freshman";
+            dob_EditText.setText(user.getDateOfBirth());
+            dob_EditText.setVisibility(View.VISIBLE);
+            if(user.getConnectionType().get("Mentor")){
+                mentor_CB.setChecked(true);
+                mentor_CB.setVisibility(View.VISIBLE);
+                mentor_CB.setEnabled(false);
+            }
+            if(user.getConnectionType().get("Mentee")){
+                mentee_CB.setChecked(true);
+                mentee_CB.setVisibility(View.VISIBLE);
+                mentee_CB.setEnabled(false);
+            }
+            if(user.getConnectionType().get("StudyBuddy")){
+                // set the la
+                studybuddy_CB.setVisibility(View.GONE);
+                studybuddy_CB.setEnabled(false);
+                // iterate over courses
+                HashMap<String, String> userCourses = user.getStudyBuddyCourses();
+                userCourses.values();
+                for (String course : userCourses.values()) {
+                    // populate courses as autocompletetextviews within the container and setting them to disabled
+                    AutoCompleteTextView autoCompleteTextView = new AutoCompleteTextView(EditProfileActivity.this);
+                    autoCompleteTextView.setGravity(Gravity.CENTER); // center the text
+                    String[] options = getResources().getStringArray(R.array.full_courses_array);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(EditProfileActivity.this, android.R.layout.simple_dropdown_item_1line, options);
+                    autoCompleteTextView.setAdapter(adapter);
+                    autoCompleteTextView.setGravity(Gravity.CENTER); // center the text
+                    autoCompleteTextView.setText(course);
+                    autoCompleteTextView.setEnabled(false);
+                    autoCompleteTextView.setVisibility(View.VISIBLE);
+                    autocompleteContainer.addView(autoCompleteTextView);
+                }
+            }else{ // user is not a study buddy so show no courses with a checkbox unchecked
+                studybuddy_CB.setChecked(false);
+                studybuddy_CB.setVisibility(View.VISIBLE);
+                studybuddy_CB.setEnabled(false);
+            }
+
+            MeetingType userMeetingPref = user.getMeetingType();switch (userMeetingPref) {
+                case IN_PERSON:
+
                     break;
-                case 2:
-                    yearString = "Sophomore";
+                case VIRTUAL:
+
                     break;
-                case 3:
-                    yearString = "Junior";
-                    break;
-                case 4:
-                    yearString = "Senior";
+                case BOTH:
+
                     break;
                 default:
-                    yearString = "uh oh";
+                    // handle the case where userMeetingPref is not one of the enum values
                     break;
             }
-            year_EditText.setText(userYear);
-            year_EditText.setVisibility(View.VISIBLE);
-//            dob_EditText.setText(user.getDateOfBirth());
-//            year_EditText.setVisibility(View.VISIBLE);
+
+
         });
-        // TODO
     }
 
     private void initializeUI() {
+        autocompleteContainer = findViewById(R.id.course_container);
         pfp = findViewById(R.id.profile_picture);
         pfp.setVisibility(View.INVISIBLE);
+        bio_EditText = findViewById(R.id.bio_field);
+        bio_EditText.setVisibility(View.INVISIBLE);
         name_EditText = findViewById(R.id.name_field);
         name_EditText.setVisibility(View.INVISIBLE);
         major_EditText = findViewById(R.id.major_field);
         major_EditText.setVisibility(View.INVISIBLE);
         dob_EditText = findViewById(R.id.birthdate_field);
         dob_EditText.setVisibility(View.INVISIBLE);
-        year_EditText = findViewById(R.id.year_field);
-        year_EditText.setVisibility(View.INVISIBLE);
+        year_Spinner = findViewById(R.id.year_spinner);
+        ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(this, R.array.years_array, R.layout.spinner_item);
+        spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        year_Spinner.setAdapter(spinAdapter);
+        year_Spinner.setEnabled(false);
+        mentor_CB = findViewById(R.id.mentor_checkbox);
+        mentor_CB.setEnabled(false);
+        mentor_CB.setVisibility(View.INVISIBLE);
+        mentee_CB = findViewById(R.id.mentee_checkbox);
+        mentee_CB.setEnabled(false);
+        mentee_CB.setVisibility(View.INVISIBLE);
+        studybuddy_CB = findViewById(R.id.studybuddy_checkbox);
+        studybuddy_CB.setEnabled(false);
+        studybuddy_CB.setVisibility(View.INVISIBLE);
     }
 }
