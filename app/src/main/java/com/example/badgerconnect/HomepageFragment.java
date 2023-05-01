@@ -74,6 +74,13 @@ public class HomepageFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Sets the onClickListeners for the interactable components of the page
+     *
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -87,6 +94,9 @@ public class HomepageFragment extends Fragment {
         box6Card.setOnClickListener(this::pullUserDataBox6);
     }
 
+    /**
+     * When the page is pulled down and refreshed this function updates the users shown
+     */
     private void onRefresh() {
         // Call your function here
         // This function will be triggered when the user pulls down on the screen
@@ -141,6 +151,11 @@ public class HomepageFragment extends Fragment {
         prevOp.put("ConnectionType", sortMap.get("ConnectionType"));
     }
 
+    /**
+     * Initializes the UI components
+     *
+     * @param view the current view of the fragment
+     */
     private void initializeUI(View view) {
         box1Image = view.findViewById(R.id.profile_picture1);
         box2Image = view.findViewById(R.id.profile_picture2);
@@ -166,6 +181,11 @@ public class HomepageFragment extends Fragment {
         lookingForText = view.findViewById(R.id.looking_for);
     }
 
+    /**
+     * Populates the boxes on screen with user information and their profile picture
+     *
+     * @param foundUsers a hashmap of found users
+     */
     private void populateSquaresStudyBuddy(HashMap<String, Integer> foundUsers) {
         List<String> users = new ArrayList<>();
         users.addAll(foundUsers.keySet());
@@ -194,6 +214,11 @@ public class HomepageFragment extends Fragment {
 
     }
 
+    /**
+     * Populates the boxes on screen with user information and their profile picture
+     *
+     * @param foundUsers a list of found users
+     */
     private void populateSquares(List<String> foundUsers) {
         Collections.shuffle(foundUsers);
         ImageView[] imageViews = {box1Image, box2Image, box3Image, box4Image, box5Image, box6Image};
@@ -220,6 +245,12 @@ public class HomepageFragment extends Fragment {
 
     }
 
+    /**
+     * Pulls up a dialog box to display more user information and give
+     * the user the ability to connect with them
+     *
+     * @param v the current view
+     */
     private void pullUserDataBox1(View v) {
         if(userInfos.size() >= 1) {
             // Create an AlertDialog.Builder to display the dialog box
@@ -242,7 +273,6 @@ public class HomepageFragment extends Fragment {
 
             // Set the views' content based on the selected user
             //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
-            //TODO: replace the set image view with the actual user's image
             downloadPFP(userIds.get(0), profilePictureImageView);
             userNameTextView.setText(userInfos.get(0).getUsername());
             userMajorTextView.setText(userInfos.get(0).getMajor());
@@ -266,6 +296,12 @@ public class HomepageFragment extends Fragment {
         }
     }
 
+    /**
+     * Pulls up a dialog box to display more user information and give
+     * the user the ability to connect with them
+     *
+     * @param view the current view
+     */
     private void pullUserDataBox2(View view) {
         if(userInfos.size() >= 2) {
             // Create an AlertDialog.Builder to display the dialog box
@@ -288,7 +324,6 @@ public class HomepageFragment extends Fragment {
 
             // Set the views' content based on the selected user
             //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
-            //TODO: replace the set image view with the actual user's image
             downloadPFP(userIds.get(1), profilePictureImageView);
             userNameTextView.setText(userInfos.get(1).getUsername());
             userMajorTextView.setText(userInfos.get(1).getMajor());
@@ -312,6 +347,12 @@ public class HomepageFragment extends Fragment {
         }
     }
 
+    /**
+     * Pulls up a dialog box to display more user information and give
+     * the user the ability to connect with them
+     *
+     * @param view the current view
+     */
     private void pullUserDataBox3(View view) {
         if(userInfos.size() >= 3) {
             // Create an AlertDialog.Builder to display the dialog box
@@ -334,7 +375,6 @@ public class HomepageFragment extends Fragment {
 
             // Set the views' content based on the selected user
             //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
-            //TODO: replace the set image view with the actual user's image
             downloadPFP(userIds.get(2), profilePictureImageView);
             userNameTextView.setText(userInfos.get(2).getUsername());
             userMajorTextView.setText(userInfos.get(2).getMajor());
@@ -358,6 +398,12 @@ public class HomepageFragment extends Fragment {
         }
     }
 
+    /**
+     * Pulls up a dialog box to display more user information and give
+     * the user the ability to connect with them
+     *
+     * @param view the current view
+     */
     private void pullUserDataBox4(View view) {
         if(userInfos.size() >= 4) {
             // Create an AlertDialog.Builder to display the dialog box
@@ -380,7 +426,6 @@ public class HomepageFragment extends Fragment {
 
             // Set the views' content based on the selected user
             //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
-            //TODO: replace the set image view with the actual user's image
             downloadPFP(userIds.get(3), profilePictureImageView);
             userNameTextView.setText(userInfos.get(3).getUsername());
             userMajorTextView.setText(userInfos.get(3).getMajor());
@@ -404,6 +449,12 @@ public class HomepageFragment extends Fragment {
         }
     }
 
+    /**
+     * Pulls up a dialog box to display more user information and give
+     * the user the ability to connect with them
+     *
+     * @param view the current view
+     */
     private void pullUserDataBox5(View view) {
         if(userInfos.size() >= 5) {
             // Create an AlertDialog.Builder to display the dialog box
@@ -426,7 +477,6 @@ public class HomepageFragment extends Fragment {
 
             // Set the views' content based on the selected user
             //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
-            //TODO: replace the set image view with the actual user's image
             downloadPFP(userIds.get(4), profilePictureImageView);
             userNameTextView.setText(userInfos.get(4).getUsername());
             userMajorTextView.setText(userInfos.get(4).getMajor());
@@ -450,6 +500,12 @@ public class HomepageFragment extends Fragment {
         }
     }
 
+    /**
+     * Pulls up a dialog box to display more user information and give
+     * the user the ability to connect with them
+     *
+     * @param view the current view
+     */
     private void pullUserDataBox6(View view) {
         if(userInfos.size() >= 6) {
             // Create an AlertDialog.Builder to display the dialog box
@@ -472,7 +528,6 @@ public class HomepageFragment extends Fragment {
 
             // Set the views' content based on the selected user
             //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
-            //TODO: replace the set image view with the actual user's image
             downloadPFP(userIds.get(5), profilePictureImageView);
             userNameTextView.setText(userInfos.get(5).getUsername());
             userMajorTextView.setText(userInfos.get(5).getMajor());
@@ -496,6 +551,12 @@ public class HomepageFragment extends Fragment {
         }
     }
 
+    /**
+     * Pulls up a dialog box to allow the user to choose what kind
+     * of connections they are looking for
+     *
+     * @param view the current view
+     */
     private void pullFilterDialog(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -573,6 +634,10 @@ public class HomepageFragment extends Fragment {
         dialog.show();
     }
 
+    /**
+     * Simple function to set the boxes invisible and only making those with user
+     * information visible after.
+     */
     public void setBoxesInvisible() {
         box1Card.setVisibility(View.INVISIBLE);
         box2Card.setVisibility(View.INVISIBLE);
