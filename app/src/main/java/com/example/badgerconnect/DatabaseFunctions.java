@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -398,6 +399,34 @@ public class DatabaseFunctions{
                 Log.i("Error", "Image Download Failed.");
             }
         });
+    }
+
+    /**
+     * Downloads the profile picture url of the user from firebase
+     *
+     * @param userId the userId of the pfp you want back
+     */
+    public static CompletableFuture<String> downloadPFPURL(String userId) {
+        CompletableFuture<String> future = new CompletableFuture<>();
+        mStorage = FirebaseStorage.getInstance().getReference();
+        StorageReference pfpRef = mStorage.child("images").child(userId+"/pfp.jpg");
+
+        // Get the download URL
+        pfpRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                String imageURL = uri.toString();
+                future.complete(imageURL);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                exception.printStackTrace();
+                Log.i("Error", "Download URI failed");
+            }
+        });
+
+        return future;
     }
 
     /**
