@@ -82,7 +82,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private List<Marker> markerList = new ArrayList<>();
 
     private Set<String> removedMarkerTitles = new HashSet<>();
-    private UserInfo user;
+    private UserInfo user = new UserInfo();
     private String username;
     private String major;
 

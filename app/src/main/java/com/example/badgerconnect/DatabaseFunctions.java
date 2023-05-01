@@ -268,8 +268,10 @@ public class DatabaseFunctions{
         String major = String.valueOf(task.getResult().child("Major").getValue());
         HashMap<String, String> studyBuddyCoursesHash = (HashMap<String, String>) task.getResult().child("StudyBuddyCourses").getValue(Object.class);
         List<String> studyBuddyCourses = null;
+        int numCourses = 0;
         if(studyBuddyCoursesHash != null) {
             studyBuddyCourses = new ArrayList<String>(studyBuddyCoursesHash.values());
+            numCourses = studyBuddyCourses.size();
         }
         HashMap<String, Boolean> connectionTypes = (HashMap<String, Boolean>) task.getResult().child("ConnectionTypes").getValue(Object.class);
         List<String> connectTypes = new ArrayList<>();
@@ -292,7 +294,7 @@ public class DatabaseFunctions{
         }
         MeetingType meetingType = task.getResult().child("MeetingType").getValue(MeetingType.class);
         String dateOfBirth = String.valueOf(task.getResult().child("DateOfBirth").getValue());
-        user.setUserInformation(name, email, major, studyBuddyCourses.size(), studyBuddyCourses, connectTypes, bio, year, meetingType, dateOfBirth);
+        user.setUserInformation(name, email, major, numCourses, studyBuddyCourses, connectTypes, bio, year, meetingType, dateOfBirth);
         future.complete(user);
     }
 
