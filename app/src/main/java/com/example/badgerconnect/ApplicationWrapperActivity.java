@@ -78,10 +78,7 @@ public class ApplicationWrapperActivity extends AppCompatActivity
         bottomNavigationView
                 .setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
-
-
     }
-
 
     @Override
     public boolean
