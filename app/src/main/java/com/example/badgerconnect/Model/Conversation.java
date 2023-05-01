@@ -17,6 +17,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.grpc.inprocess.AnonymousInProcessSocketAddress;
+
 public class Conversation {
 
     private Message msg;
@@ -30,10 +32,12 @@ public class Conversation {
     public Conversation( Map<String, String> participant_ids) {
         Date date= new Date();
         this.msg=new Message();
-        this.msg.setText("New Connection Established!");
-        this.msg.setSender(participant_ids.get(0));
+        this.msg.setText("We're now connected!");
+        this.msg.setSender("Anonymous");
         this.msg.setDate(String.valueOf(date));
         this.participant_ids=participant_ids;
+
+        System.out.println("Sender is " + msg.getSender());
     }
 
     //instantiate db
@@ -42,7 +46,7 @@ public class Conversation {
   public void CreateNewConversation(){
       DatabaseReference convRef = FirebaseDatabase.getInstance().getReference("Data").child("Conversations");
       HashMap<String, Object> convMap= new HashMap<>();
-      convMap.put("Messages", msg);
+      convMap.put("Messages", Map.of(msg.hashCode()+"", msg));
       convMap.put("Participants", participant_ids);
       convRef.addListenerForSingleValueEvent(new ValueEventListener() {
           @Override

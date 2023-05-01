@@ -84,8 +84,7 @@ public class ApplicationWrapperActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
             case R.id.navigation_people:
-                getSupportActionBar().setTitle("BadgerConnect");
-                getSupportActionBar().setSubtitle("Connections");
+                getSupportActionBar().setTitle("Connections");
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.flFragment, new UsersFragment())
@@ -93,16 +92,14 @@ public class ApplicationWrapperActivity extends AppCompatActivity
                 return true;
 
             case R.id.navigation_home:
-                getSupportActionBar().setTitle("BadgerConnect");
-                getSupportActionBar().setSubtitle("Home");
+                getSupportActionBar().setTitle("Home");
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.flFragment, new HomepageFragment())
                         .commit();
                 return true;
             case R.id.navigation_pending_requests:
-                getSupportActionBar().setTitle("BadgerConnect");
-                getSupportActionBar().setSubtitle("Pending Requests");
+                getSupportActionBar().setTitle("Pending Requests");
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.flFragment, new PendingRequestsFragment())
@@ -112,8 +109,7 @@ public class ApplicationWrapperActivity extends AppCompatActivity
             case R.id.navigation_map:
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PackageManager.PERMISSION_GRANTED);
                 //getSupportFragmentManager().beginTransaction().add(R.id.flFragment, new MapsFragment(), "tag").commit();
-                getSupportActionBar().setTitle("BadgerConnect");
-                getSupportActionBar().setSubtitle("Map");
+                getSupportActionBar().setTitle("Map");
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.flFragment, new MapsFragment())
