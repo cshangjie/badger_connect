@@ -38,35 +38,19 @@
         android:inputType="textPersonName"
         android:minHeight="48dp" />
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="1">
+        android:gravity="center_vertical">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="0.7"
-            android:text="@string/share_location"
-            android:textSize="18sp" />
-
-        <Switch
-            android:id="@+id/pin_switch"
-            android:layout_width="0dp"
+        <Button
+            android:id="@+id/remove_marker_button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:checked="true"
-            android:minWidth="48dp"
-            android:minHeight="32dp"
-            android:textOff="@string/off"
-            android:textOn="@string/on"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
+            android:text="Remove Marker"/>
 
     </LinearLayout>
-
-
 
 
 </FrameLayout>
