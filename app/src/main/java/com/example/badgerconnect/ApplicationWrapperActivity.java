@@ -56,40 +56,26 @@ public class ApplicationWrapperActivity extends AppCompatActivity
 //
 //        String email1 = "test1@gmail.com";
 //        String email2 = "cbfu@wisc.edu";
+//        String email3 = "cjsu@wisc.edu";
 //        String password = "000000";
+//        String password3 = "010289";
 //
-//        // auth.signOut();
-//        //System.out.println("About to sign in");
-//
+//        //auth.signOut();
 //        //TODO remove upon integration
-//        auth.signInWithEmailAndPassword(email1, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//        auth.signInWithEmailAndPassword(email3, password3).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 //            @Override
 //            public void onComplete(@NonNull Task<AuthResult> task) {
-//                if (task.isSuccessful()) {
-//                    // Sign in success, update UI with the signed-in user's information
-//                   // System.out.println("SIGN IN SUCCESSFUL");
-//                }
-////                else {
-////                    // If sign in fails, display a message to the user.
-////                    Toast.makeText(UsersFragment.this, "Authentication failed.",
-////                            Toast.LENGTH_SHORT).show();
-////                }
 //            }
 //        });
-//        ////////////////////////////////////////////////////
-
+//        //////////////////////////////////////////////////////////////////////////////////////
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         bottomNavigationView
                 = findViewById(R.id.bottomNavigationView);
-
         bottomNavigationView
                 .setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
-
-
     }
-
 
     @Override
     public boolean
@@ -98,8 +84,7 @@ public class ApplicationWrapperActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
             case R.id.navigation_people:
-                getSupportActionBar().setTitle("BadgerConnect");
-                getSupportActionBar().setSubtitle("Connections");
+                getSupportActionBar().setTitle("Connections");
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.flFragment, new UsersFragment())
@@ -107,16 +92,14 @@ public class ApplicationWrapperActivity extends AppCompatActivity
                 return true;
 
             case R.id.navigation_home:
-                getSupportActionBar().setTitle("BadgerConnect");
-                getSupportActionBar().setSubtitle("Home");
+                getSupportActionBar().setTitle("Home");
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.flFragment, new HomepageFragment())
                         .commit();
                 return true;
             case R.id.navigation_pending_requests:
-                getSupportActionBar().setTitle("BadgerConnect");
-                getSupportActionBar().setSubtitle("Pending Requests");
+                getSupportActionBar().setTitle("Pending Requests");
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.flFragment, new PendingRequestsFragment())
@@ -126,8 +109,7 @@ public class ApplicationWrapperActivity extends AppCompatActivity
             case R.id.navigation_map:
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PackageManager.PERMISSION_GRANTED);
                 //getSupportFragmentManager().beginTransaction().add(R.id.flFragment, new MapsFragment(), "tag").commit();
-                getSupportActionBar().setTitle("BadgerConnect");
-                getSupportActionBar().setSubtitle("Map");
+                getSupportActionBar().setTitle("Map");
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.flFragment, new MapsFragment())

@@ -367,6 +367,7 @@ public class DatabaseFunctions{
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Log.d("Firebase", uploadTask.getResult().toString());
                 Log.i("ImageUpload", "Image successfully uploaded to Firebase.");
             }
         });

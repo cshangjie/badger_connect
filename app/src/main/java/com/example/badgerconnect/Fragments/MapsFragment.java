@@ -2,28 +2,29 @@ package com.example.badgerconnect.Fragments;
 
 import static android.content.Context.LOCATION_SERVICE;
 
-import android.annotation.SuppressLint;
+import android.Manifest;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.os.Bundle;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
-import androidx.fragment.app.Fragment;
-
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.example.badgerconnect.R;
-import android.Manifest;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 
+import com.example.badgerconnect.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,17 +33,20 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Nullable;
 
 
 /**
@@ -54,6 +58,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private DatabaseReference databaseReference;
+    private DatabaseReference databaseRef;
     private FirebaseAuth mAuth;
     private static final String TAG = "EmailPassword";
     private final long MIN_TIME = 1000;
@@ -64,34 +69,104 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private EditText editTextLatitude;
     private EditText editTextLongitude;
 
+    private Button removeMarkerButton;
+
+
+    private MarkerOptions markerOptions;
+
+    private List<Marker> markerList = new ArrayList<>();
+
+    private Set<String> removedMarkerTitles = new HashSet<>();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
+
+        removeMarkerButton = view.findViewById(R.id.remove_marker_button);
+
+        // Set a click listener on the button to display a dialog
+
         // Get references to UI elements
         editTextLatitude = view.findViewById(R.id.editText);
         editTextLongitude = view.findViewById(R.id.editText2);
-
         // Initialize Firebase Database reference
         databaseReference = FirebaseDatabase.getInstance().getReference("Data/Map");
-
+        databaseRef= FirebaseDatabase.getInstance().getReference("Data/markers");
         // Check if user is already signed in
         if (mAuth.getCurrentUser() != null) {
             // User is signed in, display map
             setUpMap();
         }
-        System.out.println("mmmmmz " + view);
 
-    return view;
+        Button removeMarkerButton = view.findViewById(R.id.remove_marker_button);
+        removeMarkerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create a list of marker titles
+                List<String> markerTitles = new ArrayList<>();
+                for (Marker marker : markerList) {
+                    markerTitles.add(marker.getTitle());
+                }
+
+                // Display the list in a dialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Select a marker to remove");
+                builder.setItems(markerTitles.toArray(new String[0]), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Remove the marker from the map
+                        Marker marker = markerList.get(which);
+                        marker.remove();
+                        markerList.remove(which);
+
+                        // Remove the marker from Firebase
+                        removeMarkerFromFirebase(marker);
+                    }
+                });
+                builder.show();
+            }
+        });
+        return view;
     }
+
+
+    private void removeMarkerFromFirebase(Marker marker) {
+
+        Query query = databaseRef.orderByChild("title").equalTo(marker.getTitle());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    snapshot.getRef().removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "Failed to query markers from Firebase database", databaseError.toException());
+            }
+        });
+
+
+
+
+    }
+
+
+
+
+
 
     private void setUpMap() {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used
         //CHANGES BY CJ -- VERY NEXT LINE GAVE ERROS DUE IMPROPER UNNESTING. RESOLVED
-       SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().getFragments().get(0).getChildFragmentManager().getFragments().get(0);
-       mapFragment.getMapAsync(this);
+        SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().getFragments().get(0).getChildFragmentManager().getFragments().get(0);
+        mapFragment.getMapAsync(this);
 
 
 
@@ -115,7 +190,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     if (previousMarker != null) {
                         previousMarker.remove(); // remove previous marker
                     }
-                    previousMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(databaseLatitudeString + " , " + databaseLongitudedeString));
+                    previousMarker = mMap.addMarker(new MarkerOptions().position(latLng).snippet("Your Location"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 
@@ -134,29 +209,91 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        String title;
         mMap = googleMap;
         String uid = mAuth.getCurrentUser().getUid();
-        DatabaseReference eventRef = databaseReference.child(uid).child("Events").push();
+        DatabaseReference eventRef = databaseReference.child(uid).child("Events");
 
+        eventRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //mMap.clear(); // Clear all existing markers on the map
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    for (DataSnapshot eventSnapshot : userSnapshot.child("events").getChildren()) {
+                        try {
+                            // Get the event details from the snapshot
+                            String title = eventSnapshot.child("title").getValue(String.class);
+                            String description = eventSnapshot.child("description").getValue(String.class);
+                            String time = eventSnapshot.child("time").getValue(String.class);
+                            double latitude = eventSnapshot.child("latitude").getValue(Double.class);
+                            double longitude = eventSnapshot.child("longitude").getValue(Double.class);
+
+                            // Add a marker to the map
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            MarkerOptions markerOptions = new MarkerOptions()
+                                    .position(latLng)
+                                    .title(title)
+                                    .snippet(description + "\nTime: " + time)
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                            Marker marker = mMap.addMarker(markerOptions);
+                            marker.setTag("event markers"); // Set the marker tag to the event ID
+
+                            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                                @Override
+                                public View getInfoWindow(Marker marker) {
+                                    return null;
+                                }
+
+                                @Override
+                                public View getInfoContents(Marker marker) {
+                                    // Inflate the layout for the InfoWindow
+                                    View view = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+
+                                    // Set the title, description, and time in the layout
+                                    TextView titleTextView = view.findViewById(R.id.event_title);
+                                    TextView descriptionTextView = view.findViewById(R.id.event_description);
+                                    TextView timeTextView = view.findViewById(R.id.event_time);
+                                    titleTextView.setText(marker.getTitle());
+                                    descriptionTextView.setText(marker.getSnippet());
+                                    timeTextView.setVisibility(View.GONE); // Hide the time field
+
+                                    return view;
+                                }
+                            });
+
+                            // Show the InfoWindow when the marker is clicked
+                            marker.showInfoWindow();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
+
                 // Show a pop-up dialog with EditTexts for the user to input the event details
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Set event details");
 
                 // Set up the input fields
-                final EditText titleInput = new EditText(getContext());
+                final EditText titleInput = new EditText(getActivity());
                 titleInput.setHint("Title");
-                final EditText descriptionInput = new EditText(getContext());
+                final EditText descriptionInput = new EditText(getActivity());
                 descriptionInput.setHint("Description");
-                final EditText timeInput = new EditText(getContext());
+                final EditText timeInput = new EditText(getActivity());
                 timeInput.setHint("Time");
 
                 // Set up the view
-                LinearLayout layout = new LinearLayout(getContext());
+                LinearLayout layout = new LinearLayout(getActivity());
                 layout.setOrientation(LinearLayout.VERTICAL);
                 layout.setBackgroundColor(Color.parseColor("#90CAF9"));
                 layout.addView(titleInput);
@@ -169,59 +306,58 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Save the event details and add a marker to the map
-                        String title = titleInput.getText().toString();
-                        String description = descriptionInput.getText().toString();
-                        String time = timeInput.getText().toString();
-                        String markerTitle = "Title: " + title + "\nDescription: " + description + "\nTime: " + time;
-                        Map<String, Object> eventMap = new HashMap<>();
-                        eventMap.put("title", title);
-                        eventMap.put("description", description);
-                        eventMap.put("time", time);
-                        eventMap.put("latitude", latLng.latitude);
-                        eventMap.put("longitude", latLng.longitude);
 
-                        eventRef.setValue(eventMap)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            // Create the marker
-                                            MarkerOptions markerOptions = new MarkerOptions()
-                                                    .position(latLng)
-                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-                                            Marker marker = mMap.addMarker(markerOptions);
+// Get the input values from the EditTexts
+                        String title = titleInput.getText().toString().trim();
+                        String description = descriptionInput.getText().toString().trim();
+                        String time = timeInput.getText().toString().trim();
+                        double latitude = latLng.latitude;
+                        double longitude = latLng.longitude;
 
-                                            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-                                                @Override
-                                                public View getInfoWindow(Marker marker) {
-                                                    return null;
-                                                }
+                        // Create a new event object and push it to the database
+                        DatabaseReference newEventRef = eventRef.push();
+                        String eventId = newEventRef.getKey();
+                        Event event = new Event(eventId, title, description, time, latitude, longitude);
+                        newEventRef.setValue(event);
 
-                                                @Override
-                                                public View getInfoContents(Marker marker) {
-                                                    // Inflate the layout for the InfoWindow
-                                                    View view = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+                        // Add a marker to the map
+                        MarkerOptions markerOptions = new MarkerOptions()
+                                .position(latLng)
+                                .title(title)
+                                .snippet(description + "\nTime: " + time)
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                        Marker marker = mMap.addMarker(markerOptions);
+                        // Set the marker tag to the event ID
+                        markerList.add(marker);
 
-                                                    // Set the title, description, and time in the layout
-                                                    @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView titleTextView = view.findViewById(R.id.event_title);
-                                                    TextView descriptionTextView = view.findViewById(R.id.event_description);
-                                                    TextView timeTextView = view.findViewById(R.id.event_time);
+                        saveMarkerToFirebase(marker);
+                        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                            @Override
+                            public View getInfoWindow(Marker marker) {
+                                return null;
+                            }
+
+                            @Override
+                            public View getInfoContents(Marker marker) {
+                                // Inflate the layout for the InfoWindow
+                                View view = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+
+                                // Set the title, description, and time in the layout
+                                TextView titleTextView = view.findViewById(R.id.event_title);
+                                TextView descriptionTextView = view.findViewById(R.id.event_description);
+                                TextView timeTextView = view.findViewById(R.id.event_time);
+                                titleTextView.setText(marker.getTitle());
+                                descriptionTextView.setText(marker.getSnippet());
+                                timeTextView.setVisibility(View.GONE); // Hide the time field
+
+                                return view;
+                            }
+                        });
 
 
-                                                    titleTextView.setText(title);
-                                                    descriptionTextView.setText(description);
-                                                    timeTextView.setText(time);
 
-                                                    return view;
-                                                }
-                                            });
-
-// Show the InfoWindow when the marker is clicked
-                                            marker.showInfoWindow();
-
-                                        }
-                                    }
-                                });
+                        // Show the InfoWindow when the marker is clicked
+                        marker.showInfoWindow();
                     }
                 });
 
@@ -238,7 +374,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-
+        loadMarkersFromFirebase();
 
         LocationListener locationListener = new LocationListener() {
             @Override
@@ -289,6 +425,236 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DIST, locationListener);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void saveMarkerToFirebase(Marker marker) {
+        // Query Firebase database for markers with the same position
+        Query query = databaseRef.orderByChild("latitude").equalTo(marker.getPosition().latitude);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean markerExists = false;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    MarkerData existingMarkerData = snapshot.getValue(MarkerData.class);
+                    if (existingMarkerData.getLongitude() == marker.getPosition().longitude) {
+                        // Marker with the same position already exists
+                        markerExists = true;
+                        break;
+                    }
+                }
+                if (!markerExists) {
+
+                    // Create a new marker entry in Firebase database
+                    String key = databaseRef.push().getKey();
+                    MarkerData markerData = new MarkerData(marker.getPosition().latitude,
+                            marker.getPosition().longitude, marker.getTitle(), marker.getSnippet());
+                    databaseRef.child(key).setValue(markerData);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "Failed to query markers from Firebase database", databaseError.toException());
+            }
+        });
+    }
+
+    private void loadMarkersFromFirebase() {
+        // Load all marker entries from Firebase database
+
+
+        databaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                    String uid = mAuth.getCurrentUser().getUid();
+                    DatabaseReference eventRef = databaseReference.child(uid).child("Events");
+
+                    MarkerData markerData = snapshot.getValue(MarkerData.class);
+                    LatLng latLng = new LatLng(markerData.getLatitude(), markerData.getLongitude());
+                    Marker marker = mMap.addMarker(new MarkerOptions()
+                            .position(latLng)
+                            .title(markerData.getTitle())
+                            .snippet(markerData.getSnippet())
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+
+                    // Check if the marker already exists in the list
+                    boolean markerExists = false;
+                    for (Marker existingMarker : markerList) {
+                        if (existingMarker.getTag().equals(snapshot.getKey())) {
+                            markerExists = true;
+                            break;
+                        }
+                    }
+
+                    // Add the marker to the list and set its tag to the Firebase key
+                    if (!markerExists) {
+                        markerList.add(marker);
+                        marker.setTag(snapshot.getKey());
+                    }
+
+                    mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                        @Override
+                        public View getInfoWindow(Marker marker) {
+                            return null;
+                        }
+
+                        @Override
+                        public View getInfoContents(Marker marker) {
+                            // Inflate the layout for the InfoWindow
+                            View view = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+
+                            // Set the title, description, and time in the layout
+                            TextView titleTextView = view.findViewById(R.id.event_title);
+                            TextView descriptionTextView = view.findViewById(R.id.event_description);
+                            TextView timeTextView = view.findViewById(R.id.event_time);
+                            titleTextView.setText(marker.getTitle());
+                            descriptionTextView.setText(marker.getSnippet());
+                            timeTextView.setVisibility(View.GONE); // Hide the time field
+
+                            return view;
+                        }
+                    });
+
+                    // Show the InfoWindow when the marker is clicked
+                    marker.showInfoWindow();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "Failed to load markers from Firebase database", databaseError.toException());
+            }
+        });
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        // Save all markers to Firebase database before app closes
+        for (Marker marker : markerList) {
+            saveMarkerToFirebase(marker);
+        }
+    }
+
+    public class Event {
+        private String eventId;
+        private String title;
+        private String description;
+        private String time;
+        private double latitude;
+        private double longitude;
+
+        public Event(String eventId, String title, String description, String time, double latitude, double longitude) {
+            this.eventId = eventId;
+            this.title = title;
+            this.description = description;
+            this.time = time;
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+
+        public String getEventId() {
+            return eventId;
+        }
+
+        public void setEventId(String eventId) {
+            this.eventId = eventId;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
+        }
+
+        public double getLatitude() {
+            return latitude;
+        }
+
+        public void setLatitude(double latitude) {
+            this.latitude = latitude;
+        }
+
+        public double getLongitude() {
+            return longitude;
+        }
+
+        public void setLongitude(double longitude) {
+            this.longitude = longitude;
+        }
+    }
+
+    private static class MarkerData {
+        private double latitude;
+        private double longitude;
+        private String title;
+        private String snippet;
+
+        public MarkerData()
+        {
+
+        }
+
+        public MarkerData(double latitude, double longitude, String title, String snippet) {
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.title = title;
+            this.snippet = snippet;
+        }
+
+        public double getLatitude() {
+            return latitude;
+        }
+
+        public void setLatitude(double latitude) {
+            this.latitude = latitude;
+        }
+
+        public double getLongitude() {
+            return longitude;
+        }
+
+        public void setLongitude(double longitude) {
+            this.longitude = longitude;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getSnippet() {
+            return snippet;
+        }
+
+        public void setSnippet(String snippet) {
+            this.snippet = snippet;
         }
     }
 

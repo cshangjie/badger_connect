@@ -9,6 +9,8 @@ import static com.example.badgerconnect.DatabaseFunctions.readWhetherMentee;
 import static com.example.badgerconnect.DatabaseFunctions.readWhetherMentor;
 import static com.example.badgerconnect.DatabaseFunctions.readWhetherStudyBuddy;
 
+import com.example.badgerconnect.Model.Request;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
@@ -64,6 +66,7 @@ public class HomepageFragment extends Fragment {
     //TODO:Add actual firebase userId
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     String currUserId = firebaseUser.getUid();
+    Request request = new Request();
 
     @Nullable
     @Override
@@ -270,6 +273,7 @@ public class HomepageFragment extends Fragment {
             TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
+            Button connectButton = dialogView.findViewById(R.id.connect_button);
 
             // Set the views' content based on the selected user
             //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
@@ -283,6 +287,12 @@ public class HomepageFragment extends Fragment {
             AlertDialog dialog = builder.create();
             dialog.show();
 
+            connectButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    request.SendRequest(currUserId, userIds.get(0));
+                }
+            });
             // Set an OnClickListener for the close button to dismiss the dialog box
             closeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -321,6 +331,7 @@ public class HomepageFragment extends Fragment {
             TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
+            Button connectButton = dialogView.findViewById(R.id.connect_button);
 
             // Set the views' content based on the selected user
             //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
@@ -333,6 +344,13 @@ public class HomepageFragment extends Fragment {
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
             dialog.show();
+
+            connectButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    request.SendRequest(currUserId, userIds.get(1));
+                }
+            });
 
             // Set an OnClickListener for the close button to dismiss the dialog box
             closeButton.setOnClickListener(new View.OnClickListener() {
@@ -372,6 +390,7 @@ public class HomepageFragment extends Fragment {
             TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
+            Button connectButton = dialogView.findViewById(R.id.connect_button);
 
             // Set the views' content based on the selected user
             //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
@@ -384,6 +403,13 @@ public class HomepageFragment extends Fragment {
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
             dialog.show();
+
+            connectButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    request.SendRequest(currUserId, userIds.get(2));
+                }
+            });
 
             // Set an OnClickListener for the close button to dismiss the dialog box
             closeButton.setOnClickListener(new View.OnClickListener() {
@@ -423,6 +449,7 @@ public class HomepageFragment extends Fragment {
             TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
+            Button connectButton = dialogView.findViewById(R.id.connect_button);
 
             // Set the views' content based on the selected user
             //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
@@ -435,6 +462,13 @@ public class HomepageFragment extends Fragment {
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
             dialog.show();
+
+            connectButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    request.SendRequest(currUserId, userIds.get(3));
+                }
+            });
 
             // Set an OnClickListener for the close button to dismiss the dialog box
             closeButton.setOnClickListener(new View.OnClickListener() {
@@ -474,6 +508,7 @@ public class HomepageFragment extends Fragment {
             TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
+            Button connectButton = dialogView.findViewById(R.id.connect_button);
 
             // Set the views' content based on the selected user
             //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
@@ -486,6 +521,13 @@ public class HomepageFragment extends Fragment {
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
             dialog.show();
+
+            connectButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    request.SendRequest(currUserId, userIds.get(4));
+                }
+            });
 
             // Set an OnClickListener for the close button to dismiss the dialog box
             closeButton.setOnClickListener(new View.OnClickListener() {
@@ -525,6 +567,7 @@ public class HomepageFragment extends Fragment {
             TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
+            Button connectButton = dialogView.findViewById(R.id.connect_button);
 
             // Set the views' content based on the selected user
             //profilePictureImageView.setImageBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.badger));
@@ -537,6 +580,13 @@ public class HomepageFragment extends Fragment {
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
             dialog.show();
+
+            connectButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    request.SendRequest(currUserId, userIds.get(5));
+                }
+            });
 
             // Set an OnClickListener for the close button to dismiss the dialog box
             closeButton.setOnClickListener(new View.OnClickListener() {
