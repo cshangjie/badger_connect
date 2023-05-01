@@ -10,6 +10,7 @@ import android.media.Image;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +37,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText bio_EditText;
     private CheckBox mentor_CB, mentee_CB, studybuddy_CB;
     private Spinner year_Spinner;
+    private LinearLayout autocompleteContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -205,21 +207,52 @@ public class EditProfileActivity extends AppCompatActivity {
                 mentee_CB.setEnabled(false);
             }
             if(user.getConnectionType().get("StudyBuddy")){
+                // set the la
                 studybuddy_CB.setVisibility(View.GONE);
                 studybuddy_CB.setEnabled(false);
                 // iterate over courses
                 HashMap<String, String> userCourses = user.getStudyBuddyCourses();
-
-            }else{
+                userCourses.values();
+                for (String course : userCourses.values()) {
+                    // populate courses as autocompletetextviews within the container and setting them to disabled
+                    AutoCompleteTextView autoCompleteTextView = new AutoCompleteTextView(EditProfileActivity.this);
+                    autoCompleteTextView.setGravity(Gravity.CENTER); // center the text
+                    String[] options = getResources().getStringArray(R.array.full_courses_array);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(EditProfileActivity.this, android.R.layout.simple_dropdown_item_1line, options);
+                    autoCompleteTextView.setAdapter(adapter);
+                    autoCompleteTextView.setGravity(Gravity.CENTER); // center the text
+                    autoCompleteTextView.setText(course);
+                    autoCompleteTextView.setEnabled(false);
+                    autoCompleteTextView.setVisibility(View.VISIBLE);
+                    autocompleteContainer.addView(autoCompleteTextView);
+                }
+            }else{ // user is not a study buddy so show no courses with a checkbox unchecked
                 studybuddy_CB.setChecked(false);
                 studybuddy_CB.setVisibility(View.VISIBLE);
                 studybuddy_CB.setEnabled(false);
             }
+
+            MeetingType userMeetingPref = user.getMeetingType();switch (userMeetingPref) {
+                case IN_PERSON:
+
+                    break;
+                case VIRTUAL:
+
+                    break;
+                case BOTH:
+
+                    break;
+                default:
+                    // handle the case where userMeetingPref is not one of the enum values
+                    break;
+            }
+
+
         });
-        // TODO
     }
 
     private void initializeUI() {
+        autocompleteContainer = findViewById(R.id.course_container);
         pfp = findViewById(R.id.profile_picture);
         pfp.setVisibility(View.INVISIBLE);
         bio_EditText = findViewById(R.id.bio_field);

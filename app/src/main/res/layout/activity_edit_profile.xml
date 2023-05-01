@@ -90,6 +90,34 @@
             android:gravity="center"
             android:inputType="date"
             android:text="03/01/2001" />
+
+        <TextView
+            android:id="@+id/meeting_pref_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Meeting Preference:" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            >
+
+            <CheckBox
+                android:id="@+id/in_person_cb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="In-Person"
+                />
+
+            <CheckBox
+                android:id="@+id/virtual_cb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Virtual" />
+        </LinearLayout>
+
         <TextView
             android:id="@+id/mentor_label"
             android:layout_width="match_parent"
@@ -133,6 +161,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
             />
 
     </LinearLayout>
