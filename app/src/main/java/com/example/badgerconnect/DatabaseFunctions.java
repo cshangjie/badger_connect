@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -268,8 +269,10 @@ public class DatabaseFunctions{
         String major = String.valueOf(task.getResult().child("Major").getValue());
         HashMap<String, String> studyBuddyCoursesHash = (HashMap<String, String>) task.getResult().child("StudyBuddyCourses").getValue(Object.class);
         List<String> studyBuddyCourses = null;
+        int numCourses = 0;
         if(studyBuddyCoursesHash != null) {
             studyBuddyCourses = new ArrayList<String>(studyBuddyCoursesHash.values());
+            numCourses = studyBuddyCourses.size();
         }
         HashMap<String, Boolean> connectionTypes = (HashMap<String, Boolean>) task.getResult().child("ConnectionTypes").getValue(Object.class);
         List<String> connectTypes = new ArrayList<>();
@@ -292,7 +295,7 @@ public class DatabaseFunctions{
         }
         MeetingType meetingType = task.getResult().child("MeetingType").getValue(MeetingType.class);
         String dateOfBirth = String.valueOf(task.getResult().child("DateOfBirth").getValue());
-        user.setUserInformation(name, email, major, studyBuddyCourses.size(), studyBuddyCourses, connectTypes, bio, year, meetingType, dateOfBirth);
+        user.setUserInformation(name, email, major, numCourses, studyBuddyCourses, connectTypes, bio, year, meetingType, dateOfBirth);
         future.complete(user);
     }
 
@@ -354,7 +357,6 @@ public class DatabaseFunctions{
         mStorage = FirebaseStorage.getInstance().getReference();
         StorageReference pfpRef = mStorage.child("images").child(userId+"/pfp.jpg");
         // bitmaps
-        //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.monke);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] pfpByteStream = baos.toByteArray();
@@ -369,6 +371,7 @@ public class DatabaseFunctions{
             }
         });
     }
+
 
     /**
      * Downloads the profile picture of the user from firebase

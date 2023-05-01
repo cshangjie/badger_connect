@@ -239,7 +239,6 @@ public class ProfileCreationGeneralInfoActivity extends AppCompatActivity {
 
 
         }
-//        Log.i("123123123123123123", inputText);
     }
 
     private void initializeUI() {
