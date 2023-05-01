@@ -29,21 +29,27 @@
 
     <Button
         android:id="@+id/accept_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Accept"
+        android:layout_width="80dp"
+        android:layout_height="35dp"
         android:layout_centerVertical="true"
+        android:layout_marginRight="3dp"
         android:layout_toLeftOf="@id/decline_btn"
-        android:layout_marginRight="3dp"/>
+        android:background="@drawable/round_edges_red"
+        android:text="Accept"
+        android:textSize="10dp"/>
 
     <Button
         android:id="@+id/decline_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="35dp"
         android:text="Decline"
+        android:textSize="10dp"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:textColor="@color/black"
-        android:layout_marginRight="3dp"/>
+        android:layout_marginRight="3dp"
+        android:background="@drawable/round_edges_gray"
+        android:backgroundTint="@color/colorAccent"
+        />
 
 </RelativeLayout>
