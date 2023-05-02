@@ -12,6 +12,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="550dp"
+        android:background="@drawable/rounded_dialog_bg"
         tools:layout="@android:layout/simple_spinner_dropdown_item" />
 
     <EditText

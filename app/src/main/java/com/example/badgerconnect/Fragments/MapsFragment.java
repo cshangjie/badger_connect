@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -165,15 +166,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-
-
-
     }
-
-
-
-
-
 
     private void setUpMap() {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used
@@ -245,7 +238,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                             MarkerOptions markerOptions = new MarkerOptions()
                                     .position(latLng)
                                     .title(title)
-                                    .snippet(description + "\nTime: " + time)
+                                    .snippet(username + "\n" +major + "\nDescription: " + description + "\nTime: " + time)
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                             Marker marker = mMap.addMarker(markerOptions);
                             marker.setTag("event markers"); // Set the marker tag to the event ID
@@ -295,24 +288,59 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
                 // Show a pop-up dialog with EditTexts for the user to input the event details
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Set event details");
+                TextView titleTextView = new TextView(getActivity());
+                titleTextView.setText("\n Set Event Details");
 
-                // Set up the input fields
+                titleTextView.setTextColor(Color.RED);
+                titleTextView.setTextSize(20);
+                titleTextView.setTypeface(null, Typeface.BOLD);
+
+// Set the custom title view of the AlertDialog
+                builder.setCustomTitle(titleTextView);
+
+// Set up the input fields
                 final EditText titleInput = new EditText(getActivity());
                 titleInput.setHint("Title");
+                titleInput.setHintTextColor(Color.RED);
+                LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                titleParams.setMargins(40, 40, 40, 0); // Set left, top, right, bottom margins
+                titleInput.setLayoutParams(titleParams);
+
                 final EditText descriptionInput = new EditText(getActivity());
                 descriptionInput.setHint("Description");
+                descriptionInput.setHintTextColor(Color.RED);
+                LinearLayout.LayoutParams descriptionParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                descriptionParams.setMargins(40, 20, 40, 0); // Set left, top, right, bottom margins
+                descriptionInput.setLayoutParams(descriptionParams);
+
                 final EditText timeInput = new EditText(getActivity());
                 timeInput.setHint("Time");
+                timeInput.setHintTextColor(Color.RED);
+                LinearLayout.LayoutParams timeParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                timeParams.setMargins(40, 20, 40, 40); // Set left, top, right, bottom margins
+                timeInput.setLayoutParams(timeParams);
 
-                // Set up the view
+// Set up the view
                 LinearLayout layout = new LinearLayout(getActivity());
                 layout.setOrientation(LinearLayout.VERTICAL);
-                layout.setBackgroundColor(Color.parseColor("#90CAF9"));
                 layout.addView(titleInput);
                 layout.addView(descriptionInput);
                 layout.addView(timeInput);
+
+                layout.setPadding(40, 40, 40, 40);
+                layout.setBackground(getResources().getDrawable(R.drawable.rounded_dialog_bg));
+
                 builder.setView(layout);
+
 
                 // Set up the OK button
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -337,13 +365,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         MarkerOptions markerOptions = new MarkerOptions()
                                 .position(latLng)
                                 .title(title)
-                                .snippet(description + "\nTime: " + time)
+                                .snippet(username + "\n" +major + "\nDescription: " + description + "\nTime: " + time)
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                         Marker marker = mMap.addMarker(markerOptions);
                         // Set the marker tag to the event ID
                         markerList.add(marker);
 
                         saveMarkerToFirebase(marker);
+
+
                         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                             @Override
                             public View getInfoWindow(Marker marker) {
@@ -508,28 +538,40 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         marker.setTag(snapshot.getKey());
                     }
 
-                    mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
-                        public View getInfoWindow(Marker marker) {
-                            return null;
-                        }
+                        public boolean onMarkerClick(Marker marker) {
+                            // Set the info window adapter for the marker
+                            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                                @Override
+                                public View getInfoWindow(Marker marker) {
+                                    return null;
+                                }
 
-                        @Override
-                        public View getInfoContents(Marker marker) {
-                            // Inflate the layout for the InfoWindow
-                            View view = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+                                @Override
+                                public View getInfoContents(Marker marker) {
+                                    // Inflate the layout for the InfoWindow
+                                    View view = getLayoutInflater().inflate(R.layout.custom_info_window, null);
 
-                            // Set the title, description, and time in the layout
-                            TextView titleTextView = view.findViewById(R.id.event_title);
-                            TextView descriptionTextView = view.findViewById(R.id.event_description);
-                            TextView timeTextView = view.findViewById(R.id.event_time);
-                            titleTextView.setText(marker.getTitle());
-                            descriptionTextView.setText(marker.getSnippet());
-                            timeTextView.setVisibility(View.GONE); // Hide the time field
+                                    // Set the title, description, and time in the layout
+                                    TextView titleTextView = view.findViewById(R.id.event_title);
+                                    TextView descriptionTextView = view.findViewById(R.id.event_description);
+                                    TextView timeTextView = view.findViewById(R.id.event_time);
+                                    titleTextView.setText(marker.getTitle());
+                                    descriptionTextView.setText(marker.getSnippet());
+                                    timeTextView.setVisibility(View.GONE); // Hide the time field
 
-                            return view;
+                                    return view;
+                                }
+                            });
+
+                            // Show the info window for the marker
+                            marker.showInfoWindow();
+
+                            return true;
                         }
                     });
+
 
                     // Show the InfoWindow when the marker is clicked
                     marker.showInfoWindow();

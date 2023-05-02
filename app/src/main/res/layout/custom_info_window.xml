@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:textColor="#FFC107"
+        android:textColor="#FF5733"
         android:textSize="50sp" />
 
     <TextView
