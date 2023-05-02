@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.badgerconnect.Model.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,6 +31,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
     private String name, major, dob;
@@ -157,6 +159,14 @@ public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
 
             DatabaseFunctions.writeNewUser(uid, name, email,major, course_count, Arrays.asList(userEntries), connectionTypes, bio, Year.valueOf(year), meetingType, dob);
             DatabaseFunctions.uploadPFP(uid, imagePfp);
+            //create user for CJ
+            CompletableFuture<String> downloadedURL = DatabaseFunctions.downloadPFPURL(uid);
+
+            downloadedURL.thenAccept(url -> {
+                User user = new User(uid, name, url, null);
+                user.addUser();
+                Log.d("ImageURL", url);
+            });
 
             mStorage = FirebaseStorage.getInstance().getReference();
             StorageReference pfpRef = mStorage.child("images").child(uid+"/pfp.jpg");
