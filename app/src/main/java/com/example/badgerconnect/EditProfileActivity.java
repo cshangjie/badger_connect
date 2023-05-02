@@ -44,7 +44,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText name_EditText, dob_EditText;
     private AutoCompleteTextView major_EditText;
     private EditText bio_EditText;
-    private CheckBox mentor_CB, mentee_CB, studybuddy_CB;
+    private CheckBox mentor_CB, mentee_CB;
 
     private CheckBox inperson_CB, virtual_CB;
     private Spinner year_Spinner;
@@ -70,6 +70,39 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 // Do nothing
+            }
+        });
+        removeCourse.setOnClickListener(v -> {
+            int childCount = autocompleteContainer.getChildCount();
+            if (childCount > 0) {
+                autocompleteContainer.removeViewAt(childCount - 1);
+                if (childCount == 0) {
+                    removeCourse.setEnabled(false);
+                }
+                addCourse.setEnabled(true);
+            }
+        });
+        addCourse.setOnClickListener(v -> {
+            if (autocompleteContainer.getChildCount() < 6) {
+                AutoCompleteTextView autoCompleteTextView = new AutoCompleteTextView(EditProfileActivity.this);
+                autoCompleteTextView.setHint("Enter Course ID");
+                autoCompleteTextView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                String[] options = getResources().getStringArray(R.array.full_courses_array);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(EditProfileActivity.this, android.R.layout.simple_dropdown_item_1line, options);
+                autoCompleteTextView.setAdapter(adapter);
+                autoCompleteTextView.setGravity(Gravity.CENTER); // center the text
+                autoCompleteTextView.setEnabled(true);
+                autoCompleteTextView.setTextColor(Color.DKGRAY);
+                autoCompleteTextView.setBackgroundResource(R.drawable.custom_edit_text_cut);
+                autocompleteContainer.addView(autoCompleteTextView);
+                if (autocompleteContainer.getChildCount() == 6) {
+                    addCourse.setEnabled(false);
+                }
+                if (autocompleteContainer.getChildCount() == 1) {
+                    removeCourse.setEnabled(false);
+                } else {
+                    removeCourse.setEnabled(true);
+                }
             }
         });
     }
@@ -229,6 +262,11 @@ public class EditProfileActivity extends AppCompatActivity {
                             newMeetingPref, connectionTypes, Arrays.asList(userEntries),course_count, newDOB);
                     // display the updated user data
                     setUserDataFromDatabase();
+                    // hide buttons
+                    addCourse.setEnabled(false);
+                    removeCourse.setEnabled(false);
+                    addCourse.setVisibility(View.GONE);
+                    removeCourse.setVisibility(View.GONE);
                     editMode = false;
                     invalidateOptionsMenu();
                 }
@@ -245,6 +283,11 @@ public class EditProfileActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     // disable the text fields
                     enableUserFields(false);
+                    // disable buttons
+                    removeCourse.setVisibility(View.GONE);
+                    removeCourse.setEnabled(false);
+                    addCourse.setVisibility(View.GONE);
+                    addCourse.setEnabled(false);
                     // overwrite any local changes with data from db
                     setUserDataFromDatabase();
                     editMode = false;
@@ -404,8 +447,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 mentee_CB.setEnabled(false);
             }
             if (user.getConnectionType().get("StudyBuddy")) {
-                studybuddy_CB.setVisibility(View.GONE);
-                studybuddy_CB.setEnabled(false);
                 // clear courses in course container
                 autocompleteContainer.removeAllViews();
                 // iterate over courses
@@ -425,10 +466,8 @@ public class EditProfileActivity extends AppCompatActivity {
                     autoCompleteTextView.setVisibility(View.VISIBLE);
                     autocompleteContainer.addView(autoCompleteTextView);
                 }
-            } else { // user is not a study buddy so show no courses with a checkbox unchecked
-                studybuddy_CB.setChecked(false);
-                studybuddy_CB.setVisibility(View.VISIBLE);
-                studybuddy_CB.setEnabled(false);
+            } else { // user is not a study buddy so show no courses
+                autocompleteContainer.removeAllViews();
             }
 
             // find user meeting prefs
@@ -488,9 +527,6 @@ public class EditProfileActivity extends AppCompatActivity {
         mentee_CB = findViewById(R.id.mentee_checkbox);
         mentee_CB.setEnabled(false);
         mentee_CB.setVisibility(View.INVISIBLE);
-        studybuddy_CB = findViewById(R.id.studybuddy_checkbox);
-        studybuddy_CB.setEnabled(false);
-        studybuddy_CB.setVisibility(View.INVISIBLE);
 
         inperson_CB = findViewById(R.id.in_person_cb);
         inperson_CB.setVisibility(View.INVISIBLE);
