@@ -5,6 +5,7 @@ import static com.example.badgerconnect.DatabaseFunctions.readUserData;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -26,6 +27,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.badgerconnect.LoginActivity;
 import com.example.badgerconnect.R;
 import com.example.badgerconnect.UserInfo;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -91,7 +93,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
 
         removeMarkerButton = view.findViewById(R.id.remove_marker_button);
-
+        String currentUserId = mAuth.getCurrentUser().getUid();
         // Set a click listener on the button to display a dialog
 
         // Get references to UI elements
@@ -101,14 +103,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         databaseReference = FirebaseDatabase.getInstance().getReference("Data/Map");
         databaseRef= FirebaseDatabase.getInstance().getReference("Data/markers");
         // Check if user is already signed in
+
         if (mAuth.getCurrentUser() != null) {
             // User is signed in, display map
             CompletableFuture<UserInfo> currUserInfo = readUserData(mAuth.getCurrentUser().getUid(), user);
             currUserInfo.thenAccept(user -> {
                 major = user.getMajor();
                 username = user.getUsername();
+                setUpMap();
             });
-            setUpMap();
+        }
+        else {
+              showSignInScreen();
         }
 
         Button removeMarkerButton = view.findViewById(R.id.remove_marker_button);
@@ -142,17 +148,29 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
+    private void showSignInScreen() {
+        Intent signInIntent = new Intent(getContext(), getActivity().getClass());
+        signInIntent.setClass(getContext(), LoginActivity.class);
+        startActivity(signInIntent);
+        getActivity().finish();
+        previousLocation = null;
+    }
+
 
     private void removeMarkerFromFirebase(Marker marker) {
 
         Query query = databaseRef.orderByChild("title").equalTo(marker.getTitle());
-
+        String currentUserId = mAuth.getCurrentUser().getUid();
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    snapshot.getRef().removeValue();
+                   // String markerUserId = snapshot.child("userId").getValue(String.class);
+                    //if (markerUserId.equals(currentUserId)) {
+                        snapshot.getRef().removeValue();
+                    //}
+
                 }
             }
 
@@ -169,14 +187,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         //CHANGES BY CJ -- VERY NEXT LINE GAVE ERROS DUE IMPROPER UNNESTING. RESOLVED
         SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().getFragments().get(0).getChildFragmentManager().getFragments().get(0);
         mapFragment.getMapAsync(this);
+    }
 
-
-
-        // Get the current user's ID
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
         String uid = mAuth.getCurrentUser().getUid();
-
-        // Set up a database reference for the user's location
         DatabaseReference userLocationReference = databaseReference.child(uid);
+        DatabaseReference eventRef = databaseReference.child(uid).child("Events");
 
         userLocationReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -207,13 +225,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
             }
         });
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        String uid = mAuth.getCurrentUser().getUid();
-        DatabaseReference eventRef = databaseReference.child(uid).child("Events");
 
         eventRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -363,7 +374,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                         Marker marker = mMap.addMarker(markerOptions);
                         // Set the marker tag to the event ID
-                        markerList.add(marker);
+
 
                         saveMarkerToFirebase(marker);
 
@@ -484,6 +495,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
                     // Create a new marker entry in Firebase database
                     String key = databaseRef.push().getKey();
+                    //String userId = mAuth.getCurrentUser().getUid();
                     MarkerData markerData = new MarkerData(marker.getPosition().latitude,
                             marker.getPosition().longitude, marker.getTitle(), marker.getSnippet());
                     databaseRef.child(key).setValue(markerData);
@@ -515,7 +527,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     // Check if the marker already exists in the list
                     boolean markerExists = false;
                     for (Marker existingMarker : markerList) {
-                        if (existingMarker.getTag().equals(snapshot.getKey())) {
+                        if (existingMarker.getTag() != null && existingMarker.getTag().equals(snapshot.getKey())) {
                             markerExists = true;
                             break;
                         }
@@ -556,7 +568,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         TextView timeTextView = view.findViewById(R.id.event_time);
                         titleTextView.setText(marker.getTitle());
                         descriptionTextView.setText(marker.getSnippet());
-                        timeTextView.setVisibility(View.GONE); // Hide the time field
+                        //timeTextView.setVisibility(View.GONE); // Hide the time field
 
                         return view;
                     }
@@ -655,6 +667,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         private String title;
         private String snippet;
 
+        //private String userId;
+
         public MarkerData()
         {
 
@@ -665,6 +679,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             this.longitude = longitude;
             this.title = title;
             this.snippet = snippet;
+            //this.userId = userId;
         }
 
         public double getLatitude() {
@@ -699,6 +714,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         public void setSnippet(String snippet) {
             this.snippet = snippet;
         }
+
+       /* public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.snippet = userId;
+        }*/
+
     }
 
 
