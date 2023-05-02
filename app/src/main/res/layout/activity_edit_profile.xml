@@ -43,8 +43,7 @@
             android:background="@drawable/custom_edit_text_cut"
             android:enabled="false"
             android:gravity="top|start"
-            android:inputType="textMultiLine"
-            android:text="" />
+            android:inputType="textMultiLine" />
 
         <TextView
             android:id="@+id/major_label"
@@ -52,7 +51,7 @@
             android:layout_height="wrap_content"
             android:text="Major:" />
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/major_field"
             android:layout_width="match_parent"
             android:layout_height="35dp"
@@ -163,6 +162,37 @@
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"
             />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/add_course_bttn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Add Course"
+                android:visibility="gone"
+                android:enabled="false"
+                />
+
+            <View
+                android:layout_width="8dp"
+                android:layout_height="match_parent" />
+
+            <Button
+                android:id="@+id/remove_course_bttn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Remove Course"
+                android:visibility="gone"
+                android:enabled="false"
+                />
+
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

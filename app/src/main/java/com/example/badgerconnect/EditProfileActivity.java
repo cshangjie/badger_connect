@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -40,7 +41,8 @@ import java.util.concurrent.CompletableFuture;
 public class EditProfileActivity extends AppCompatActivity {
     private boolean editMode = false;
     private ImageView pfp;
-    private EditText name_EditText, dob_EditText, major_EditText;
+    private EditText name_EditText, dob_EditText;
+    private AutoCompleteTextView major_EditText;
     private EditText bio_EditText;
     private CheckBox mentor_CB, mentee_CB, studybuddy_CB;
 
@@ -48,6 +50,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private Spinner year_Spinner;
     private LinearLayout autocompleteContainer;
     private String yearSelected;
+    private Button addCourse, removeCourse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,10 +102,16 @@ public class EditProfileActivity extends AppCompatActivity {
             editMode = true;
             // enable text fields
             enableUserFields(true);
+            // enable course edit buttons
+            addCourse.setEnabled(true);
+            addCourse.setVisibility(View.VISIBLE);
+            removeCourse.setEnabled(true);
+            removeCourse.setVisibility(View.VISIBLE);
+
             invalidateOptionsMenu();
             return true;
         } else if (id == R.id.menu_save) {
-            // TODO validity checks on all fields
+            // TODO validity checks on courses
             /* gathering fields */
             // name
             String newName;
@@ -380,9 +389,17 @@ public class EditProfileActivity extends AppCompatActivity {
                 mentor_CB.setChecked(true);
                 mentor_CB.setVisibility(View.VISIBLE);
                 mentor_CB.setEnabled(false);
+            }else{
+                mentor_CB.setChecked(false);
+                mentor_CB.setVisibility(View.VISIBLE);
+                mentor_CB.setEnabled(false);
             }
             if (user.getConnectionType().get("Mentee")) {
                 mentee_CB.setChecked(true);
+                mentee_CB.setVisibility(View.VISIBLE);
+                mentee_CB.setEnabled(false);
+            }else{
+                mentee_CB.setChecked(false);
                 mentee_CB.setVisibility(View.VISIBLE);
                 mentee_CB.setEnabled(false);
             }
@@ -419,11 +436,13 @@ public class EditProfileActivity extends AppCompatActivity {
             switch (userMeetingPref) {
                 case IN_PERSON:
                     inperson_CB.setChecked(true);
+                    virtual_CB.setVisibility(View.VISIBLE);
                     inperson_CB.setVisibility(View.VISIBLE);
                     break;
                 case VIRTUAL:
                     virtual_CB.setChecked(true);
                     virtual_CB.setVisibility(View.VISIBLE);
+                    inperson_CB.setVisibility(View.VISIBLE);
                     break;
                 case BOTH:
                     inperson_CB.setChecked(true);
@@ -438,6 +457,12 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void initializeUI() {
+        addCourse = findViewById(R.id.add_course_bttn);
+        removeCourse = findViewById(R.id.remove_course_bttn);
+        addCourse.setEnabled(false);
+        removeCourse.setEnabled(false);
+
+
         autocompleteContainer = findViewById(R.id.course_container);
         pfp = findViewById(R.id.profile_picture);
         pfp.setVisibility(View.INVISIBLE);
@@ -447,6 +472,9 @@ public class EditProfileActivity extends AppCompatActivity {
         name_EditText.setVisibility(View.INVISIBLE);
         major_EditText = findViewById(R.id.major_field);
         major_EditText.setVisibility(View.INVISIBLE);
+        ArrayAdapter<CharSequence> majorAdapter = ArrayAdapter.createFromResource(this, R.array.bs_majors, android.R.layout.simple_dropdown_item_1line);
+        major_EditText.setAdapter(majorAdapter);
+
         dob_EditText = findViewById(R.id.birthdate_field);
         dob_EditText.setVisibility(View.INVISIBLE);
         year_Spinner = findViewById(R.id.year_spinner);

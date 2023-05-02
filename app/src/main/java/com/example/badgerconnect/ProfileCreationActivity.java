@@ -16,6 +16,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.badgerconnect.Model.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,6 +26,8 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import android.app.Dialog;
 import android.app.DialogFragment;
 
@@ -169,21 +172,14 @@ public class ProfileCreationActivity extends AppCompatActivity {
                     DatabaseFunctions.writeNewUser(uid, name, email, major, connectionTypes, bio, Year.valueOf(year), userMeetingPref, dob);
                     // Upload PFP
                     DatabaseFunctions.uploadPFP(uid, imagePfp);
-                    // TODO create user for CJ
-                    mStorage = FirebaseStorage.getInstance().getReference();
-                    StorageReference pfpRef = mStorage.child("images").child(uid+"/pfp.jpg");
-                    pfpRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            user_PFP_url = uri.toString();
-                        }
-                    });
+                    //create user for CJ
+                    CompletableFuture<String> downloadedURL = DatabaseFunctions.downloadPFPURL(uid);
 
-                    if(user_PFP_url == null){
-                        Log.i("-------------->>", "PFP url is null. @ProfileCreationActivity.java");
-                    }else{
-                        Log.i("PFP Image URL>", user_PFP_url);
-                    }
+                    downloadedURL.thenAccept(url -> {
+                        User user = new User(uid, name, url, null);
+                        user.addUser();
+                        Log.d("ImageURL", url);
+                    });
 
                     startActivity(myIntent);
                 }
