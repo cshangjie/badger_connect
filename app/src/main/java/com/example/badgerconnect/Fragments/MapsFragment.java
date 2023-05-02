@@ -1,12 +1,14 @@
 package com.example.badgerconnect.Fragments;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static com.example.badgerconnect.DatabaseFunctions.readUserData;
 
 import android.Manifest;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -22,9 +24,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.badgerconnect.LoginActivity;
 import com.example.badgerconnect.R;
+import com.example.badgerconnect.UserInfo;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -45,8 +50,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.annotation.Nullable;
+import java.util.concurrent.CompletableFuture;
 
 
 /**
@@ -61,8 +65,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private DatabaseReference databaseRef;
     private FirebaseAuth mAuth;
     private static final String TAG = "EmailPassword";
-    private final long MIN_TIME = 1000;
-    private final long MIN_DIST = 5;
+    private final long MIN_TIME = 100;
+    private final long MIN_DIST = 25;
 
     private Marker previousMarker;
     private Location previousLocation;
@@ -77,6 +81,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private List<Marker> markerList = new ArrayList<>();
 
     private Set<String> removedMarkerTitles = new HashSet<>();
+    private UserInfo user = new UserInfo();
+    private String username;
+    private String major;
 
 
     @Override
@@ -86,7 +93,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
 
         removeMarkerButton = view.findViewById(R.id.remove_marker_button);
-
         // Set a click listener on the button to display a dialog
 
         // Get references to UI elements
@@ -96,9 +102,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         databaseReference = FirebaseDatabase.getInstance().getReference("Data/Map");
         databaseRef= FirebaseDatabase.getInstance().getReference("Data/markers");
         // Check if user is already signed in
+
         if (mAuth.getCurrentUser() != null) {
             // User is signed in, display map
-            setUpMap();
+            CompletableFuture<UserInfo> currUserInfo = readUserData(mAuth.getCurrentUser().getUid(), user);
+            currUserInfo.thenAccept(user -> {
+                major = user.getMajor();
+                username = user.getUsername();
+                setUpMap();
+            });
+        }
+        else {
+            showSignInScreen();
         }
 
         Button removeMarkerButton = view.findViewById(R.id.remove_marker_button);
@@ -132,6 +147,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
+    private void showSignInScreen() {
+        Intent signInIntent = new Intent(getContext(), getActivity().getClass());
+        signInIntent.setClass(getContext(), LoginActivity.class);
+        startActivity(signInIntent);
+
+
+        getActivity().finish();
+        previousLocation = null;
+    }
+
 
     private void removeMarkerFromFirebase(Marker marker) {
 
@@ -140,7 +165,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     snapshot.getRef().removeValue();
                 }
@@ -153,28 +177,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         });
 
 
-
-
     }
-
-
-
-
-
 
     private void setUpMap() {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used
         //CHANGES BY CJ -- VERY NEXT LINE GAVE ERROS DUE IMPROPER UNNESTING. RESOLVED
         SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager().getFragments().get(0).getChildFragmentManager().getFragments().get(0);
         mapFragment.getMapAsync(this);
+    }
 
-
-
-        // Get the current user's ID
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
         String uid = mAuth.getCurrentUser().getUid();
-
-        // Set up a database reference for the user's location
         DatabaseReference userLocationReference = databaseReference.child(uid);
+        DatabaseReference eventRef = databaseReference.child(uid).child("Events");
 
         userLocationReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -205,13 +222,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
             }
         });
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        String uid = mAuth.getCurrentUser().getUid();
-        DatabaseReference eventRef = databaseReference.child(uid).child("Events");
 
         eventRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -232,7 +242,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                             MarkerOptions markerOptions = new MarkerOptions()
                                     .position(latLng)
                                     .title(title)
-                                    .snippet(description + "\nTime: " + time)
+                                    .snippet(username + "\n" +major + "\nDescription: " + description + "\nTime: " + time)
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                             Marker marker = mMap.addMarker(markerOptions);
                             marker.setTag("event markers"); // Set the marker tag to the event ID
@@ -282,25 +292,58 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
                 // Show a pop-up dialog with EditTexts for the user to input the event details
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Set event details");
+                TextView titleTextView = new TextView(getActivity());
+                titleTextView.setText("\n Set Event Details");
 
-                // Set up the input fields
+                titleTextView.setTextColor(Color.RED);
+                titleTextView.setTextSize(20);
+                titleTextView.setTypeface(null, Typeface.BOLD);
+
+// Set the custom title view of the AlertDialog
+                builder.setCustomTitle(titleTextView);
+
+// Set up the input fields
                 final EditText titleInput = new EditText(getActivity());
                 titleInput.setHint("Title");
+                titleInput.setHintTextColor(Color.RED);
+                LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                titleParams.setMargins(40, 40, 40, 0); // Set left, top, right, bottom margins
+                titleInput.setLayoutParams(titleParams);
+
                 final EditText descriptionInput = new EditText(getActivity());
                 descriptionInput.setHint("Description");
+                descriptionInput.setHintTextColor(Color.RED);
+                LinearLayout.LayoutParams descriptionParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                descriptionParams.setMargins(40, 20, 40, 0); // Set left, top, right, bottom margins
+                descriptionInput.setLayoutParams(descriptionParams);
+
                 final EditText timeInput = new EditText(getActivity());
                 timeInput.setHint("Time");
+                timeInput.setHintTextColor(Color.RED);
+                LinearLayout.LayoutParams timeParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                timeParams.setMargins(40, 20, 40, 40); // Set left, top, right, bottom margins
+                timeInput.setLayoutParams(timeParams);
 
-                // Set up the view
+// Set up the view
                 LinearLayout layout = new LinearLayout(getActivity());
                 layout.setOrientation(LinearLayout.VERTICAL);
-                layout.setBackgroundColor(Color.parseColor("#90CAF9"));
                 layout.addView(titleInput);
                 layout.addView(descriptionInput);
                 layout.addView(timeInput);
-                builder.setView(layout);
 
+                layout.setPadding(40, 40, 40, 40);
+                layout.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.rounded_dialog_bg));
+
+                builder.setView(layout);
                 // Set up the OK button
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -324,13 +367,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         MarkerOptions markerOptions = new MarkerOptions()
                                 .position(latLng)
                                 .title(title)
-                                .snippet(description + "\nTime: " + time)
+                                .snippet(username + "\n" +major + "\nDescription: " + description + "\nTime: " + time)
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                         Marker marker = mMap.addMarker(markerOptions);
                         // Set the marker tag to the event ID
-                        markerList.add(marker);
+
 
                         saveMarkerToFirebase(marker);
+
+
                         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                             @Override
                             public View getInfoWindow(Marker marker) {
@@ -436,7 +481,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 boolean markerExists = false;
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    MarkerData existingMarkerData = snapshot.getValue(MarkerData.class);
+                    double latitude = snapshot.child("latitude").getValue(Double.class);
+                    double longitude = snapshot.child("longitude").getValue(Double.class);
+                    String title = snapshot.child("title").getValue(String.class);
+                    String snippet = snapshot.child("snippet").getValue(String.class);
+                    String userId =  snapshot.child("userId").getValue(String.class);;
+                    MarkerData existingMarkerData = new MarkerData(latitude, longitude, title, snippet, userId);
                     if (existingMarkerData.getLongitude() == marker.getPosition().longitude) {
                         // Marker with the same position already exists
                         markerExists = true;
@@ -447,8 +497,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
                     // Create a new marker entry in Firebase database
                     String key = databaseRef.push().getKey();
+                    String userId = mAuth.getCurrentUser().getUid();
                     MarkerData markerData = new MarkerData(marker.getPosition().latitude,
-                            marker.getPosition().longitude, marker.getTitle(), marker.getSnippet());
+                            marker.getPosition().longitude, marker.getTitle(), marker.getSnippet(), userId);
                     databaseRef.child(key).setValue(markerData);
                 }
             }
@@ -462,17 +513,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private void loadMarkersFromFirebase() {
         // Load all marker entries from Firebase database
-
-
         databaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    // Get the values from the snapshot and create a MarkerData object manually
+                    double latitude = snapshot.child("latitude").getValue(Double.class);
+                    double longitude = snapshot.child("longitude").getValue(Double.class);
+                    String title = snapshot.child("title").getValue(String.class);
+                    String snippet = snapshot.child("snippet").getValue(String.class);
+                    String userId =  snapshot.child("userId").getValue(String.class);;
+                    MarkerData markerData = new MarkerData(latitude, longitude, title, snippet, userId);
 
-                    String uid = mAuth.getCurrentUser().getUid();
-                    DatabaseReference eventRef = databaseReference.child(uid).child("Events");
-
-                    MarkerData markerData = snapshot.getValue(MarkerData.class);
                     LatLng latLng = new LatLng(markerData.getLatitude(), markerData.getLongitude());
                     Marker marker = mMap.addMarker(new MarkerOptions()
                             .position(latLng)
@@ -483,7 +535,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     // Check if the marker already exists in the list
                     boolean markerExists = false;
                     for (Marker existingMarker : markerList) {
-                        if (existingMarker.getTag().equals(snapshot.getKey())) {
+                        if (existingMarker.getTag() != null && existingMarker.getTag().equals(snapshot.getKey())) {
                             markerExists = true;
                             break;
                         }
@@ -491,41 +543,52 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
                     // Add the marker to the list and set its tag to the Firebase key
                     if (!markerExists) {
-                        markerList.add(marker);
+                        if (userId.equals(mAuth.getCurrentUser().getUid())) {
+                            markerList.add(marker);
+                        }
                         marker.setTag(snapshot.getKey());
+                        Log.d("FirebaseKey", snapshot.getKey());
                     }
-
-                    mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-                        @Override
-                        public View getInfoWindow(Marker marker) {
-                            return null;
-                        }
-
-                        @Override
-                        public View getInfoContents(Marker marker) {
-                            // Inflate the layout for the InfoWindow
-                            View view = getLayoutInflater().inflate(R.layout.custom_info_window, null);
-
-                            // Set the title, description, and time in the layout
-                            TextView titleTextView = view.findViewById(R.id.event_title);
-                            TextView descriptionTextView = view.findViewById(R.id.event_description);
-                            TextView timeTextView = view.findViewById(R.id.event_time);
-                            titleTextView.setText(marker.getTitle());
-                            descriptionTextView.setText(marker.getSnippet());
-                            timeTextView.setVisibility(View.GONE); // Hide the time field
-
-                            return view;
-                        }
-                    });
-
-                    // Show the InfoWindow when the marker is clicked
-                    marker.showInfoWindow();
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e(TAG, "Failed to load markers from Firebase database", databaseError.toException());
+            }
+        });
+
+        // Set the OnMarkerClickListener for the map
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                // Set the info window adapter for the marker
+                mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                    @Override
+                    public View getInfoWindow(Marker marker) {
+                        return null;
+                    }
+
+                    @Override
+                    public View getInfoContents(Marker marker) {
+                        // Inflate the layout for the InfoWindow
+                        View view = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+
+                        // Set the title, description, and time in the layout
+                        TextView titleTextView = view.findViewById(R.id.event_title);
+                        TextView descriptionTextView = view.findViewById(R.id.event_description);
+                        TextView timeTextView = view.findViewById(R.id.event_time);
+                        titleTextView.setText(marker.getTitle());
+                        descriptionTextView.setText(marker.getSnippet());
+                        //timeTextView.setVisibility(View.GONE); // Hide the time field
+
+                        return view;
+                    }
+                });
+
+                // Show the info window for the marker
+                marker.showInfoWindow();
+
+                return true;
             }
         });
     }
@@ -539,6 +602,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             saveMarkerToFirebase(marker);
         }
     }
+
+
 
     public class Event {
         private String eventId;
@@ -555,6 +620,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             this.time = time;
             this.latitude = latitude;
             this.longitude = longitude;
+
         }
 
         public String getEventId() {
@@ -606,22 +672,25 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private static class MarkerData {
+    public class MarkerData {
         private double latitude;
         private double longitude;
         private String title;
         private String snippet;
 
-        public MarkerData()
-        {
+        private String userId;
+
+
+        public MarkerData() {
 
         }
 
-        public MarkerData(double latitude, double longitude, String title, String snippet) {
+        public MarkerData(double latitude, double longitude, String title, String snippet, String userId) {
             this.latitude = latitude;
             this.longitude = longitude;
             this.title = title;
             this.snippet = snippet;
+            this.userId = userId;
         }
 
         public double getLatitude() {
@@ -644,7 +713,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             return title;
         }
 
-
         public void setTitle(String title) {
             this.title = title;
         }
@@ -656,7 +724,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         public void setSnippet(String snippet) {
             this.snippet = snippet;
         }
-    }
 
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
+        }
+
+
+
+    }
 
 }
