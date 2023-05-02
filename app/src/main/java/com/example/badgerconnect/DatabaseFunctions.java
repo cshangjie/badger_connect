@@ -205,7 +205,7 @@ public class DatabaseFunctions{
             childUpdates.put("/UserData/" + key + "/Bio/", user.getBio());
         }
         if(!user.getYear().toString().isEmpty()) {
-            childUpdates.put("/UserData/" + key + "/Year/", user.getYear());
+            childUpdates.put("/UserData/" + key + "/Year/", user.getYear().getNumVal());
         }
         if(!user.getMeetingType().toString().isEmpty()) {
             childUpdates.put("/UserData/" + key + "/MeetingType/", user.getMeetingType());
@@ -214,7 +214,9 @@ public class DatabaseFunctions{
             childUpdates.put("/UserData/" + key + "/DateOfBirth/", user.getDateOfBirth());
         }
 
-        childUpdates.put("/UserData/" + key + "/StudyBuddyCourses/", user.getStudyBuddyCourses());
+        if(studyBuddyCourses != null) {
+            childUpdates.put("/UserData/" + key + "/StudyBuddyCourses/", user.getStudyBuddyCourses());
+        }
 
         childUpdates.put("/UserData/" + key + "/ConnectionTypes/", user.getConnectionType());
 

@@ -46,8 +46,7 @@ public class ApplicationWrapperActivity extends AppCompatActivity
     FirebaseAuth auth;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_application_wrapper);
 
@@ -79,8 +78,7 @@ public class ApplicationWrapperActivity extends AppCompatActivity
 
     @Override
     public boolean
-    onNavigationItemSelected(@NonNull MenuItem item)
-    {
+    onNavigationItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()) {
             case R.id.navigation_people:
@@ -144,8 +142,8 @@ public class ApplicationWrapperActivity extends AppCompatActivity
 //        getMenuInflater().inflate(R.menu.menu, menu);
 //
 //
-//        reference= FirebaseDatabase.getInstance().getReference("Data").child("Users");
-//        Query query= reference;
+//        reference = FirebaseDatabase.getInstance().getReference("Data").child("Users");
+//        Query query = reference;
 //        query.addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
@@ -158,8 +156,8 @@ public class ApplicationWrapperActivity extends AppCompatActivity
 //
 //                            CircleImageView profileImageForMenu = findViewById(R.id.profile_image_icon);
 //                            TextView profile_username = findViewById(R.id.profile_username);
-//                            MenuItem profileImageMenuItem=menu.findItem(R.id.profile_image_menu);
-//                            MenuItem username_menu=menu.findItem(R.id.username_menu);
+//                            MenuItem profileImageMenuItem = menu.findItem(R.id.profile_image_menu);
+//                            MenuItem username_menu = menu.findItem(R.id.username_menu);
 //                            profile_username.setText(user.getName());
 //
 //                            // Inflate the layout and set it as the action view for the menu item
@@ -172,21 +170,23 @@ public class ApplicationWrapperActivity extends AppCompatActivity
 //                    }
 //                }
 //            }
+//
 //            @Override
 //            public void onCancelled(@NonNull DatabaseError error) {
 //            }
 //        });
 //        return true;
 //    }
+//
 //    @Override
 //    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        switch (item.getItemId()){
+//        switch (item.getItemId()) {
 //
-//            case R.id.logout:
-//                FirebaseAuth.getInstance().signOut();
-//                finish();
+//            case R.id.profile_image_icon:
+//                // Handle profile icon click
+//                Intent intent = new Intent(ApplicationWrapperActivity.this, EditProfileActivity.class);
+//                startActivity(intent);
 //                return true;
-//
 //        }
 //        return false;
 //    }

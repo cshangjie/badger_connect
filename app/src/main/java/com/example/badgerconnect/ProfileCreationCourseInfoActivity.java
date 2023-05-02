@@ -140,7 +140,7 @@ public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
             }
 
             // user entries are in the set (aka valid)
-            // create user in DB TODO
+            // create user in sahas DB
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = mAuth.getCurrentUser();
             String uid = currentUser.getUid();
