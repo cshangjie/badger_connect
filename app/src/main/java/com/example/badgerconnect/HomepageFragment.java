@@ -14,6 +14,7 @@ import com.example.badgerconnect.Model.Request;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -223,7 +225,7 @@ public class HomepageFragment extends Fragment {
                 downloadPFP(currUserId, currImageView);
             });
             ratingViews[i].setVisibility(View.VISIBLE);
-            ratingViews[i].setText(String.valueOf(foundUsers.get(currUserId)));
+            ratingViews[i].setText("Course Similarity: "+String.valueOf(foundUsers.get(currUserId)));
         }
         swipeRefreshLayout.setRefreshing(false);
 
@@ -282,6 +284,7 @@ public class HomepageFragment extends Fragment {
             TextView userNameTextView = dialogView.findViewById(R.id.name_field);
             TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
             TextView userYearTextView = dialogView.findViewById(R.id.year_field);
+            LinearLayout studyBuddyCoursesView = dialogView.findViewById(R.id.course_container);
             // TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
@@ -295,6 +298,19 @@ public class HomepageFragment extends Fragment {
             userYearTextView.setText(String.valueOf(userInfos.get(0).getYear()));
             // userBirthdateTextView.setText(userInfos.get(0).getDateOfBirth());
             Log.i("Birthday",userInfos.get(0).getDateOfBirth());
+            HashMap<String, String> userCourses = userInfos.get(0).getStudyBuddyCourses();
+            for (String course : userCourses.values()) {
+                // populate courses as autocompletetextviews within the container and setting them to disabled
+                TextView autoCompleteTextView = new TextView(requireContext());
+                autoCompleteTextView.setGravity(Gravity.CENTER); // center the text
+                autoCompleteTextView.setText(course);
+                autoCompleteTextView.setEnabled(false);
+                autoCompleteTextView.setTextSize(13);
+                autoCompleteTextView.setTextColor(Color.DKGRAY);
+                autoCompleteTextView.setBackgroundResource(R.drawable.custom_edit_text_cut);
+                autoCompleteTextView.setVisibility(View.VISIBLE);
+                studyBuddyCoursesView.addView(autoCompleteTextView);
+            }
 
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
@@ -341,6 +357,7 @@ public class HomepageFragment extends Fragment {
             TextView userNameTextView = dialogView.findViewById(R.id.name_field);
             TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
             TextView userYearTextView = dialogView.findViewById(R.id.year_field);
+            LinearLayout studyBuddyCoursesView = dialogView.findViewById(R.id.course_container);
             // TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
@@ -353,7 +370,19 @@ public class HomepageFragment extends Fragment {
             userMajorTextView.setText(userInfos.get(1).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(1).getYear()));
             // userBirthdateTextView.setText(userInfos.get(1).getDateOfBirth());
-
+            HashMap<String, String> userCourses = userInfos.get(1).getStudyBuddyCourses();
+            for (String course : userCourses.values()) {
+                // populate courses as autocompletetextviews within the container and setting them to disabled
+                TextView autoCompleteTextView = new TextView(requireContext());
+                autoCompleteTextView.setGravity(Gravity.CENTER); // center the text
+                autoCompleteTextView.setText(course);
+                autoCompleteTextView.setEnabled(false);
+                autoCompleteTextView.setTextSize(13);
+                autoCompleteTextView.setTextColor(Color.DKGRAY);
+                autoCompleteTextView.setBackgroundResource(R.drawable.custom_edit_text_cut);
+                autoCompleteTextView.setVisibility(View.VISIBLE);
+                studyBuddyCoursesView.addView(autoCompleteTextView);
+            }
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
             dialog.show();
@@ -400,6 +429,8 @@ public class HomepageFragment extends Fragment {
             TextView userNameTextView = dialogView.findViewById(R.id.name_field);
             TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
             TextView userYearTextView = dialogView.findViewById(R.id.year_field);
+            LinearLayout studyBuddyCoursesView = dialogView.findViewById(R.id.course_container);
+
             // TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
@@ -412,7 +443,19 @@ public class HomepageFragment extends Fragment {
             userMajorTextView.setText(userInfos.get(2).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(2).getYear()));
             // userBirthdateTextView.setText(userInfos.get(2).getDateOfBirth());
-
+            HashMap<String, String> userCourses = userInfos.get(2).getStudyBuddyCourses();
+            for (String course : userCourses.values()) {
+                // populate courses as autocompletetextviews within the container and setting them to disabled
+                TextView autoCompleteTextView = new TextView(requireContext());
+                autoCompleteTextView.setGravity(Gravity.CENTER); // center the text
+                autoCompleteTextView.setText(course);
+                autoCompleteTextView.setTextSize(13);
+                autoCompleteTextView.setEnabled(false);
+                autoCompleteTextView.setTextColor(Color.DKGRAY);
+                autoCompleteTextView.setBackgroundResource(R.drawable.custom_edit_text_cut);
+                autoCompleteTextView.setVisibility(View.VISIBLE);
+                studyBuddyCoursesView.addView(autoCompleteTextView);
+            }
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
             dialog.show();
@@ -459,6 +502,7 @@ public class HomepageFragment extends Fragment {
             TextView userNameTextView = dialogView.findViewById(R.id.name_field);
             TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
             TextView userYearTextView = dialogView.findViewById(R.id.year_field);
+            LinearLayout studyBuddyCoursesView = dialogView.findViewById(R.id.course_container);
             // TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
@@ -471,6 +515,19 @@ public class HomepageFragment extends Fragment {
             userMajorTextView.setText(userInfos.get(3).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(3).getYear()));
             // userBirthdateTextView.setText(userInfos.get(3).getDateOfBirth());
+            HashMap<String, String> userCourses = userInfos.get(3).getStudyBuddyCourses();
+            for (String course : userCourses.values()) {
+                // populate courses as autocompletetextviews within the container and setting them to disabled
+                TextView autoCompleteTextView = new TextView(requireContext());
+                autoCompleteTextView.setGravity(Gravity.CENTER); // center the text
+                autoCompleteTextView.setText(course);
+                autoCompleteTextView.setEnabled(false);
+                autoCompleteTextView.setTextSize(13);
+                autoCompleteTextView.setTextColor(Color.DKGRAY);
+                autoCompleteTextView.setBackgroundResource(R.drawable.custom_edit_text_cut);
+                autoCompleteTextView.setVisibility(View.VISIBLE);
+                studyBuddyCoursesView.addView(autoCompleteTextView);
+            }
 
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
@@ -518,6 +575,7 @@ public class HomepageFragment extends Fragment {
             TextView userNameTextView = dialogView.findViewById(R.id.name_field);
             TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
             TextView userYearTextView = dialogView.findViewById(R.id.year_field);
+            LinearLayout studyBuddyCoursesView = dialogView.findViewById(R.id.course_container);
             // TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
@@ -530,6 +588,19 @@ public class HomepageFragment extends Fragment {
             userMajorTextView.setText(userInfos.get(4).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(4).getYear()));
             // userBirthdateTextView.setText(userInfos.get(4).getDateOfBirth());
+            HashMap<String, String> userCourses = userInfos.get(4).getStudyBuddyCourses();
+            for (String course : userCourses.values()) {
+                // populate courses as autocompletetextviews within the container and setting them to disabled
+                TextView autoCompleteTextView = new TextView(requireContext());
+                autoCompleteTextView.setGravity(Gravity.CENTER); // center the text
+                autoCompleteTextView.setText(course);
+                autoCompleteTextView.setTextSize(13);
+                autoCompleteTextView.setEnabled(false);
+                autoCompleteTextView.setTextColor(Color.DKGRAY);
+                autoCompleteTextView.setBackgroundResource(R.drawable.custom_edit_text_cut);
+                autoCompleteTextView.setVisibility(View.VISIBLE);
+                studyBuddyCoursesView.addView(autoCompleteTextView);
+            }
 
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
@@ -577,6 +648,7 @@ public class HomepageFragment extends Fragment {
             TextView userNameTextView = dialogView.findViewById(R.id.name_field);
             TextView userMajorTextView = dialogView.findViewById(R.id.major_field);
             TextView userYearTextView = dialogView.findViewById(R.id.year_field);
+            LinearLayout studyBuddyCoursesView = dialogView.findViewById(R.id.course_container);
             // TextView userBirthdateTextView = dialogView.findViewById(R.id.birthdate_field);
 
             Button closeButton = dialogView.findViewById(R.id.close_button);
@@ -589,6 +661,20 @@ public class HomepageFragment extends Fragment {
             userMajorTextView.setText(userInfos.get(5).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(5).getYear()));
             // userBirthdateTextView.setText(userInfos.get(5).getDateOfBirth());
+            HashMap<String, String> userCourses = userInfos.get(5).getStudyBuddyCourses();
+            for (String course : userCourses.values()) {
+                // populate courses as autocompletetextviews within the container and setting them to disabled
+                TextView autoCompleteTextView = new TextView(requireContext());
+                autoCompleteTextView.setGravity(Gravity.CENTER); // center the text
+                autoCompleteTextView.setText(course);
+                autoCompleteTextView.setTextSize(13);
+                autoCompleteTextView.setEnabled(false);
+                autoCompleteTextView.setTextColor(Color.DKGRAY);
+                autoCompleteTextView.setBackgroundResource(R.drawable.custom_edit_text_cut);
+                autoCompleteTextView.setVisibility(View.VISIBLE);
+                studyBuddyCoursesView.addView(autoCompleteTextView);
+            }
+
 
             // Create the dialog and show it
             AlertDialog dialog = builder.create();
