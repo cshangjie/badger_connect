@@ -3,7 +3,9 @@ package com.example.badgerconnect;
 import android.app.Application;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -14,8 +16,11 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,6 +39,8 @@ public class ProfileCreationActivity extends AppCompatActivity {
     private CheckBox isLookingForMentorCB, notLookingForMentorCB, isMentorCB, notMentorCB, isStudyBuddyCB, notStudyBuddyCB;
     private CheckBox physicalCB, virtualCB;
     private Button continueButton;
+    private String user_PFP_url = null;
+    private static StorageReference mStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +170,21 @@ public class ProfileCreationActivity extends AppCompatActivity {
                     // Upload PFP
                     DatabaseFunctions.uploadPFP(uid, imagePfp);
                     // TODO create user for CJ
+                    mStorage = FirebaseStorage.getInstance().getReference();
+                    StorageReference pfpRef = mStorage.child("images").child(uid+"/pfp.jpg");
+                    pfpRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            user_PFP_url = uri.toString();
+                        }
+                    });
+
+                    if(user_PFP_url == null){
+                        Log.i("-------------->>", "PFP url is null. @ProfileCreationActivity.java");
+                    }else{
+                        Log.i("PFP Image URL>", user_PFP_url);
+                    }
+
                     startActivity(myIntent);
                 }
                 // otherwise send them to a course selection page
