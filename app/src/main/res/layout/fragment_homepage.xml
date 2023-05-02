@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ScrollView
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+        android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HomepageFragment">
 
@@ -69,7 +69,20 @@
                     android:gravity="center"
                     android:padding="16dp"
                     android:orientation="vertical">
-                    
+
+                    <TextView
+                        android:id="@+id/rating_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="70dp"
+                        android:layout_marginBottom="20dp"
+                        android:text="4.5"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profile_picture1"
                         android:layout_width="80dp"
