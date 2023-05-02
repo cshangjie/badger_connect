@@ -652,7 +652,9 @@ public class DatabaseFunctions{
                                         HashMap<String, String> courses = (HashMap<String, String>) snapshot.child("StudyBuddyCourses").getValue(Object.class);
                                         // Perform additional filtering on the client side
                                         int similarityRating = findSimilarityRating(currCourses, courses);
-                                        results.put(userId, similarityRating);
+                                        if(similarityRating > 0) {
+                                            results.put(userId, similarityRating);
+                                        }
                                     }
                                 }
                                 else {
@@ -661,7 +663,9 @@ public class DatabaseFunctions{
                                     HashMap<String, String> courses = (HashMap<String, String>) snapshot.child("StudyBuddyCourses").getValue(Object.class);
                                     // Perform additional filtering on the client side
                                     int similarityRating = findSimilarityRating(currCourses, courses);
-                                    results.put(userId, similarityRating);
+                                    if(similarityRating > 0) {
+                                        results.put(userId, similarityRating);
+                                    }
                                 }
 
                             }
