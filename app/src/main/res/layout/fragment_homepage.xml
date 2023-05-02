@@ -71,7 +71,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/rating_number"
+                        android:id="@+id/rating_number1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
@@ -81,7 +81,8 @@
                         android:text="4.5"
                         android:textColor="@color/colorAccent"
                         android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="gone" />
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profile_picture1"
@@ -120,6 +121,20 @@
                     android:padding="16dp"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:id="@+id/rating_number2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="70dp"
+                        android:layout_marginBottom="20dp"
+                        android:text="4.5"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profile_picture2"
                         android:layout_width="80dp"
@@ -156,6 +171,20 @@
                     android:gravity="center"
                     android:padding="16dp"
                     android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/rating_number3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="70dp"
+                        android:layout_marginBottom="20dp"
+                        android:text="4.5"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profile_picture3"
@@ -194,6 +223,20 @@
                     android:padding="16dp"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:id="@+id/rating_number4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="70dp"
+                        android:layout_marginBottom="20dp"
+                        android:text="4.5"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profile_picture4"
                         android:layout_width="80dp"
@@ -231,6 +274,20 @@
                     android:padding="16dp"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:id="@+id/rating_number5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="70dp"
+                        android:layout_marginBottom="20dp"
+                        android:text="4.5"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"/>
+
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profile_picture5"
                         android:layout_width="80dp"
@@ -267,6 +324,20 @@
                     android:gravity="center"
                     android:padding="16dp"
                     android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/rating_number6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="70dp"
+                        android:layout_marginBottom="20dp"
+                        android:text="4.5"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"/>
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profile_picture6"

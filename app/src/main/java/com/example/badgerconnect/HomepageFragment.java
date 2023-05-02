@@ -48,6 +48,7 @@ public class HomepageFragment extends Fragment {
     ImageView box1Image, box2Image, box3Image, box4Image, box5Image, box6Image;
     TextView box1Text, box2Text, box3Text, box4Text, box5Text, box6Text;
     CardView box1Card, box2Card, box3Card, box4Card, box5Card, box6Card;
+    TextView ratingNumber1, ratingNumber2, ratingNumber3, ratingNumber4, ratingNumber5, ratingNumber6;
     ImageView filterButton;
     TextView lookingForText;
     ArrayList<UserInfo> userInfos = new ArrayList<>(6);
@@ -106,6 +107,7 @@ public class HomepageFragment extends Fragment {
         // to refresh the content
         //TODO: Set the sortMap with the user selections
         setBoxesInvisible();
+        setRatingInvisible();
         userIds.clear();
         userInfos.clear();
         if((sortMap.get("ConnectionType").equals("Mentor")) && (!prevOp.get("ConnectionType").equals("Mentor"))) {
@@ -154,6 +156,7 @@ public class HomepageFragment extends Fragment {
         prevOp.put("ConnectionType", sortMap.get("ConnectionType"));
     }
 
+
     /**
      * Initializes the UI components
      *
@@ -182,6 +185,12 @@ public class HomepageFragment extends Fragment {
         filterButton = view.findViewById(R.id.filter_button);
         linearLayout = view.findViewById(R.id.linearLayout);
         lookingForText = view.findViewById(R.id.looking_for);
+        ratingNumber1 = view.findViewById(R.id.rating_number1);
+        ratingNumber2 = view.findViewById(R.id.rating_number2);
+        ratingNumber3 = view.findViewById(R.id.rating_number3);
+        ratingNumber4 = view.findViewById(R.id.rating_number4);
+        ratingNumber5 = view.findViewById(R.id.rating_number5);
+        ratingNumber6 = view.findViewById(R.id.rating_number6);
     }
 
     /**
@@ -196,6 +205,7 @@ public class HomepageFragment extends Fragment {
         ImageView[] imageViews = {box1Image, box2Image, box3Image, box4Image, box5Image, box6Image};
         TextView[] textViews = {box1Text, box2Text, box3Text, box4Text, box5Text, box6Text};
         CardView[] cardViews = {box1Card, box2Card, box3Card, box4Card, box5Card, box6Card};
+        TextView[] ratingViews = {ratingNumber1, ratingNumber2, ratingNumber3, ratingNumber4, ratingNumber5, ratingNumber6};
         int size = (users.size() < 6) ? users.size() : 6;
         for(int i = 0 ; i < size ; i++) {
             UserInfo currUser = new UserInfo();
@@ -212,6 +222,8 @@ public class HomepageFragment extends Fragment {
                 currTextView.setText(user.getUsername());
                 downloadPFP(currUserId, currImageView);
             });
+            ratingViews[i].setVisibility(View.VISIBLE);
+            ratingViews[i].setText(String.valueOf(foundUsers.get(currUserId)));
         }
         swipeRefreshLayout.setRefreshing(false);
 
@@ -696,5 +708,15 @@ public class HomepageFragment extends Fragment {
         box4Card.setVisibility(View.INVISIBLE);
         box5Card.setVisibility(View.INVISIBLE);
         box6Card.setVisibility(View.INVISIBLE);
+    }
+
+
+    private void setRatingInvisible() {
+        ratingNumber1.setVisibility(View.INVISIBLE);
+        ratingNumber2.setVisibility(View.INVISIBLE);
+        ratingNumber3.setVisibility(View.INVISIBLE);
+        ratingNumber4.setVisibility(View.INVISIBLE);
+        ratingNumber5.setVisibility(View.INVISIBLE);
+        ratingNumber6.setVisibility(View.INVISIBLE);
     }
 }
