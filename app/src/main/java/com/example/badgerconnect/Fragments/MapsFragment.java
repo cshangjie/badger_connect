@@ -1,12 +1,10 @@
 package com.example.badgerconnect.Fragments;
 
 import static android.content.Context.LOCATION_SERVICE;
-
 import static com.example.badgerconnect.DatabaseFunctions.readUserData;
 
 import android.Manifest;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -25,9 +23,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.badgerconnect.DatabaseFunctions;
 import com.example.badgerconnect.R;
 import com.example.badgerconnect.UserInfo;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -51,8 +49,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-
-import javax.annotation.Nullable;
 
 
 /**
@@ -337,7 +333,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 layout.addView(timeInput);
 
                 layout.setPadding(40, 40, 40, 40);
-                layout.setBackground(getResources().getDrawable(R.drawable.rounded_dialog_bg));
+                layout.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.rounded_dialog_bg));
 
                 builder.setView(layout);
 
@@ -505,15 +501,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private void loadMarkersFromFirebase() {
         // Load all marker entries from Firebase database
-
-
         databaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
-                    String uid = mAuth.getCurrentUser().getUid();
-                    DatabaseReference eventRef = databaseReference.child(uid).child("Events");
 
                     MarkerData markerData = snapshot.getValue(MarkerData.class);
                     LatLng latLng = new LatLng(markerData.getLatitude(), markerData.getLongitude());
@@ -537,53 +528,50 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         markerList.add(marker);
                         marker.setTag(snapshot.getKey());
                     }
-
-                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                        @Override
-                        public boolean onMarkerClick(Marker marker) {
-                            // Set the info window adapter for the marker
-                            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-                                @Override
-                                public View getInfoWindow(Marker marker) {
-                                    return null;
-                                }
-
-                                @Override
-                                public View getInfoContents(Marker marker) {
-                                    // Inflate the layout for the InfoWindow
-                                    View view = getLayoutInflater().inflate(R.layout.custom_info_window, null);
-
-                                    // Set the title, description, and time in the layout
-                                    TextView titleTextView = view.findViewById(R.id.event_title);
-                                    TextView descriptionTextView = view.findViewById(R.id.event_description);
-                                    TextView timeTextView = view.findViewById(R.id.event_time);
-                                    titleTextView.setText(marker.getTitle());
-                                    descriptionTextView.setText(marker.getSnippet());
-                                    timeTextView.setVisibility(View.GONE); // Hide the time field
-
-                                    return view;
-                                }
-                            });
-
-                            // Show the info window for the marker
-                            marker.showInfoWindow();
-
-                            return true;
-                        }
-                    });
-
-
-                    // Show the InfoWindow when the marker is clicked
-                    marker.showInfoWindow();
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e(TAG, "Failed to load markers from Firebase database", databaseError.toException());
             }
         });
+
+        // Set the OnMarkerClickListener for the map
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                // Set the info window adapter for the marker
+                mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                    @Override
+                    public View getInfoWindow(Marker marker) {
+                        return null;
+                    }
+
+                    @Override
+                    public View getInfoContents(Marker marker) {
+                        // Inflate the layout for the InfoWindow
+                        View view = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+
+                        // Set the title, description, and time in the layout
+                        TextView titleTextView = view.findViewById(R.id.event_title);
+                        TextView descriptionTextView = view.findViewById(R.id.event_description);
+                        TextView timeTextView = view.findViewById(R.id.event_time);
+                        titleTextView.setText(marker.getTitle());
+                        descriptionTextView.setText(marker.getSnippet());
+                        timeTextView.setVisibility(View.GONE); // Hide the time field
+
+                        return view;
+                    }
+                });
+
+                // Show the info window for the marker
+                marker.showInfoWindow();
+
+                return true;
+            }
+        });
     }
+
 
 
     @Override
