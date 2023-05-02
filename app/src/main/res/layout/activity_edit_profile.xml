@@ -42,8 +42,9 @@
             android:layout_height="wrap_content"
             android:background="@drawable/custom_edit_text_cut"
             android:enabled="false"
-            android:gravity="top|start"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine"
+            android:gravity = "center"
+            />
 
         <TextView
             android:id="@+id/major_label"
@@ -149,12 +150,6 @@
             android:layout_height="wrap_content"
             android:text="StudyBuddy:" />
 
-        <CheckBox
-            android:id="@+id/studybuddy_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp" />
         <LinearLayout
             android:id="@+id/course_container"
             android:layout_width="match_parent"
