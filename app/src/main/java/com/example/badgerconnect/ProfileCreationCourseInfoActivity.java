@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -18,14 +19,19 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.badgerconnect.Model.User;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
     private String name, major, dob;
@@ -34,6 +40,8 @@ public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
     private Button addCourseFieldButton, removeCourseFieldButton, continueButton;
     private LinearLayout autocompleteContainer;
     private static final int MAX_COURSES = 6;
+    private String user_PFP_url = null;
+    private static StorageReference mStorage;
 
 
     @Override
@@ -134,7 +142,7 @@ public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
             }
 
             // user entries are in the set (aka valid)
-            // create user in DB TODO
+            // create user in sahas DB
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = mAuth.getCurrentUser();
             String uid = currentUser.getUid();
@@ -150,8 +158,32 @@ public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
             }
 
             DatabaseFunctions.writeNewUser(uid, name, email,major, course_count, Arrays.asList(userEntries), connectionTypes, bio, Year.valueOf(year), meetingType, dob);
-            DatabaseFunctions.uploadPFP(uid,imagePfp);
-            Log.i("User Written to DB", "yeeeehaw");
+            DatabaseFunctions.uploadPFP(uid, imagePfp);
+            //create user for CJ
+            CompletableFuture<String> downloadedURL = DatabaseFunctions.downloadPFPURL(uid);
+
+            downloadedURL.thenAccept(url -> {
+                User user = new User(uid, name, url, null);
+                user.addUser();
+                Log.d("ImageURL", url);
+            });
+
+            mStorage = FirebaseStorage.getInstance().getReference();
+            StorageReference pfpRef = mStorage.child("images").child(uid+"/pfp.jpg");
+            pfpRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    user_PFP_url = uri.toString();
+                    // TODO write user for CJ pm database
+                    if(user_PFP_url == null){
+                        Log.i("", "PFP IMG url is null !!!!!!!!!!!!!!!!!!!!!");
+                    }else{
+                        Log.i("PFP Image URL", user_PFP_url);
+                    }
+                }
+            });
+
+
             Intent myIntent = new Intent(ProfileCreationCourseInfoActivity.this, ApplicationWrapperActivity.class);
             startActivity(myIntent);
         });

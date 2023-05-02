@@ -46,8 +46,7 @@ public class ApplicationWrapperActivity extends AppCompatActivity
     FirebaseAuth auth;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_application_wrapper);
 
@@ -79,8 +78,7 @@ public class ApplicationWrapperActivity extends AppCompatActivity
 
     @Override
     public boolean
-    onNavigationItemSelected(@NonNull MenuItem item)
-    {
+    onNavigationItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()) {
             case R.id.navigation_people:
@@ -121,54 +119,75 @@ public class ApplicationWrapperActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-
-
-        reference= FirebaseDatabase.getInstance().getReference("Data").child("Users");
-        Query query= reference;
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
-                User user = new User();
-                for (DataSnapshot userinfo : datasnapshot.getChildren()) {
-
-                    user = userinfo.getValue(User.class);
-                    if (user.getUid().equals(firebaseUser.getUid())) {
-                        if (!user.getProfile_pic().equals("default")) {
-
-                            CircleImageView profileImageForMenu = findViewById(R.id.profile_image_icon);
-                            TextView profile_username = findViewById(R.id.profile_username);
-                            MenuItem profileImageMenuItem=menu.findItem(R.id.profile_image_menu);
-                            MenuItem username_menu=menu.findItem(R.id.username_menu);
-                            profile_username.setText(user.getName());
-
-                            // Inflate the layout and set it as the action view for the menu item
-                            View profileImageView = profileImageMenuItem.getActionView();
-                            if (profileImageView != null) {
-                                profileImageMenuItem.setActionView(profileImageView);
-                            }
-
-                            Glide.with(ApplicationWrapperActivity.this).load(user.getProfile_pic()).into(profileImageForMenu);
-
-                        }
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+        getMenuInflater().inflate(R.menu.profile_menu, menu);
+        getSupportActionBar().setTitle("BadgerConnect");
         return true;
     }
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
 
-            case R.id.logout:
-                FirebaseAuth.getInstance().signOut();
-                finish();
-                return true;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_profile) {
+            // Handle profile icon click
+            Intent intent = new Intent(ApplicationWrapperActivity.this, EditProfileActivity.class);
+            startActivity(intent);
+            return true;
         }
-        return false;
+        return super.onOptionsItemSelected(item);
     }
+
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu, menu);
+//
+//
+//        reference = FirebaseDatabase.getInstance().getReference("Data").child("Users");
+//        Query query = reference;
+//        query.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+//                User user = new User();
+//                for (DataSnapshot userinfo : datasnapshot.getChildren()) {
+//
+//                    user = userinfo.getValue(User.class);
+//                    if (user.getUid().equals(firebaseUser.getUid())) {
+//                        if (!user.getProfile_pic().equals("default")) {
+//
+//                            CircleImageView profileImageForMenu = findViewById(R.id.profile_image_icon);
+//                            TextView profile_username = findViewById(R.id.profile_username);
+//                            MenuItem profileImageMenuItem = menu.findItem(R.id.profile_image_menu);
+//                            MenuItem username_menu = menu.findItem(R.id.username_menu);
+//                            profile_username.setText(user.getName());
+//
+//                            // Inflate the layout and set it as the action view for the menu item
+//                            View profileImageView = profileImageMenuItem.getActionView();
+//                            if (profileImageView != null) {
+//                                profileImageMenuItem.setActionView(profileImageView);
+//                            }
+//                            Glide.with(ApplicationWrapperActivity.this).load(user.getProfile_pic()).into(profileImageForMenu);
+//                        }
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//            }
+//        });
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        switch (item.getItemId()) {
+//
+//            case R.id.profile_image_icon:
+//                // Handle profile icon click
+//                Intent intent = new Intent(ApplicationWrapperActivity.this, EditProfileActivity.class);
+//                startActivity(intent);
+//                return true;
+//        }
+//        return false;
+//    }
 }
