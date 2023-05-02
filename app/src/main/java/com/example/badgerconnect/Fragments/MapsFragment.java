@@ -63,8 +63,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private DatabaseReference databaseRef;
     private FirebaseAuth mAuth;
     private static final String TAG = "EmailPassword";
-    private final long MIN_TIME = 1000;
-    private final long MIN_DIST = 5;
+    private final long MIN_TIME = 100;
+    private final long MIN_DIST = 25;
 
     private Marker previousMarker;
     private Location previousLocation;
@@ -336,8 +336,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 layout.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.rounded_dialog_bg));
 
                 builder.setView(layout);
-
-
                 // Set up the OK button
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -582,6 +580,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             saveMarkerToFirebase(marker);
         }
     }
+
+
 
     public class Event {
         private String eventId;
