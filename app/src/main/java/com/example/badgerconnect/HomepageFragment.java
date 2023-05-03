@@ -1,5 +1,6 @@
 package com.example.badgerconnect;
 
+import static com.example.badgerconnect.DatabaseFunctions.addRejection;
 import static com.example.badgerconnect.DatabaseFunctions.algorithmMentee;
 import static com.example.badgerconnect.DatabaseFunctions.algorithmMentor;
 import static com.example.badgerconnect.DatabaseFunctions.algorithmStudyBuddy;
@@ -320,6 +321,7 @@ public class HomepageFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     request.SendRequest(currUserId, userIds.get(0));
+                    addRejection(currUserId, userIds.get(0));
                 }
             });
             // Set an OnClickListener for the close button to dismiss the dialog box
@@ -391,6 +393,7 @@ public class HomepageFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     request.SendRequest(currUserId, userIds.get(1));
+                    addRejection(currUserId, userIds.get(1));
                 }
             });
 
@@ -464,6 +467,7 @@ public class HomepageFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     request.SendRequest(currUserId, userIds.get(2));
+                    addRejection(currUserId, userIds.get(2));
                 }
             });
 
@@ -537,6 +541,7 @@ public class HomepageFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     request.SendRequest(currUserId, userIds.get(3));
+                    addRejection(currUserId, userIds.get(3));
                 }
             });
 
@@ -610,6 +615,7 @@ public class HomepageFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     request.SendRequest(currUserId, userIds.get(4));
+                    addRejection(currUserId, userIds.get(4));
                 }
             });
 
@@ -684,6 +690,7 @@ public class HomepageFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     request.SendRequest(currUserId, userIds.get(5));
+                    addRejection(currUserId, userIds.get(5));
                 }
             });
 
