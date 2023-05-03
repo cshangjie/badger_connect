@@ -26,6 +26,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -232,7 +235,14 @@ public class ProfileCreationGeneralInfoActivity extends AppCompatActivity {
             intent.putExtra("dob", bday);
             intent.putExtra("year", yearSelected);
             intent.putExtra("bio", userBio);
-            intent.putExtra("image_pfp", selectedImageBitmap);
+            /* when sending the image as bitmap, the size will be too large for the transaction sometimes*/
+            /* TODO upload the image at this screen */
+            // Upload PFP
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            String uid = currentUser.getUid();
+            DatabaseFunctions.uploadPFP(uid, selectedImageBitmap);
+//            intent.putExtra("image_pfp", selectedImageBitmap);
 //            Log.i("Intent Extras", mName + "\n" + mMajor + "\n" + bday + "\n" + yearSelected + "\n" + userBio);
             startActivity(intent);
 

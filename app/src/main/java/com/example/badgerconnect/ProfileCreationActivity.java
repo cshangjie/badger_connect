@@ -54,7 +54,7 @@ public class ProfileCreationActivity extends AppCompatActivity {
         String year = intent.getStringExtra("year");
         String dob = intent.getStringExtra("dob");
         String bio = intent.getStringExtra("bio");
-        Bitmap imagePfp = (Bitmap) intent.getParcelableExtra("image_pfp");
+//        Bitmap imagePfp = (Bitmap) intent.getParcelableExtra("image_pfp");
 
         setContentView(R.layout.activity_profile_creation);
 
@@ -170,8 +170,6 @@ public class ProfileCreationActivity extends AppCompatActivity {
                     String email = currentUser.getEmail();
                     // Write new user
                     DatabaseFunctions.writeNewUser(uid, name, email, major, connectionTypes, bio, Year.valueOf(year), userMeetingPref, dob);
-                    // Upload PFP
-                    DatabaseFunctions.uploadPFP(uid, imagePfp);
                     //create user for CJ
                     CompletableFuture<String> downloadedURL = DatabaseFunctions.downloadPFPURL(uid);
 
@@ -207,7 +205,7 @@ public class ProfileCreationActivity extends AppCompatActivity {
                     myIntent.putStringArrayListExtra("connectionType", (ArrayList<String>) connectionTypes);
                     myIntent.putExtra("physical", physical);
                     myIntent.putExtra("virtual", virtual);
-                    myIntent.putExtra("image_pfp", imagePfp);
+//                    myIntent.putExtra("image_pfp", imagePfp);
                     startActivity(myIntent);
                 }
             }
