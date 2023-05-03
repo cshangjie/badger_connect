@@ -322,6 +322,8 @@ public class HomepageFragment extends Fragment {
                 public void onClick(View v) {
                     request.SendRequest(currUserId, userIds.get(0));
                     addRejection(currUserId, userIds.get(0));
+                    Toast.makeText(requireContext(), "Request Sent", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 }
             });
             // Set an OnClickListener for the close button to dismiss the dialog box
@@ -394,6 +396,8 @@ public class HomepageFragment extends Fragment {
                 public void onClick(View v) {
                     request.SendRequest(currUserId, userIds.get(1));
                     addRejection(currUserId, userIds.get(1));
+                    Toast.makeText(requireContext(), "Request Sent", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 }
             });
 
@@ -468,6 +472,8 @@ public class HomepageFragment extends Fragment {
                 public void onClick(View v) {
                     request.SendRequest(currUserId, userIds.get(2));
                     addRejection(currUserId, userIds.get(2));
+                    Toast.makeText(requireContext(), "Request Sent", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 }
             });
 
@@ -542,6 +548,8 @@ public class HomepageFragment extends Fragment {
                 public void onClick(View v) {
                     request.SendRequest(currUserId, userIds.get(3));
                     addRejection(currUserId, userIds.get(3));
+                    Toast.makeText(requireContext(), "Request Sent", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 }
             });
 
@@ -616,6 +624,8 @@ public class HomepageFragment extends Fragment {
                 public void onClick(View v) {
                     request.SendRequest(currUserId, userIds.get(4));
                     addRejection(currUserId, userIds.get(4));
+                    Toast.makeText(requireContext(), "Request Sent", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 }
             });
 
@@ -691,6 +701,8 @@ public class HomepageFragment extends Fragment {
                 public void onClick(View v) {
                     request.SendRequest(currUserId, userIds.get(5));
                     addRejection(currUserId, userIds.get(5));
+                    Toast.makeText(requireContext(), "Request Sent", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 }
             });
 
