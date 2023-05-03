@@ -1,6 +1,8 @@
 package com.example.badgerconnect.Adapter;
 
 
+import static com.example.badgerconnect.DatabaseFunctions.addRejection;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -28,6 +30,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+
+import com.example.badgerconnect.DatabaseFunctions;
 
 import org.checkerframework.checker.units.qual.C;
 
@@ -124,6 +128,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
                                 map.put(currUserId, currUserId);
                                 Conversation conversation= new Conversation(map);
                                 conversation.CreateNewConversation();
+                                addRejection(currUserId, sender_id);
 
                             }
                         }

@@ -257,7 +257,6 @@ public class HomepageFragment extends Fragment {
      */
     private void populateSquares(List<String> foundUsers) {
         Collections.shuffle(foundUsers);
-        Log.d("plase tell my why duplicates", String.valueOf(foundUsers));
         ImageView[] imageViews = {box1Image, box2Image, box3Image, box4Image, box5Image, box6Image};
         TextView[] textViews = {box1Text, box2Text, box3Text, box4Text, box5Text, box6Text};
         CardView[] cardViews = {box1Card, box2Card, box3Card, box4Card, box5Card, box6Card};
