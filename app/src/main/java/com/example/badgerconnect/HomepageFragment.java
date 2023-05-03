@@ -99,6 +99,20 @@ public class HomepageFragment extends Fragment {
         box4Card.setOnClickListener(this::pullUserDataBox4);
         box5Card.setOnClickListener(this::pullUserDataBox5);
         box6Card.setOnClickListener(this::pullUserDataBox6);
+        UserInfo currUser = new UserInfo();
+        CompletableFuture<UserInfo> currUserData = readUserData(currUserId, currUser);
+        currUserData.thenAccept(user -> {
+            if(user.getConnectionType().get("Mentor")) {
+                sortMap.put("ConnectionType", "Mentee");
+                onRefresh();
+            } else if(user.getConnectionType().get("Mentee")) {
+                sortMap.put("ConnectionType", "Mentor");
+                onRefresh();
+            } else if(user.getConnectionType().get("StudyBuddy")) {
+                sortMap.put("ConnectionType", "StudyBuddy");
+                onRefresh();
+            }
+        });
     }
 
     /**
@@ -115,6 +129,7 @@ public class HomepageFragment extends Fragment {
         userInfos.clear();
         if((sortMap.get("ConnectionType").equals("Mentor")) && (!prevOp.get("ConnectionType").equals("Mentor"))) {
             lookingForText.setText("Looking for Mentors");
+            foundUsers.clear();
             CompletableFuture<List<String>> futureUsers = algorithmMentor(currUserId, foundUsers);
             futureUsers.thenAccept(users -> {
                 populateSquares(users);
@@ -123,6 +138,7 @@ public class HomepageFragment extends Fragment {
         }
         else if((sortMap.get("ConnectionType").equals("Mentee")) && (!prevOp.get("ConnectionType").equals("Mentee"))) {
             lookingForText.setText("Looking for Mentees");
+            foundUsers.clear();
             CompletableFuture<List<String>> futureUsers = algorithmMentee(currUserId, foundUsers);
             futureUsers.thenAccept(users -> {
                 populateSquares(users);
@@ -131,6 +147,7 @@ public class HomepageFragment extends Fragment {
         }
         else if((sortMap.get("ConnectionType").equals("StudyBuddy")) && (!prevOp.get("ConnectionType").equals("StudyBuddy"))) {
             lookingForText.setText("Looking for Study Buddies");
+            foundUsersStudyBuddy.clear();
             CompletableFuture<HashMap<String, Integer>> futureUsers = algorithmStudyBuddy(currUserId, foundUsersStudyBuddy);
             futureUsers.thenAccept(users -> {
                 populateSquaresStudyBuddy(users);
@@ -153,6 +170,7 @@ public class HomepageFragment extends Fragment {
             linearLayout.setVisibility(View.GONE);
         }
         else {
+            lookingForText.setText("");
             Toast.makeText(requireContext(), "Please select a type of connection to search for", Toast.LENGTH_SHORT).show();
             swipeRefreshLayout.setRefreshing(false);
         }
@@ -239,6 +257,7 @@ public class HomepageFragment extends Fragment {
      */
     private void populateSquares(List<String> foundUsers) {
         Collections.shuffle(foundUsers);
+        Log.d("plase tell my why duplicates", String.valueOf(foundUsers));
         ImageView[] imageViews = {box1Image, box2Image, box3Image, box4Image, box5Image, box6Image};
         TextView[] textViews = {box1Text, box2Text, box3Text, box4Text, box5Text, box6Text};
         CardView[] cardViews = {box1Card, box2Card, box3Card, box4Card, box5Card, box6Card};
@@ -794,6 +813,7 @@ public class HomepageFragment extends Fragment {
                         else {
                             sortMap.put("ConnectionType", "none");
                         }
+                        onRefresh();
                     }
                 })
                 .setNegativeButton("Cancel", null);
