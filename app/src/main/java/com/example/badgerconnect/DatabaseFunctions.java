@@ -183,8 +183,8 @@ public class DatabaseFunctions{
      * @param dateOfBirth is the date of birth of the user
      */
     public static void updateUserData(String userId, String username, String email,
-                                  String major, String bio, Year year,
-                                  MeetingType meetingType, List<String> connectionTypes,
+                                      String major, String bio, Year year,
+                                      MeetingType meetingType, List<String> connectionTypes,
                                       List<String> studyBuddyCourses, int numCourses, String dateOfBirth) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Data");
         String key = userId;
@@ -205,7 +205,7 @@ public class DatabaseFunctions{
             childUpdates.put("/UserData/" + key + "/Bio/", user.getBio());
         }
         if(!user.getYear().toString().isEmpty()) {
-            childUpdates.put("/UserData/" + key + "/Year/", user.getYear());
+            childUpdates.put("/UserData/" + key + "/Year/", user.getYear().getNumVal());
         }
         if(!user.getMeetingType().toString().isEmpty()) {
             childUpdates.put("/UserData/" + key + "/MeetingType/", user.getMeetingType());
@@ -214,7 +214,9 @@ public class DatabaseFunctions{
             childUpdates.put("/UserData/" + key + "/DateOfBirth/", user.getDateOfBirth());
         }
 
-        childUpdates.put("/UserData/" + key + "/StudyBuddyCourses/", user.getStudyBuddyCourses());
+        if(studyBuddyCourses != null) {
+            childUpdates.put("/UserData/" + key + "/StudyBuddyCourses/", user.getStudyBuddyCourses());
+        }
 
         childUpdates.put("/UserData/" + key + "/ConnectionTypes/", user.getConnectionType());
 
@@ -269,8 +271,10 @@ public class DatabaseFunctions{
         String major = String.valueOf(task.getResult().child("Major").getValue());
         HashMap<String, String> studyBuddyCoursesHash = (HashMap<String, String>) task.getResult().child("StudyBuddyCourses").getValue(Object.class);
         List<String> studyBuddyCourses = null;
+        int numCourses = 0;
         if(studyBuddyCoursesHash != null) {
             studyBuddyCourses = new ArrayList<String>(studyBuddyCoursesHash.values());
+            numCourses = studyBuddyCourses.size();
         }
         HashMap<String, Boolean> connectionTypes = (HashMap<String, Boolean>) task.getResult().child("ConnectionTypes").getValue(Object.class);
         List<String> connectTypes = new ArrayList<>();
@@ -293,7 +297,7 @@ public class DatabaseFunctions{
         }
         MeetingType meetingType = task.getResult().child("MeetingType").getValue(MeetingType.class);
         String dateOfBirth = String.valueOf(task.getResult().child("DateOfBirth").getValue());
-        user.setUserInformation(name, email, major, studyBuddyCourses.size(), studyBuddyCourses, connectTypes, bio, year, meetingType, dateOfBirth);
+        user.setUserInformation(name, email, major, numCourses, studyBuddyCourses, connectTypes, bio, year, meetingType, dateOfBirth);
         future.complete(user);
     }
 
@@ -355,7 +359,6 @@ public class DatabaseFunctions{
         mStorage = FirebaseStorage.getInstance().getReference();
         StorageReference pfpRef = mStorage.child("images").child(userId+"/pfp.jpg");
         // bitmaps
-        //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.monke);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] pfpByteStream = baos.toByteArray();
@@ -371,6 +374,7 @@ public class DatabaseFunctions{
             }
         });
     }
+
 
     /**
      * Downloads the profile picture of the user from firebase
@@ -629,7 +633,7 @@ public class DatabaseFunctions{
         // Query to retrieve data in batches
         Query findStudyBuddy = mDatabase.orderByChild("ConnectionTypes/StudyBuddy")
                 .equalTo(true);
-                //.startAt(batchCount * batchSize); // Calculate starting point for the batch
+        //.startAt(batchCount * batchSize); // Calculate starting point for the batch
 
         Log.d("pre", currCourses.get("Course1"));
 
@@ -779,4 +783,3 @@ public class DatabaseFunctions{
 
 
 }
-

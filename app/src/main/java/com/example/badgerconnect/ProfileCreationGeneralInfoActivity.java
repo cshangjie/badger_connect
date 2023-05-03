@@ -2,7 +2,6 @@ package com.example.badgerconnect;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -239,7 +238,6 @@ public class ProfileCreationGeneralInfoActivity extends AppCompatActivity {
 
 
         }
-//        Log.i("123123123123123123", inputText);
     }
 
     private void initializeUI() {

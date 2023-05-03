@@ -4,7 +4,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -31,12 +31,28 @@
             android:text="Firstname Lastname" />
 
         <TextView
+            android:id="@+id/bio_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bio:" />
+
+        <EditText
+            android:id="@+id/bio_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_edit_text_cut"
+            android:enabled="false"
+            android:inputType="textMultiLine"
+            android:gravity = "center"
+            />
+
+        <TextView
             android:id="@+id/major_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Major:" />
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/major_field"
             android:layout_width="match_parent"
             android:layout_height="35dp"
@@ -51,14 +67,13 @@
             android:layout_height="wrap_content"
             android:text="Year:" />
 
-        <EditText
-            android:id="@+id/year_field"
+        <Spinner
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:background="@drawable/custom_edit_text_cut"
-            android:enabled="false"
-            android:gravity="center"
-            android:text="Year" />
+            android:id="@+id/year_spinner"
+            android:spinnerMode="dropdown"
+            android:textColor="#FFFFFF"
+            />
 
         <TextView
             android:id="@+id/birthdate_label"
@@ -75,5 +90,104 @@
             android:gravity="center"
             android:inputType="date"
             android:text="03/01/2001" />
+
+        <TextView
+            android:id="@+id/meeting_pref_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Meeting Preference:" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            >
+
+            <CheckBox
+                android:id="@+id/in_person_cb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="In-Person"
+                />
+
+            <CheckBox
+                android:id="@+id/virtual_cb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Virtual" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/mentor_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mentor:" />
+
+        <CheckBox
+            android:id="@+id/mentor_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/mentee_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mentee:" />
+
+        <CheckBox
+            android:id="@+id/mentee_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/studybuddy_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="StudyBuddy:" />
+
+        <LinearLayout
+            android:id="@+id/course_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/add_course_bttn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Add Course"
+                android:visibility="gone"
+                android:enabled="false"
+                />
+
+            <View
+                android:layout_width="8dp"
+                android:layout_height="match_parent" />
+
+            <Button
+                android:id="@+id/remove_course_bttn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Remove Course"
+                android:visibility="gone"
+                android:enabled="false"
+                />
+
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>

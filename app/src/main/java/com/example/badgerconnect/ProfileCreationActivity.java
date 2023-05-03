@@ -3,7 +3,9 @@ package com.example.badgerconnect;
 import android.app.Application;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -14,12 +16,18 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.badgerconnect.Model.User;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import android.app.Dialog;
 import android.app.DialogFragment;
 
@@ -34,6 +42,8 @@ public class ProfileCreationActivity extends AppCompatActivity {
     private CheckBox isLookingForMentorCB, notLookingForMentorCB, isMentorCB, notMentorCB, isStudyBuddyCB, notStudyBuddyCB;
     private CheckBox physicalCB, virtualCB;
     private Button continueButton;
+    private String user_PFP_url = null;
+    private static StorageReference mStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,7 +172,15 @@ public class ProfileCreationActivity extends AppCompatActivity {
                     DatabaseFunctions.writeNewUser(uid, name, email, major, connectionTypes, bio, Year.valueOf(year), userMeetingPref, dob);
                     // Upload PFP
                     DatabaseFunctions.uploadPFP(uid, imagePfp);
-                    // TODO create user for CJ
+                    //create user for CJ
+                    CompletableFuture<String> downloadedURL = DatabaseFunctions.downloadPFPURL(uid);
+
+                    downloadedURL.thenAccept(url -> {
+                        User user = new User(uid, name, url, null);
+                        user.addUser();
+                        Log.d("ImageURL", url);
+                    });
+
                     startActivity(myIntent);
                 }
                 // otherwise send them to a course selection page
