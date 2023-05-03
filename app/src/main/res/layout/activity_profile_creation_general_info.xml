@@ -26,7 +26,7 @@
             android:contentDescription="Profile Image"
             android:onClick="updatePic"
             android:scaleType="centerCrop"
-            android:src="@drawable/pfp_placeholder" />
+            android:src="@drawable/portrait_placeholder" />
 
     </FrameLayout>
 
