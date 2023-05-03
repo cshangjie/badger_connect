@@ -16,7 +16,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Are you looking for a mentor?"/>
+            android:text="Would you like to be a Mentee?"/>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -45,7 +45,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Are you looking to be a mentor?"/>
+            android:text="Would you like to be a Mentor?"/>
 
         <LinearLayout
             android:orientation="horizontal"

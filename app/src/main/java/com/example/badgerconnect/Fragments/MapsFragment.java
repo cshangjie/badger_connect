@@ -97,7 +97,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         // Get references to UI elements
         editTextLatitude = view.findViewById(R.id.editText);
+        editTextLatitude.setVisibility(View.GONE);
         editTextLongitude = view.findViewById(R.id.editText2);
+        editTextLongitude.setVisibility(View.GONE);
         // Initialize Firebase Database reference
         databaseReference = FirebaseDatabase.getInstance().getReference("Data/Map");
         databaseRef= FirebaseDatabase.getInstance().getReference("Data/markers");
