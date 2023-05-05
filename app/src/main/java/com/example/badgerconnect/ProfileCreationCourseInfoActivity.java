@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -103,24 +104,24 @@ public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
         continueButton.setOnClickListener(v -> {
             // iterate over the autoCompleteContainer to add user entries
             int course_count = autocompleteContainer.getChildCount();
-            String[] userEntries = new String[course_count];
+//            String[] userEntries = new String[course_count];
+            Set<String> userEntries = new HashSet<String>();
+
             for (int i = 0; i < course_count; i++) {
                 View childView = autocompleteContainer.getChildAt(i);
                 if (childView instanceof AutoCompleteTextView) {
                     AutoCompleteTextView autocompleteTextView = (AutoCompleteTextView) childView;
                     String userText = autocompleteTextView.getText().toString();
                     // add user text to userEntries
-                    userEntries[i] = userText;
+                    userEntries.add(userText);
                 }
             }
             // get course list, convert to set, check that each entry is in the set
             String[] courseList = getResources().getStringArray(R.array.full_courses_array);
             Set<String> courseSet = new HashSet<>(Arrays.asList(courseList));
-
-            for (int i = 0; i < userEntries.length; i++) {
-//                Log.i("0", userEntries[i]);
-//                Log.i("1", String.valueOf(courseSet.contains(userEntries[i])));
-                if (!courseSet.contains(userEntries[i])) {
+            int i = 0;
+            for (String course : userEntries) {
+                if(!courseSet.contains(course)){
                     // Request focus on the corresponding AutoCompleteTextView
                     View invalidView = autocompleteContainer.getChildAt(i);
                     if (invalidView instanceof AutoCompleteTextView) {
@@ -130,9 +131,10 @@ public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
                         return;
                     }
                 }
+                i++;
             }
-
             // user entries are in the set (aka valid)
+            List<String> list = new ArrayList<>(userEntries);
             // create user in sahas DB
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -148,7 +150,7 @@ public class ProfileCreationCourseInfoActivity extends AppCompatActivity {
                 meetingType = MeetingType.VIRTUAL;
             }
 
-            DatabaseFunctions.writeNewUser(uid, name, email,major, course_count, Arrays.asList(userEntries), connectionTypes, bio, Year.valueOf(year), meetingType, dob);
+            DatabaseFunctions.writeNewUser(uid, name, email,major, i, list, connectionTypes, bio, Year.valueOf(year), meetingType, dob);
 //            DatabaseFunctions.uploadPFP(uid, imagePfp);
 
             //create user for CJ
