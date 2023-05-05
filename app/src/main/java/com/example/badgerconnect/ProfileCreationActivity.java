@@ -176,7 +176,7 @@ public class ProfileCreationActivity extends AppCompatActivity {
                     downloadedURL.thenAccept(url -> {
                         User user = new User(uid, name, url, null);
                         user.addUser();
-                        Log.d("ImageURL", url);
+//                        Log.d("ImageURL", url);
                     });
 
                     startActivity(myIntent);

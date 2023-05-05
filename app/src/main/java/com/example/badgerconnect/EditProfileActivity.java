@@ -164,7 +164,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 newMajor = major_EditText.getText().toString().trim();
 
             }else{
-                Log.i("MAJOR:", major_EditText.getText().toString().trim());
+//                Log.i("MAJOR:", major_EditText.getText().toString().trim());
                 major_EditText.setError("Invalid Major");
                 major_EditText.requestFocus();
                 return true;
@@ -337,7 +337,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
             // check if studybuddy container is filled
             int course_count = autocompleteContainer.getChildCount();
-            Log.i("Course Number when enabling:", Integer.toString(course_count));
+//            Log.i("Course Number when enabling:", Integer.toString(course_count));
             if(course_count != 0){
                 for (int i = 0; i < course_count; i++) {
                     View childView = autocompleteContainer.getChildAt(i);
@@ -369,7 +369,7 @@ public class EditProfileActivity extends AppCompatActivity {
             mentee_CB.setEnabled(false);
 
             int course_count = autocompleteContainer.getChildCount();
-            Log.i("Course Number after disabling:", Integer.toString(course_count));
+//            Log.i("Course Number after disabling:", Integer.toString(course_count));
 
             if(course_count != 0){
                 for (int i = 0; i < course_count; i++) {

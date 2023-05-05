@@ -17,7 +17,7 @@ public class DashboardActivity extends AppCompatActivity{
         setContentView(R.layout.activity_dashboard);
         // print user id
         FirebaseUser user = mAuth.getCurrentUser();
-        Log.d("2", user.getEmail());
+//        Log.d("2", user.getEmail());
 
     }
 }

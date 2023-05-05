@@ -174,7 +174,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e(TAG, "Failed to query markers from Firebase database", databaseError.toException());
+//                Log.e(TAG, "Failed to query markers from Firebase database", databaseError.toException());
             }
         });
 
@@ -508,7 +508,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e(TAG, "Failed to query markers from Firebase database", databaseError.toException());
+//                Log.e(TAG, "Failed to query markers from Firebase database", databaseError.toException());
             }
         });
     }
@@ -549,13 +549,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                             markerList.add(marker);
                         }
                         marker.setTag(snapshot.getKey());
-                        Log.d("FirebaseKey", snapshot.getKey());
+//                        Log.d("FirebaseKey", snapshot.getKey());
                     }
                 }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e(TAG, "Failed to load markers from Firebase database", databaseError.toException());
+//                Log.e(TAG, "Failed to load markers from Firebase database", databaseError.toException());
             }
         });
 

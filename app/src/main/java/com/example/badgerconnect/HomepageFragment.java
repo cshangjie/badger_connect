@@ -316,7 +316,7 @@ public class HomepageFragment extends Fragment {
             userMajorTextView.setText(userInfos.get(0).getMajor());
             userYearTextView.setText(String.valueOf(userInfos.get(0).getYear()));
             // userBirthdateTextView.setText(userInfos.get(0).getDateOfBirth());
-            Log.i("Birthday",userInfos.get(0).getDateOfBirth());
+//            Log.i("Birthday",userInfos.get(0).getDateOfBirth());
             HashMap<String, String> userCourses = userInfos.get(0).getStudyBuddyCourses();
             for (String course : userCourses.values()) {
                 // populate courses as autocompletetextviews within the container and setting them to disabled

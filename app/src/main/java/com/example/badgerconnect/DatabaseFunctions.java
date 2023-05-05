@@ -114,13 +114,13 @@ public class DatabaseFunctions{
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d("firebase", "Data updated");
+//                        Log.d("firebase", "Data updated");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e("firebase", "Error getting data");
+//                        Log.e("firebase", "Error getting data");
                     }
                 });
 
@@ -155,13 +155,13 @@ public class DatabaseFunctions{
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d("firebase", "Data updated");
+//                        Log.d("firebase", "Data updated");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e("firebase", "Error getting data");
+//                        Log.e("firebase", "Error getting data");
                     }
                 });
 
@@ -224,13 +224,13 @@ public class DatabaseFunctions{
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid)    {
-                        Log.d("firebase", "Data updated");
+//                        Log.d("firebase", "Data updated");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e("firebase", "Error getting data");
+//                        Log.e("firebase", "Error getting data");
                     }
                 });
 
@@ -249,10 +249,10 @@ public class DatabaseFunctions{
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
                         if (!task.isSuccessful()) {
-                            Log.e("firebase", "Error getting data", task.getException());
+//                            Log.e("firebase", "Error getting data", task.getException());
                         }
                         else {
-                            Log.d("firebase", String.valueOf(task.getResult().getValue()));
+//                            Log.d("firebase", String.valueOf(task.getResult().getValue()));
                             afterRead(task, user, future);
                         }
                     }
@@ -327,13 +327,13 @@ public class DatabaseFunctions{
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d("firebase", "Data updated");
+//                        Log.d("firebase", "Data updated");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e("firebase", "Error getting data");
+//                        Log.e("firebase", "Error getting data");
                     }
                 });
     }
@@ -369,8 +369,8 @@ public class DatabaseFunctions{
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Log.d("Firebase", uploadTask.getResult().toString());
-                Log.i("ImageUpload", "Image successfully uploaded to Firebase.");
+//                Log.d("Firebase", uploadTask.getResult().toString());
+//                Log.i("ImageUpload", "Image successfully uploaded to Firebase.");
             }
         });
     }
@@ -401,7 +401,7 @@ public class DatabaseFunctions{
             @Override
             public void onFailure(@NonNull Exception e) {
                 e.printStackTrace();
-                Log.i("Error", "Image Download Failed.");
+//                Log.i("Error", "Image Download Failed.");
             }
         });
     }
@@ -427,7 +427,7 @@ public class DatabaseFunctions{
             @Override
             public void onFailure(@NonNull Exception exception) {
                 exception.printStackTrace();
-                Log.i("Error", "Download URI failed");
+//                Log.i("Error", "Download URI failed");
             }
         });
 
@@ -446,10 +446,10 @@ public class DatabaseFunctions{
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
                         if (!task.isSuccessful()) {
-                            Log.e("firebase", "Error getting data", task.getException());
+//                            Log.e("firebase", "Error getting data", task.getException());
                         }
                         else {
-                            Log.d("firebase", "Found current user");
+//                            Log.d("firebase", "Found current user");
                             findMentor(task, results, future);
                         }
                     }
@@ -475,15 +475,15 @@ public class DatabaseFunctions{
 
         Query findMentor = mDatabase.orderByChild("Major").equalTo(major);
 
-        Log.d("pre", "got here");
+//        Log.d("pre", "got here");
 
         findMentor.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             public void onComplete(@NonNull Task<DataSnapshot> innerTask) {
                 if (!innerTask.isSuccessful()) {
-                    Log.e("firebase", "Error getting data", innerTask.getException());
+//                    Log.e("firebase", "Error getting data", innerTask.getException());
                 }
                 else {
-                    Log.d("firebase", "Looking for mentors");
+//                    Log.d("firebase", "Looking for mentors");
                     DataSnapshot dataSnapshot = innerTask.getResult();
                     if (dataSnapshot.exists()) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -495,14 +495,14 @@ public class DatabaseFunctions{
                             if ((schoolYear > currentSchoolYear) && connectionType.get("Mentor")) {
                                 if(rejectList != null){
                                     if(!rejectList.containsKey(userId)){
-                                        Log.d("Users", userId);
+//                                        Log.d("Users", userId);
                                         results.add(userId);
                                     }
                                 }
                                 else {
                                     // User has the same major and is in a higher school year
                                     // Handle the userId as needed (e.g. add to a list, display in UI, etc.)
-                                    Log.d("Users", userId);
+//                                    Log.d("Users", userId);
                                     results.add(userId);
                                 }
 
@@ -527,10 +527,10 @@ public class DatabaseFunctions{
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
                         if (!task.isSuccessful()) {
-                            Log.e("firebase", "Error getting data", task.getException());
+//                            Log.e("firebase", "Error getting data", task.getException());
                         }
                         else {
-                            Log.d("firebase", "Found current user");
+//                            Log.d("firebase", "Found current user");
                             findMentee(task, results, future);
                         }
                     }
@@ -554,15 +554,15 @@ public class DatabaseFunctions{
 
         Query findMentor = mDatabase.orderByChild("Major").equalTo(major);
 
-        Log.d("pre", "got here");
+//        Log.d("pre", "got here");
 
         findMentor.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             public void onComplete(@NonNull Task<DataSnapshot> innerTask) {
                 if (!innerTask.isSuccessful()) {
-                    Log.e("firebase", "Error getting data", innerTask.getException());
+//                    Log.e("firebase", "Error getting data", innerTask.getException());
                 }
                 else {
-                    Log.d("firebase", "Looking for mentees");
+//                    Log.d("firebase", "Looking for mentees");
                     DataSnapshot dataSnapshot = innerTask.getResult();
                     if (dataSnapshot.exists()) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -576,7 +576,7 @@ public class DatabaseFunctions{
                                 // Handle the userId as needed (e.g. add to a list, display in UI, etc.)
                                 if(rejectList != null){
                                     if(!rejectList.containsKey(userId)){
-                                        Log.d("Users", userId);
+//                                        Log.d("Users", userId);
                                         results.add(userId);
                                     }
                                 }
@@ -607,7 +607,7 @@ public class DatabaseFunctions{
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
                         if (!task.isSuccessful()) {
-                            Log.e("firebase", "Error getting data", task.getException());
+//                            Log.e("firebase", "Error getting data", task.getException());
                         }
                         else {
                             Log.d("firebase", "Found current user");
@@ -635,16 +635,16 @@ public class DatabaseFunctions{
                 .equalTo(true);
         //.startAt(batchCount * batchSize); // Calculate starting point for the batch
 
-        Log.d("pre", currCourses.get("Course1"));
+//        Log.d("pre", currCourses.get("Course1"));
 
         findStudyBuddy.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             public void onComplete(@NonNull Task<DataSnapshot> innerTask) {
                 if (!innerTask.isSuccessful()) {
-                    Log.e("firebase", "Error getting data", innerTask.getException());
+//                    Log.e("firebase", "Error getting data", innerTask.getException());
                 }
                 else {
-                    Log.d("firebase", "Looking for study buddies");
-                    Log.d("firebase", String.valueOf(innerTask.getResult().getValue()));
+//                    Log.d("firebase", "Looking for study buddies");
+//                    Log.d("firebase", String.valueOf(innerTask.getResult().getValue()));
                     DataSnapshot dataSnapshot = innerTask.getResult();
                     if (dataSnapshot.exists()) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -706,10 +706,10 @@ public class DatabaseFunctions{
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
                         if (!task.isSuccessful()) {
-                            Log.e("firebase", "Error getting data", task.getException());
+//                            Log.e("firebase", "Error getting data", task.getException());
                         }
                         else {
-                            Log.d("firebase", String.valueOf(task.getResult().getValue()));
+//                            Log.d("firebase", String.valueOf(task.getResult().getValue()));
                             HashMap<String, Boolean> connectionType = (HashMap<String, Boolean>) task.getResult().child("ConnectionTypes").getValue(Object.class);
                             future.complete(connectionType.get("StudyBuddy"));
                         }
@@ -730,10 +730,10 @@ public class DatabaseFunctions{
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
                         if (!task.isSuccessful()) {
-                            Log.e("firebase", "Error getting data", task.getException());
+//                            Log.e("firebase", "Error getting data", task.getException());
                         }
                         else {
-                            Log.d("firebase", String.valueOf(task.getResult().getValue()));
+//                            Log.d("firebase", String.valueOf(task.getResult().getValue()));
                             HashMap<String, Boolean> connectionType = (HashMap<String, Boolean>) task.getResult().child("ConnectionTypes").getValue(Object.class);
                             future.complete(connectionType.get("Mentor"));
                         }
@@ -754,10 +754,10 @@ public class DatabaseFunctions{
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
                         if (!task.isSuccessful()) {
-                            Log.e("firebase", "Error getting data", task.getException());
+//                            Log.e("firebase", "Error getting data", task.getException());
                         }
                         else {
-                            Log.d("firebase", String.valueOf(task.getResult().getValue()));
+//                            Log.d("firebase", String.valueOf(task.getResult().getValue()));
                             HashMap<String, Boolean> connectionType = (HashMap<String, Boolean>) task.getResult().child("ConnectionTypes").getValue(Object.class);
                             future.complete(connectionType.get("Mentee"));
                         }
